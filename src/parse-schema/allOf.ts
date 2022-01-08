@@ -1,6 +1,6 @@
 import { L } from "ts-toolbelt";
+import { Any, Intersection } from "ts-algebra";
 
-import { Any, Intersection } from "../meta-types";
 import { Get, HasKeyIn } from "../utils";
 
 import { ParseSchema } from ".";

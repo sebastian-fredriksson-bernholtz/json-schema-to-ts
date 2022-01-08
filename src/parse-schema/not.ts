@@ -1,5 +1,5 @@
-import { Any, Primitive, Arr, Object, Union, Exclusion } from "../meta-types";
-import { IsRepresentable } from "../meta-types/utils";
+import { Any, Primitive, Arr, Object, Union, Exclusion } from "ts-algebra";
+import { IsRepresentable } from "ts-algebra/utils";
 
 import { Get, HasKeyIn } from "../utils";
 

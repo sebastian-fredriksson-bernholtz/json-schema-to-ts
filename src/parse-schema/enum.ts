@@ -1,4 +1,5 @@
-import { Enum, Intersection } from "../meta-types";
+import { Enum, Intersection } from "ts-algebra";
+
 import { DeepGet, HasKeyIn } from "../utils";
 
 import { ParseSchema } from ".";

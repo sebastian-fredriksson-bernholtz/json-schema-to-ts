@@ -1,4 +1,5 @@
-import { Const, Intersection } from "../meta-types";
+import { Const, Intersection } from "ts-algebra";
+
 import { Get, HasKeyIn } from "../utils";
 
 import { ParseSchema } from ".";

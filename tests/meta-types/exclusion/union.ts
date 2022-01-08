@@ -13,8 +13,8 @@ import {
   Intersection,
   Exclusion,
   Error,
-} from "meta-types";
-import { Exclude } from "meta-types/exclusion";
+} from "ts-algebra";
+import { Exclude } from "ts-algebra/exclusion";
 
 // --- ANY ---
 

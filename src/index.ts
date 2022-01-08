@@ -1,8 +1,8 @@
+import { Resolve } from "ts-algebra";
 import { A, O } from "ts-toolbelt";
 import { JSONSchema6Definition } from "json-schema";
 
 import { JSONSchema6DefinitionWithoutInterface } from "./definitions";
-import { Resolve } from "./meta-types";
 import { ParseSchema } from "./parse-schema";
 
 /**

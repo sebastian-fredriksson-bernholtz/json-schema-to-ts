@@ -1,5 +1,6 @@
+import { Intersection, Union, Exclusion } from "ts-algebra";
+
 import { ParseSchema } from "../parse-schema";
-import { Intersection, Union, Exclusion } from "../meta-types";
 import { HasKeyIn } from "../utils";
 
 import { MergeSubSchema } from "./utils";

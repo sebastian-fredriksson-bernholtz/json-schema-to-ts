@@ -13,8 +13,8 @@ import {
   Union,
   Intersection,
   Error,
-} from "meta-types";
-import { Intersect } from "meta-types/intersection";
+} from "ts-algebra";
+import { Intersect } from "ts-algebra/intersection";
 
 // --- ANY ---
 

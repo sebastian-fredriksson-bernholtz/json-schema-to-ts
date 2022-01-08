@@ -1,4 +1,5 @@
-import { Object, Any, Never, Union, Error } from "../meta-types";
+import { Object, Any, Never, Union, Error } from "ts-algebra";
+
 import { IsObject } from "../utils";
 
 import { ParseSchema } from ".";

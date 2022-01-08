@@ -13,8 +13,8 @@ import {
   Union,
   Intersection,
   Error,
-} from "meta-types";
-import { IsRepresentable } from "meta-types/utils";
+} from "ts-algebra";
+import { IsRepresentable } from "ts-algebra/utils";
 
 // --- ANY ---
 

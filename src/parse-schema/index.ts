@@ -1,8 +1,8 @@
-import { Primitive, Any, Never } from "../meta-types";
+import { Primitive, Any, Never } from "ts-algebra";
 
+import { ParseMixedSchema } from "./mixed";
 import { ParseConstSchema } from "./const";
 import { ParseEnumSchema } from "./enum";
-import { ParseMixedSchema } from "./mixed";
 import { ParseArrSchema } from "./array";
 import { ParseObjectSchema } from "./object";
 import { ParseAnyOfSchema } from "./anyOf";

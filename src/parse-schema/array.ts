@@ -1,6 +1,6 @@
 import { A, L } from "ts-toolbelt";
+import { Arr, Tuple, Union, Error } from "ts-algebra";
 
-import { Arr, Tuple, Union, Error } from "../meta-types";
 import { DoesExtend, Get, IsObject } from "../utils";
 
 import { ParseSchema } from ".";

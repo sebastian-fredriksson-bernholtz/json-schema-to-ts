@@ -1,7 +1,7 @@
 import { A } from "ts-toolbelt";
 
-import { Resolve, Never, Const, Primitive, Tuple } from "meta-types";
-import { IsRepresentable } from "meta-types/utils";
+import { Resolve, Never, Const, Primitive, Tuple } from "ts-algebra";
+import { IsRepresentable } from "ts-algebra/utils";
 
 // --- OPEN ---
 

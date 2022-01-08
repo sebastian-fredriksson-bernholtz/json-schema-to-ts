@@ -11,8 +11,8 @@ import {
   Union,
   Object,
   Tuple,
-} from "meta-types";
-import { IsRepresentable } from "meta-types/utils";
+} from "ts-algebra";
+import { IsRepresentable } from "ts-algebra/utils";
 
 const test1: A.Equals<
   Resolve<Exclusion<Enum<"foo" | 42>, Primitive<string>>>,

@@ -1,6 +1,6 @@
+import { Union, Error } from "ts-algebra";
 import { L } from "ts-toolbelt";
 
-import { Union, Error } from "../meta-types";
 import { Get, DeepMergeUnsafe } from "../utils";
 
 import { ParseSchema } from ".";
