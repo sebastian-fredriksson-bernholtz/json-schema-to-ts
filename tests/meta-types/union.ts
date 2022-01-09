@@ -1,7 +1,6 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 // --- ANY ---
 
@@ -116,11 +115,11 @@ testError;
 
 // --- ISREPRESENTABLE ---
 
-const notRepresentable: A.Equals<IsRepresentable<M.Union<never>>, false> = 1;
+const notRepresentable: A.Equals<M.IsRepresentable<M.Union<never>>, false> = 1;
 notRepresentable;
 
 const representable: A.Equals<
-  IsRepresentable<M.Union<M.Never | M.Const<"A">>>,
+  M.IsRepresentable<M.Union<M.Never | M.Const<"A">>>,
   true
 > = 1;
 representable;

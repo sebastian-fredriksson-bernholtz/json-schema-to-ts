@@ -7,6 +7,6 @@ export type Const<V> = {
   value: V;
 };
 
-export type Value<C> = Get<C, "value">;
+export type ConstValue<C> = Get<C, "value">;
 
-export type ResolveConst<T> = Value<T>;
+export type ResolveConst<T> = ConstValue<T>;

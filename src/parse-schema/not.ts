@@ -1,5 +1,4 @@
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 import { Get, HasKeyIn } from "../utils";
 
@@ -27,4 +26,4 @@ export type ParseNotSchema<
       : AllTypes,
     ParseSchema<MergeSubSchema<Omit<S, "not">, Get<S, "not">>>
   >
-> = IsRepresentable<E> extends true ? E : P;
+> = M.IsRepresentable<E> extends true ? E : P;

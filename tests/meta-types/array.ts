@@ -1,7 +1,6 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 // --- ANY ---
 
@@ -87,5 +86,5 @@ test11;
 
 // --- ISREPRESENTABLE ---
 
-const representable: A.Equals<IsRepresentable<M.Arr<M.Never>>, true> = 1;
+const representable: A.Equals<M.IsRepresentable<M.Arr<M.Never>>, true> = 1;
 representable;

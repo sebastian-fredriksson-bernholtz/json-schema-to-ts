@@ -1,6 +1,6 @@
 import { Get } from "../../../utils";
 
-import { Resolve, MetaType, Never, Error } from "..";
+import { Resolve, Type, Never, Error } from "..";
 import { ClearIntersections } from "../intersection";
 
 import { ExcludeFromAny } from "./any";
@@ -11,19 +11,22 @@ import { ExcludeFromArray } from "./array";
 import { ExcludeFromTuple } from "./tuple";
 import { ExcludeFromObject } from "./object";
 import { DistributeUnion } from "./union";
-import { IsRepresentable } from "../../utils";
+import { IsRepresentable } from "../isRepresentable";
 
 export type ExclusionType = "exclusion";
 
-export type Exclusion<V, E> = { type: ExclusionType; value: V; excluded: E };
+export type Exclusion<V, E> = { type: ExclusionType; source: V; excluded: E };
 
-export type Value<E> = Get<E, "value">;
+export type ExclusionSource<E> = Get<E, "source">;
 
-export type Excluded<E> = Get<E, "excluded">;
+export type ExclusionExcluded<E> = Get<E, "excluded">;
 
-export type ResolveExclusion<E> = Resolve<Exclude<Value<E>, Excluded<E>>>;
+export type ResolveExclusion<E> = Resolve<
+  $Exclude<ExclusionSource<E>, ExclusionExcluded<E>>
+>;
 
-export type Exclude<A, B> = {
+// Prefixed with $ to not confuse with native TS Exclude
+export type $Exclude<A, B> = {
   any: ExcludeFromAny<A, B>;
   never: Never;
   const: ExcludeFromConst<A, B>;
@@ -33,12 +36,12 @@ export type Exclude<A, B> = {
   tuple: ExcludeFromTuple<A, B>;
   object: ExcludeFromObject<A, B>;
   union: DistributeUnion<A, B>;
-  intersection: Exclude<ClearIntersections<A>, B>;
-  exclusion: Exclude<Exclude<Value<A>, Excluded<A>>, B>;
+  intersection: $Exclude<ClearIntersections<A>, B>;
+  exclusion: $Exclude<$Exclude<ExclusionSource<A>, ExclusionExcluded<A>>, B>;
   error: A;
   errorMissingType: Error<"Missing type property in Exclusion source value">;
-}[Get<A, "type"> extends MetaType ? Get<A, "type"> : "errorMissingType"];
+}[Get<A, "type"> extends Type ? Get<A, "type"> : "errorMissingType"];
 
 export type IsExclusionRepresentable<E> = IsRepresentable<
-  Exclude<Value<E>, Excluded<E>>
+  $Exclude<ExclusionSource<E>, ExclusionExcluded<E>>
 >;

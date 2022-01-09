@@ -1,6 +1,9 @@
-import { Exclude, Value, Excluded } from ".";
+import { $Exclude, ExclusionSource, ExclusionExcluded } from ".";
 
-export type ExcludeExclusion<Source, ExcludedExclusion> = Exclude<
+export type ExcludeExclusion<Source, ExcludedExclusion> = $Exclude<
   Source,
-  Exclude<Value<ExcludedExclusion>, Excluded<ExcludedExclusion>>
+  $Exclude<
+    ExclusionSource<ExcludedExclusion>,
+    ExclusionExcluded<ExcludedExclusion>
+  >
 >;

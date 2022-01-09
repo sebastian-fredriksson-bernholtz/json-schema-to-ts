@@ -2,9 +2,9 @@ import { A, L } from "ts-toolbelt";
 
 import { Get, And } from "../../../utils";
 
-import { MetaType, Never, Tuple, Error } from "..";
-import { Values as ArrValues } from "../array";
-import { Values, IsOpen, OpenProps } from "../tuple";
+import { Type, Never, Tuple, Error } from "..";
+import { ArrayValues } from "../array";
+import { TupleValues, IsOpen, OpenProps } from "../tuple";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -17,7 +17,7 @@ export type ClearTupleIntersections<
   O = ClearIntersections<OpenProps<T>>
 > = Tuple<
   // 🔧 TOIMPROVE: Not cast here
-  ClearTupleValuesIntersections<A.Cast<Values<T>, L.List>>,
+  ClearTupleValuesIntersections<A.Cast<TupleValues<T>, L.List>>,
   O extends Never ? false : IsOpen<T>,
   O
 >;
@@ -44,18 +44,18 @@ export type IntersectTuple<A, B> = {
   exclusion: IntersectExclusion<B, A>;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
 
 type IntersectTupleToArray<
   T,
   A,
   V extends L.List = IntersectTupleToArrValues<
     // 🔧 TOIMPROVE: Not cast here
-    A.Cast<Values<T>, L.List>,
-    ArrValues<A>
+    A.Cast<TupleValues<T>, L.List>,
+    ArrayValues<A>
   >,
   N = HasNeverValue<V>,
-  O = Intersect<OpenProps<T>, ArrValues<A>>
+  O = Intersect<OpenProps<T>, ArrayValues<A>>
 > = N extends true
   ? Never
   : Tuple<
@@ -85,9 +85,9 @@ type IntersectTuples<
   B,
   V extends L.List = IntersectTupleValues<
     // 🔧 TOIMPROVE: Not cast here
-    A.Cast<Values<A>, L.List>,
+    A.Cast<TupleValues<A>, L.List>,
     // 🔧 TOIMPROVE: Not cast here
-    A.Cast<Values<B>, L.List>,
+    A.Cast<TupleValues<B>, L.List>,
     IsOpen<A>,
     IsOpen<B>,
     OpenProps<A>,

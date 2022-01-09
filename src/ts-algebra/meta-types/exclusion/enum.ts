@@ -2,12 +2,12 @@ import { A, B, U } from "ts-toolbelt";
 
 import { Get } from "../../../utils";
 
-import { MetaType, Never, Const, Error } from "..";
-import { Enum, Values } from "../enum";
+import { Type, Never, Const, Error } from "..";
+import { Enum, EnumValues } from "../enum";
 import { Intersect } from "../intersection";
-import { IsRepresentable } from "../../utils";
+import { IsRepresentable } from "../isRepresentable";
 
-import { Exclude } from ".";
+import { $Exclude } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
@@ -26,17 +26,17 @@ export type ExcludeFromEnum<Source, Excluded> = {
   exclusion: ExcludeExclusion<Source, Excluded>;
   error: Excluded;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends MetaType
+}[Get<Excluded, "type"> extends Type
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
 type FilterExcluded<SourceEnum, Excluded> = Enum<
-  RecurseOnEnumValues<Values<SourceEnum>, Excluded>
+  RecurseOnEnumValues<EnumValues<SourceEnum>, Excluded>
 >;
 
 type RecurseOnEnumValues<EnumValues, Excluded> =
   EnumValues extends infer EnumValue
-    ? IsRepresentable<Exclude<Const<EnumValue>, Excluded>> extends false
+    ? IsRepresentable<$Exclude<Const<EnumValue>, Excluded>> extends false
       ? never
       : EnumValue
     : never;
@@ -44,12 +44,12 @@ type RecurseOnEnumValues<EnumValues, Excluded> =
 export type ExcludeEnum<
   Source,
   ExcludedEnum,
-  ExcludedEnumValues = Values<ExcludedEnum>
+  ExcludedEnumValues = EnumValues<ExcludedEnum>
 > = A.Equals<ExcludedEnumValues, never> extends B.True
   ? Source
   : ExcludeEnumValue<Source, U.Last<ExcludedEnumValues>, ExcludedEnumValues>;
 
 type ExcludeEnumValue<Source, LastEnumValue, ExcludedEnumValues> = Intersect<
-  Exclude<Source, Const<LastEnumValue>>,
-  Exclude<Source, Enum<U.Exclude<ExcludedEnumValues, LastEnumValue>>>
+  $Exclude<Source, Const<LastEnumValue>>,
+  $Exclude<Source, Enum<U.Exclude<ExcludedEnumValues, LastEnumValue>>>
 >;

@@ -1,17 +1,16 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { Exclude } from "ts-algebra/meta-types/exclusion";
 
 // --- ANY ---
 
-const anysAlwaysExclude: A.Equals<Exclude<M.Const<"A">, M.Any>, M.Never> = 1;
+const anysAlwaysExclude: A.Equals<M.Exclude<M.Const<"A">, M.Any>, M.Never> = 1;
 anysAlwaysExclude;
 
 // --- NEVER ---
 
 const neversNeverExclude: A.Equals<
-  Exclude<M.Const<"A">, M.Never>,
+  M.Exclude<M.Const<"A">, M.Never>,
   M.Const<"A">
 > = 1;
 neversNeverExclude;
@@ -19,13 +18,13 @@ neversNeverExclude;
 // --- CONSTS ---
 
 const excludingConst: A.Equals<
-  Exclude<M.Const<"A">, M.Const<"A">>,
+  M.Exclude<M.Const<"A">, M.Const<"A">>,
   M.Never
 > = 1;
 excludingConst;
 
 const nonExcludingConst: A.Equals<
-  Exclude<M.Const<"A">, M.Const<"B">>,
+  M.Exclude<M.Const<"A">, M.Const<"B">>,
   M.Const<"A">
 > = 1;
 nonExcludingConst;
@@ -33,13 +32,13 @@ nonExcludingConst;
 // --- ENUM ---
 
 const excludingEnum: A.Equals<
-  Exclude<M.Const<"A">, M.Enum<"A" | "B">>,
+  M.Exclude<M.Const<"A">, M.Enum<"A" | "B">>,
   M.Never
 > = 1;
 excludingEnum;
 
 const nonExcludingEnum: A.Equals<
-  Exclude<M.Const<"A">, M.Enum<"B">>,
+  M.Exclude<M.Const<"A">, M.Enum<"B">>,
   M.Const<"A">
 > = 1;
 nonExcludingEnum;
@@ -47,13 +46,13 @@ nonExcludingEnum;
 // --- PRIMITIVES ---
 
 const excludingPrimitive: A.Equals<
-  Exclude<M.Const<"A">, M.Primitive<string>>,
+  M.Exclude<M.Const<"A">, M.Primitive<string>>,
   M.Never
 > = 1;
 excludingPrimitive;
 
 const nonExcludingPrimitive: A.Equals<
-  Exclude<M.Const<"A">, M.Primitive<number>>,
+  M.Exclude<M.Const<"A">, M.Primitive<number>>,
   M.Const<"A">
 > = 1;
 nonExcludingPrimitive;
@@ -61,19 +60,19 @@ nonExcludingPrimitive;
 // --- ARRAY ---
 
 const excludingArray1: A.Equals<
-  Exclude<M.Const<["A"]>, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Const<["A"]>, M.Arr<M.Primitive<string>>>,
   M.Never
 > = 1;
 excludingArray1;
 
 const excludingArray2: A.Equals<
-  Exclude<M.Const<["A"]>, M.Arr<M.Const<"A">>>,
+  M.Exclude<M.Const<["A"]>, M.Arr<M.Const<"A">>>,
   M.Never
 > = 1;
 excludingArray2;
 
 const nonExcludingArray: A.Equals<
-  Exclude<M.Const<["A"]>, M.Arr<M.Primitive<number>>>,
+  M.Exclude<M.Const<["A"]>, M.Arr<M.Primitive<number>>>,
   M.Const<["A"]>
 > = 1;
 nonExcludingArray;
@@ -81,19 +80,19 @@ nonExcludingArray;
 // --- TUPLE ---
 
 const excludingTuple1: A.Equals<
-  Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<string>]>>,
+  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<string>]>>,
   M.Never
 > = 1;
 excludingTuple1;
 
 const excludingTuple2: A.Equals<
-  Exclude<M.Const<["A"]>, M.Tuple<[M.Const<"A">]>>,
+  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Const<"A">]>>,
   M.Never
 > = 1;
 excludingTuple2;
 
 const nonExcludingTuple: A.Equals<
-  Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<number>]>>,
+  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<number>]>>,
   M.Const<["A"]>
 > = 1;
 nonExcludingTuple;
@@ -101,13 +100,16 @@ nonExcludingTuple;
 // --- OBJECT ---
 
 const nonObjectConst: A.Equals<
-  Exclude<M.Const<["A", "B"]>, M.Object<{}, never, true, M.Primitive<string>>>,
+  M.Exclude<
+    M.Const<["A", "B"]>,
+    M.Object<{}, never, true, M.Primitive<string>>
+  >,
   M.Const<["A", "B"]>
 > = 1;
 nonObjectConst;
 
 const excludingClosedObject1: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Const<{ a: "A" }>,
     M.Object<{ a: M.Primitive<string> }, "a", false>
   >,
@@ -116,7 +118,7 @@ const excludingClosedObject1: A.Equals<
 excludingClosedObject1;
 
 const excludingClosedObject2: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
     M.Object<{ a: M.Enum<"A" | "B">; b: M.Enum<"A" | "B"> }, "a", false>
   >,
@@ -125,13 +127,13 @@ const excludingClosedObject2: A.Equals<
 excludingClosedObject2;
 
 const nonExcludingClosedObject: A.Equals<
-  Exclude<M.Const<{ a: "A" }>, M.Object<{ a: M.Const<"B"> }, "a", false>>,
+  M.Exclude<M.Const<{ a: "A" }>, M.Object<{ a: M.Const<"B"> }, "a", false>>,
   M.Const<{ a: "A" }>
 > = 1;
 nonExcludingClosedObject;
 
 const closedObjectSizesDontMatch1: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
     M.Object<{ a: M.Const<"A"> }, "a", false>
   >,
@@ -140,7 +142,7 @@ const closedObjectSizesDontMatch1: A.Equals<
 closedObjectSizesDontMatch1;
 
 const closedObjectSizesDontMatch2: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
     M.Object<{ a: M.Const<"A">; c: M.Const<"C"> }, "a" | "c", false>
   >,
@@ -149,7 +151,7 @@ const closedObjectSizesDontMatch2: A.Equals<
 closedObjectSizesDontMatch2;
 
 const excludingOpenObject1: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
     M.Object<{ a: M.Const<"A"> }, never, true, M.Const<"B">>
   >,
@@ -158,7 +160,7 @@ const excludingOpenObject1: A.Equals<
 excludingOpenObject1;
 
 const excludingOpenObject2: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
     M.Object<{}, never, true, M.Union<M.Const<"A"> | M.Const<"B">>>
   >,
@@ -167,7 +169,7 @@ const excludingOpenObject2: A.Equals<
 excludingOpenObject2;
 
 const nonExcludingOpenObject: A.Equals<
-  Exclude<M.Const<{ a: "A" }>, M.Object<{}, never, true, M.Const<"C">>>,
+  M.Exclude<M.Const<{ a: "A" }>, M.Object<{}, never, true, M.Const<"C">>>,
   M.Const<{ a: "A" }>
 > = 1;
 nonExcludingOpenObject;
@@ -175,25 +177,25 @@ nonExcludingOpenObject;
 // --- UNION ---
 
 const excludingUnion1: A.Equals<
-  Exclude<M.Const<"A">, M.Union<M.Const<"A">>>,
+  M.Exclude<M.Const<"A">, M.Union<M.Const<"A">>>,
   M.Never
 > = 1;
 excludingUnion1;
 
 const excludingUnion2: A.Equals<
-  Exclude<M.Const<"A">, M.Union<M.Const<"B"> | M.Enum<"A" | "C">>>,
+  M.Exclude<M.Const<"A">, M.Union<M.Const<"B"> | M.Enum<"A" | "C">>>,
   M.Never
 > = 1;
 excludingUnion2;
 
 const excludingUnion3: A.Equals<
-  Exclude<M.Const<"A">, M.Union<M.Primitive<string>>>,
+  M.Exclude<M.Const<"A">, M.Union<M.Primitive<string>>>,
   M.Never
 > = 1;
 excludingUnion3;
 
 const nonExcludingUnion: A.Equals<
-  Exclude<M.Const<"A">, M.Union<M.Const<"B"> | M.Const<"C">>>,
+  M.Exclude<M.Const<"A">, M.Union<M.Const<"B"> | M.Const<"C">>>,
   M.Const<"A">
 > = 1;
 nonExcludingUnion;
@@ -201,13 +203,19 @@ nonExcludingUnion;
 // --- INTERSECTION ---
 
 const excludingIntersection: A.Equals<
-  Exclude<M.Const<"A">, M.Intersection<M.Primitive<string>, M.Enum<"A" | "B">>>,
+  M.Exclude<
+    M.Const<"A">,
+    M.Intersection<M.Primitive<string>, M.Enum<"A" | "B">>
+  >,
   M.Never
 > = 1;
 excludingIntersection;
 
 const nonExcludingIntersection: A.Equals<
-  Exclude<M.Const<"A">, M.Intersection<M.Primitive<string>, M.Enum<"B" | "C">>>,
+  M.Exclude<
+    M.Const<"A">,
+    M.Intersection<M.Primitive<string>, M.Enum<"B" | "C">>
+  >,
   M.Const<"A">
 > = 1;
 nonExcludingIntersection;
@@ -215,13 +223,13 @@ nonExcludingIntersection;
 // --- EXCLUSION ---
 
 const excludingExclusion: A.Equals<
-  Exclude<M.Const<"A">, M.Exclusion<M.Primitive<string>, M.Const<"B">>>,
+  M.Exclude<M.Const<"A">, M.Exclusion<M.Primitive<string>, M.Const<"B">>>,
   M.Never
 > = 1;
 excludingExclusion;
 
 const nonExcludingExclusion: A.Equals<
-  Exclude<M.Const<"A">, M.Exclusion<M.Enum<"A" | "B">, M.Const<"A">>>,
+  M.Exclude<M.Const<"A">, M.Exclusion<M.Enum<"A" | "B">, M.Const<"A">>>,
   M.Const<"A">
 > = 1;
 nonExcludingExclusion;
@@ -229,7 +237,7 @@ nonExcludingExclusion;
 // --- ERROR ---
 
 const error: A.Equals<
-  Exclude<M.Const<"A">, M.Error<"Any">>,
+  M.Exclude<M.Const<"A">, M.Error<"Any">>,
   M.Error<"Any">
 > = 1;
 error;

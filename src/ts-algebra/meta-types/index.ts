@@ -1,52 +1,23 @@
-import { Get } from "../../utils";
-
-import { Any, AnyType, ResolveAny } from "./any";
-import { Never, NeverType, ResolveNever } from "./never";
-import { Const, ConstType, ResolveConst } from "./const";
-import { Enum, EnumType, ResolveEnum } from "./enum";
-import { Primitive, PrimitiveType, ResolvePrimitive } from "./primitive";
-import { Arr, ArrType, ResolveArr } from "./array";
-import { Tuple, TupleType, ResolveTuple } from "./tuple";
-import { Object, ObjectType, ResolveObject } from "./object";
-import { Union, UnionType, ResolveUnion } from "./union";
-import {
-  Intersection,
-  IntersectionType,
-  ResolveIntersection,
-} from "./intersection";
+import { Any, AnyType } from "./any";
+import { Never, NeverType } from "./never";
+import { Const, ConstType } from "./const";
+import { Enum, EnumType } from "./enum";
+import { Primitive, PrimitiveType } from "./primitive";
+import { Arr, ArrType } from "./array";
+import { Tuple, TupleType } from "./tuple";
+import { Object, ObjectType } from "./object";
+import { Union, UnionType } from "./union";
+import { Intersection, Intersect } from "./intersection";
+import { Exclusion, $Exclude as Exclude } from "./exclusion";
 import { Error, ErrorType } from "./error";
-import { Exclusion, ExclusionType, ResolveExclusion } from "./exclusion";
 
-export type MetaType =
-  | AnyType
-  | NeverType
-  | ConstType
-  | EnumType
-  | PrimitiveType
-  | ArrType
-  | TupleType
-  | ObjectType
-  | UnionType
-  | IntersectionType
-  | ExclusionType
-  | ErrorType;
+import { Type } from "./type";
 
-export type Resolve<T, D = Exclude<T, undefined>> = {
-  any: ResolveAny;
-  never: ResolveNever;
-  const: ResolveConst<D>;
-  enum: ResolveEnum<D>;
-  primitive: ResolvePrimitive<D>;
-  array: ResolveArr<D>;
-  tuple: ResolveTuple<D>;
-  object: ResolveObject<D>;
-  union: ResolveUnion<D>;
-  intersection: ResolveIntersection<D>;
-  exclusion: ResolveExclusion<D>;
-  error: never;
-}[Get<D, "type"> extends MetaType ? Get<D, "type"> : "error"];
+import { IsRepresentable } from "./isRepresentable";
+import { Resolve } from "./resolve";
 
 export {
+  // Meta-Types
   Any,
   Never,
   Const,
@@ -59,4 +30,21 @@ export {
   Intersection,
   Exclusion,
   Error,
+  // Definitions
+  AnyType,
+  NeverType,
+  ConstType,
+  EnumType,
+  PrimitiveType,
+  ArrType,
+  TupleType,
+  ObjectType,
+  UnionType,
+  ErrorType,
+  Type,
+  // Methods
+  Resolve,
+  Intersect,
+  Exclude,
+  IsRepresentable,
 };

@@ -1,12 +1,11 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { Exclude } from "ts-algebra/meta-types/exclusion";
 
 // --- ANY ---
 
 const anysAlwaysExclude: A.Equals<
-  Exclude<M.Exclusion<M.Primitive<string>, M.Const<"A">>, M.Any>,
+  M.Exclude<M.Exclusion<M.Primitive<string>, M.Const<"A">>, M.Any>,
   M.Never
 > = 1;
 anysAlwaysExclude;
@@ -14,7 +13,7 @@ anysAlwaysExclude;
 // --- NEVER ---
 
 const neversNeverExclude: A.Equals<
-  Exclude<M.Exclusion<M.Primitive<string>, M.Const<"A">>, M.Never>,
+  M.Exclude<M.Exclusion<M.Primitive<string>, M.Const<"A">>, M.Never>,
   M.Primitive<string>
 > = 1;
 neversNeverExclude;
@@ -22,7 +21,7 @@ neversNeverExclude;
 // --- CONSTS ---
 
 const excludingConst: A.Equals<
-  Exclude<M.Exclusion<M.Enum<"A" | "B" | "C">, M.Const<"A">>, M.Const<"B">>,
+  M.Exclude<M.Exclusion<M.Enum<"A" | "B" | "C">, M.Const<"A">>, M.Const<"B">>,
   M.Enum<"C">
 > = 1;
 excludingConst;
@@ -30,7 +29,7 @@ excludingConst;
 // --- ENUM ---
 
 const excludingEnum: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<M.Enum<"A" | "B" | "C" | "D">, M.Const<"A">>,
     M.Enum<"B" | "C">
   >,
@@ -41,7 +40,7 @@ excludingEnum;
 // --- PRIMITIVES ---
 
 const excludingPrimitive: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<
       M.Union<M.Primitive<string> | M.Primitive<number> | M.Const<"A">>,
       M.Const<"A">
@@ -55,7 +54,7 @@ excludingPrimitive;
 // --- ARRAY ---
 
 const excludingArray1: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<M.Arr<M.Primitive<string>>, M.Never>,
     M.Arr<M.Primitive<string>>
   >,
@@ -64,7 +63,7 @@ const excludingArray1: A.Equals<
 excludingArray1;
 
 const excludingArray2: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<
       M.Arr<M.Union<M.Primitive<string> | M.Primitive<number>>>,
       M.Never
@@ -78,7 +77,7 @@ excludingArray2;
 // --- TUPLE ---
 
 const excludingTuple: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">], false>, M.Const<["A"]>>,
     M.Const<["B"]>
   >,
@@ -89,7 +88,7 @@ excludingTuple;
 // --- OBJECT ---
 
 const excludingObject: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<M.Object<{ a: M.Enum<"A" | "B"> }, "a", false>, M.Never>,
     M.Object<{ a: M.Const<"B"> }, "a", false>
   >,
@@ -100,7 +99,7 @@ excludingObject;
 // --- UNION ---
 
 const excludingUnion: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<
       M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
       M.Const<"A">
@@ -114,7 +113,7 @@ excludingUnion;
 // --- INTERSECTION ---
 
 const excludingIntersection: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<
       M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
       M.Const<"A">
@@ -131,7 +130,7 @@ excludingIntersection;
 // --- EXCLUSION ---
 
 const excludingExclusion: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Exclusion<
       M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
       M.Const<"A">
@@ -144,5 +143,5 @@ excludingExclusion;
 
 // --- ERROR ---
 
-const error: A.Equals<Exclude<M.Any, M.Error<"Any">>, M.Error<"Any">> = 1;
+const error: A.Equals<M.Exclude<M.Any, M.Error<"Any">>, M.Error<"Any">> = 1;
 error;

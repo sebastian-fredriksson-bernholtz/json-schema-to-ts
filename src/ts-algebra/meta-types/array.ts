@@ -9,6 +9,6 @@ export type Arr<V = Any> = {
   values: V;
 };
 
-export type Values<A> = Get<A, "values">;
+export type ArrayValues<A> = Get<A, "values">;
 
-export type ResolveArr<T> = Prettify<Resolve<Values<T>>[]>;
+export type ResolveArr<T> = Prettify<Resolve<ArrayValues<T>>[]>;

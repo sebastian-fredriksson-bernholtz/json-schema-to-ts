@@ -7,4 +7,4 @@ export type Error<M = "Unknown error"> = {
   message: M;
 };
 
-export type Message<E> = Get<E, "message">;
+export type ErrorMessage<E> = Get<E, "message">;

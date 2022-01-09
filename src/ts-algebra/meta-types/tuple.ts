@@ -3,7 +3,7 @@ import { L } from "ts-toolbelt";
 import { Get } from "../../utils";
 
 import { Resolve, Any } from ".";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "./isRepresentable";
 
 export type TupleType = "tuple";
 
@@ -15,15 +15,15 @@ export type Tuple<V, O = true, P = Any> = {
   openProps: P;
 };
 
-export type Values<T> = Get<T, "values">;
+export type TupleValues<T> = Get<T, "values">;
 
 export type IsOpen<T> = Get<T, "isOpen">;
 
 export type OpenProps<T> = Get<T, "openProps">;
 
 export type ResolveTuple<T> = IsOpen<T> extends true
-  ? L.Concat<RecurseOnTuple<Values<T>>, [...Resolve<OpenProps<T>>[]]>
-  : RecurseOnTuple<Values<T>>;
+  ? L.Concat<RecurseOnTuple<TupleValues<T>>, [...Resolve<OpenProps<T>>[]]>
+  : RecurseOnTuple<TupleValues<T>>;
 
 type RecurseOnTuple<V, R extends L.List = []> = {
   stop: L.Reverse<R>;
@@ -33,7 +33,9 @@ type RecurseOnTuple<V, R extends L.List = []> = {
     : never;
 }[V extends [any, ...L.List] ? "continue" : "stop"];
 
-export type IsTupleRepresentable<T> = AreAllTupleValuesRepresentable<Values<T>>;
+export type IsTupleRepresentable<T> = AreAllTupleValuesRepresentable<
+  TupleValues<T>
+>;
 
 type AreAllTupleValuesRepresentable<V> = {
   stop: true;

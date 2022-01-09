@@ -2,15 +2,15 @@ import { A, B } from "ts-toolbelt";
 
 import { Get, And, DoesExtend } from "../../../utils";
 
-import { MetaType, Never, Const, Error } from "..";
-import { Arr, Values } from "../array";
-import { Values as TupleValues, IsOpen, OpenProps } from "../tuple";
+import { Type, Never, Const, Error } from "..";
+import { Arr, ArrayValues } from "../array";
+import { TupleValues, IsOpen, OpenProps } from "../tuple";
 
-import { Exclude } from ".";
+import { $Exclude } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
-import { IsRepresentable } from "../../utils";
+import { IsRepresentable } from "../isRepresentable";
 
 export type ExcludeFromArray<Source, Excluded> = {
   any: Never;
@@ -31,12 +31,12 @@ export type ExcludeFromArray<Source, Excluded> = {
   exclusion: ExcludeExclusion<Source, Excluded>;
   error: Excluded;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends MetaType
+}[Get<Excluded, "type"> extends Type
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
 type ExcludeArrs<
   Source,
   Excluded,
-  ExcludedValues = Exclude<Values<Source>, Values<Excluded>>
+  ExcludedValues = $Exclude<ArrayValues<Source>, ArrayValues<Excluded>>
 > = IsRepresentable<ExcludedValues> extends true ? Source : Const<[]>;

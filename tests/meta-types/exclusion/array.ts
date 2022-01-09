@@ -1,12 +1,11 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { Exclude } from "ts-algebra/meta-types/exclusion";
 
 // --- ANY ---
 
 const anysAlwaysExclude: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Any>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Any>,
   M.Never
 > = 1;
 anysAlwaysExclude;
@@ -14,7 +13,7 @@ anysAlwaysExclude;
 // --- NEVER ---
 
 const neversNeverExclude: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Never>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Never>,
   M.Arr<M.Primitive<string>>
 > = 1;
 neversNeverExclude;
@@ -22,7 +21,7 @@ neversNeverExclude;
 // --- CONSTS ---
 
 const constsNeverExclude: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Const<["foo", "bar"]>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Const<["foo", "bar"]>>,
   M.Arr<M.Primitive<string>>
 > = 1;
 constsNeverExclude;
@@ -30,7 +29,7 @@ constsNeverExclude;
 // --- ENUM ---
 
 const enumsNeverExclude: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Enum<["foo"] | ["bar"] | 42>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Enum<["foo"] | ["bar"] | 42>>,
   M.Arr<M.Primitive<string>>
 > = 1;
 enumsNeverExclude;
@@ -38,7 +37,7 @@ enumsNeverExclude;
 // --- PRIMITIVES ---
 
 const primitivesNeverExclude: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Primitive<string>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Primitive<string>>,
   M.Arr<M.Primitive<string>>
 > = 1;
 primitivesNeverExclude;
@@ -46,19 +45,19 @@ primitivesNeverExclude;
 // --- ARRAY ---
 
 const excludingArray: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Arr<M.Primitive<string>>>,
   M.Const<[]>
 > = 1;
 excludingArray;
 
 const nonExcludingArray1: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Arr<M.Primitive<number>>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Arr<M.Primitive<number>>>,
   M.Arr<M.Primitive<string>>
 > = 1;
 nonExcludingArray1;
 
 const nonExcludingArray2: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Union<M.Primitive<string> | M.Primitive<number>>>,
     M.Arr<M.Primitive<number>>
   >,
@@ -69,19 +68,19 @@ nonExcludingArray2;
 // --- TUPLE ---
 
 const excludingTuple: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Tuple<[], true, M.Primitive<string>>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Tuple<[], true, M.Primitive<string>>>,
   M.Const<[]>
 > = 1;
 excludingTuple;
 
 const nonExcludingTuple1: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Tuple<[M.Primitive<string>]>>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Tuple<[M.Primitive<string>]>>,
   M.Arr<M.Primitive<string>>
 > = 1;
 nonExcludingTuple1;
 
 const nonExcludingTuple2: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Union<M.Primitive<string> | M.Primitive<number>>>,
     M.Tuple<[], true, M.Primitive<number>>
   >,
@@ -92,7 +91,7 @@ nonExcludingTuple2;
 // --- OBJECT ---
 
 const objectsNeverExclude: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Primitive<string>>,
     M.Object<{ foo: M.Primitive<string> }, "foo", true, M.Primitive<string>>
   >,
@@ -103,7 +102,7 @@ objectsNeverExclude;
 // --- UNION ---
 
 const excludingUnion: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Primitive<string>>,
     M.Union<M.Arr<M.Primitive<string>> | M.Arr<M.Primitive<number>>>
   >,
@@ -112,7 +111,7 @@ const excludingUnion: A.Equals<
 excludingUnion;
 
 const nonExcludingUnion: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Primitive<string>>,
     M.Union<M.Const<["foo"]> | M.Arr<M.Primitive<number>>>
   >,
@@ -123,7 +122,7 @@ nonExcludingUnion;
 // --- INTERSECTION ---
 
 const excludingIntersection: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Primitive<string>>,
     M.Intersection<
       M.Arr<M.Primitive<string>>,
@@ -135,7 +134,7 @@ const excludingIntersection: A.Equals<
 excludingIntersection;
 
 const nonExcludingIntersection: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Primitive<string>>,
     M.Intersection<M.Arr<M.Primitive<string>>, M.Arr<M.Const<"A">>>
   >,
@@ -146,7 +145,7 @@ nonExcludingIntersection;
 // --- EXCLUSION ---
 
 const excludingExclusion: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Const<"foo">>,
     M.Exclusion<M.Arr<M.Primitive<string>>, M.Const<[]>>
   >,
@@ -155,7 +154,7 @@ const excludingExclusion: A.Equals<
 excludingExclusion;
 
 const nonExcludingExclusion: A.Equals<
-  Exclude<
+  M.Exclude<
     M.Arr<M.Primitive<string>>,
     M.Exclusion<M.Arr<M.Primitive<number>>, M.Arr<M.Const<42>>>
   >,
@@ -166,7 +165,7 @@ nonExcludingExclusion;
 // --- ERROR ---
 
 const error: A.Equals<
-  Exclude<M.Arr<M.Primitive<string>>, M.Error<"Any">>,
+  M.Exclude<M.Arr<M.Primitive<string>>, M.Error<"Any">>,
   M.Error<"Any">
 > = 1;
 error;

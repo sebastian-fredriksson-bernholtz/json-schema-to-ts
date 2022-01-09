@@ -1,7 +1,7 @@
 import { Get } from "../../../utils";
 
-import { MetaType, Never, Error } from "..";
-import { Value } from "../primitive";
+import { Type, Never, Error } from "..";
+import { PrimitiveValue } from "../primitive";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -13,9 +13,9 @@ export type IntersectPrimitive<A, B> = {
   never: Never;
   const: IntersectConst<B, A>;
   enum: IntersectEnum<B, A>;
-  primitive: Value<A> extends Value<B>
+  primitive: PrimitiveValue<A> extends PrimitiveValue<B>
     ? A
-    : Value<B> extends Value<A>
+    : PrimitiveValue<B> extends PrimitiveValue<A>
     ? B
     : Never;
   array: Never;
@@ -26,4 +26,4 @@ export type IntersectPrimitive<A, B> = {
   exclusion: IntersectExclusion<B, A>;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];

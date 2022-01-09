@@ -1,7 +1,7 @@
 import { Get } from "../../../utils";
 
-import { MetaType, Never, Arr, Error } from "..";
-import { Values } from "../array";
+import { Type, Never, Arr, Error } from "..";
+import { ArrayValues } from "../array";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -10,7 +10,7 @@ import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
 import { ClearIntersections, Intersect } from "./index";
 
-export type ClearArrIntersections<A> = Arr<ClearIntersections<Values<A>>>;
+export type ClearArrIntersections<A> = Arr<ClearIntersections<ArrayValues<A>>>;
 
 export type IntersectArr<A, B> = {
   any: A;
@@ -26,8 +26,10 @@ export type IntersectArr<A, B> = {
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
 
-type IntersectArrs<A, B, I = Intersect<Values<A>, Values<B>>> = I extends Never
-  ? Never
-  : Arr<I>;
+type IntersectArrs<
+  A,
+  B,
+  I = Intersect<ArrayValues<A>, ArrayValues<B>>
+> = I extends Never ? Never : Arr<I>;

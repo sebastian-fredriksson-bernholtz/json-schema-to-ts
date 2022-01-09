@@ -1,22 +1,21 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { Intersect } from "ts-algebra/meta-types/intersection";
 
 // --- ANY ---
 
-const anyToAny: A.Equals<Intersect<M.Any, M.Any>, M.Any> = 1;
+const anyToAny: A.Equals<M.Intersect<M.Any, M.Any>, M.Any> = 1;
 anyToAny;
 
 // --- NEVER ---
 
-const anyToNever: A.Equals<Intersect<M.Any, M.Never>, M.Never> = 1;
+const anyToNever: A.Equals<M.Intersect<M.Any, M.Never>, M.Never> = 1;
 anyToNever;
 
 // --- CONSTS ---
 
 const anyToConst: A.Equals<
-  Intersect<M.Any, M.Const<"foo">>,
+  M.Intersect<M.Any, M.Const<"foo">>,
   M.Const<"foo">
 > = 1;
 anyToConst;
@@ -24,7 +23,7 @@ anyToConst;
 // --- ENUM ---
 
 const anyToEnum: A.Equals<
-  Intersect<M.Any, M.Enum<"foo" | "bar" | 42>>,
+  M.Intersect<M.Any, M.Enum<"foo" | "bar" | 42>>,
   M.Enum<"foo" | "bar" | 42>
 > = 1;
 anyToEnum;
@@ -32,7 +31,7 @@ anyToEnum;
 // --- PRIMITIVES ---
 
 const anyToPrimitive: A.Equals<
-  Intersect<M.Any, M.Primitive<string>>,
+  M.Intersect<M.Any, M.Primitive<string>>,
   M.Primitive<string>
 > = 1;
 anyToPrimitive;
@@ -40,7 +39,7 @@ anyToPrimitive;
 // --- ARRAY ---
 
 const anyToArray: A.Equals<
-  Intersect<M.Any, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Any, M.Arr<M.Primitive<string>>>,
   M.Arr<M.Primitive<string>>
 > = 1;
 anyToArray;
@@ -48,20 +47,20 @@ anyToArray;
 // --- TUPLE ---
 
 const anyToTuple: A.Equals<
-  Intersect<M.Any, M.Tuple<[M.Primitive<string>]>>,
+  M.Intersect<M.Any, M.Tuple<[M.Primitive<string>]>>,
   M.Tuple<[M.Primitive<string>]>
 > = 1;
 anyToTuple;
 
 // --- OBJECT ---
 
-const anyToObject: A.Equals<Intersect<M.Any, Object>, Object> = 1;
+const anyToObject: A.Equals<M.Intersect<M.Any, Object>, Object> = 1;
 anyToObject;
 
 // --- UNION ---
 
 const anyToUnion: A.Equals<
-  Intersect<M.Any, M.Union<M.Const<"foo"> | M.Arr<M.Primitive<number>>>>,
+  M.Intersect<M.Any, M.Union<M.Const<"foo"> | M.Arr<M.Primitive<number>>>>,
   M.Union<M.Const<"foo"> | M.Arr<M.Primitive<number>>>
 > = 1;
 anyToUnion;
@@ -69,7 +68,7 @@ anyToUnion;
 // --- INTERSECTION ---
 
 const anyToIntersection: A.Equals<
-  Intersect<M.Any, M.Intersection<M.Enum<"A" | "B">, M.Const<"A">>>,
+  M.Intersect<M.Any, M.Intersection<M.Enum<"A" | "B">, M.Const<"A">>>,
   M.Intersection<M.Enum<"A" | "B">, M.Const<"A">>
 > = 1;
 anyToIntersection;
@@ -77,12 +76,12 @@ anyToIntersection;
 // --- EXCLUSION ---
 
 const anyToExclusion: A.Equals<
-  Intersect<M.Any, M.Exclusion<M.Any, M.Const<"A">>>,
+  M.Intersect<M.Any, M.Exclusion<M.Any, M.Const<"A">>>,
   M.Exclusion<M.Any, M.Const<"A">>
 > = 1;
 anyToExclusion;
 
 // --- ERROR ---
 
-const error: A.Equals<Intersect<M.Any, M.Error<"Any">>, M.Error<"Any">> = 1;
+const error: A.Equals<M.Intersect<M.Any, M.Error<"Any">>, M.Error<"Any">> = 1;
 error;

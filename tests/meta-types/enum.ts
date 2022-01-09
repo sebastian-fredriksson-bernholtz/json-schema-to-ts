@@ -1,7 +1,6 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 // --- EMPTY ---
 
@@ -25,8 +24,8 @@ test4;
 
 // --- ISREPRESENTABLE ---
 
-const notRepresentable: A.Equals<IsRepresentable<M.Enum<never>>, false> = 1;
+const notRepresentable: A.Equals<M.IsRepresentable<M.Enum<never>>, false> = 1;
 notRepresentable;
 
-const representable: A.Equals<IsRepresentable<M.Enum<"A">>, true> = 1;
+const representable: A.Equals<M.IsRepresentable<M.Enum<"A">>, true> = 1;
 representable;

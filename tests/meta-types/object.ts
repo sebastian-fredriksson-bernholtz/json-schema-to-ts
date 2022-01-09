@@ -1,7 +1,6 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 // --- OPEN ---
 
@@ -47,37 +46,37 @@ test4;
 // --- ISREPRESENTABLE ---
 
 const notRepresentable1: A.Equals<
-  IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "b">>,
+  M.IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "b">>,
   false
 > = 1;
 notRepresentable1;
 
 const notRepresentable2: A.Equals<
-  IsRepresentable<M.Object<{}, "b", false>>,
+  M.IsRepresentable<M.Object<{}, "b", false>>,
   false
 > = 1;
 notRepresentable2;
 
 const notRepresentable3: A.Equals<
-  IsRepresentable<M.Object<{}, "b", true, M.Never>>,
+  M.IsRepresentable<M.Object<{}, "b", true, M.Never>>,
   false
 > = 1;
 notRepresentable3;
 
 const representable1: A.Equals<
-  IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "a">>,
+  M.IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "a">>,
   true
 > = 1;
 representable1;
 
 const representable2: A.Equals<
-  IsRepresentable<M.Object<{}, "b", true>>,
+  M.IsRepresentable<M.Object<{}, "b", true>>,
   true
 > = 1;
 representable2;
 
 const representable3: A.Equals<
-  IsRepresentable<M.Object<{}, "b", true, M.Const<"A">>>,
+  M.IsRepresentable<M.Object<{}, "b", true, M.Const<"A">>>,
   true
 > = 1;
 representable3;

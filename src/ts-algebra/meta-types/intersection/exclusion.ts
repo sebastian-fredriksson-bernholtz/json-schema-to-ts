@@ -1,31 +1,31 @@
 import { Get } from "../../../utils";
 
-import { MetaType, Never, Error, Union } from "..";
-import { Exclusion, Value, Excluded } from "../exclusion";
+import { Type, Never, Error, Union } from "..";
+import { Exclusion, ExclusionSource, ExclusionExcluded } from "../exclusion";
 
 import { IntersectUnion } from "./union";
 import { ClearIntersections, Intersect } from "./index";
 
 export type ClearExclusionIntersections<A> = Exclusion<
-  ClearIntersections<Value<A>>,
-  ClearIntersections<Excluded<A>>
+  ClearIntersections<ExclusionSource<A>>,
+  ClearIntersections<ExclusionExcluded<A>>
 >;
 
 export type IntersectExclusion<A, B> = {
   any: A;
   never: Never;
-  const: Exclusion<Intersect<Value<A>, B>, Excluded<A>>;
-  enum: Exclusion<Intersect<Value<A>, B>, Excluded<A>>;
-  primitive: Exclusion<Intersect<Value<A>, B>, Excluded<A>>;
-  array: Exclusion<Intersect<Value<A>, B>, Excluded<A>>;
-  tuple: Exclusion<Intersect<Value<A>, B>, Excluded<A>>;
-  object: Exclusion<Intersect<Value<A>, B>, Excluded<A>>;
+  const: Exclusion<Intersect<ExclusionSource<A>, B>, ExclusionExcluded<A>>;
+  enum: Exclusion<Intersect<ExclusionSource<A>, B>, ExclusionExcluded<A>>;
+  primitive: Exclusion<Intersect<ExclusionSource<A>, B>, ExclusionExcluded<A>>;
+  array: Exclusion<Intersect<ExclusionSource<A>, B>, ExclusionExcluded<A>>;
+  tuple: Exclusion<Intersect<ExclusionSource<A>, B>, ExclusionExcluded<A>>;
+  object: Exclusion<Intersect<ExclusionSource<A>, B>, ExclusionExcluded<A>>;
   union: IntersectUnion<B, A>;
   intersection: Error<"Cannot intersect intersection">;
   exclusion: Exclusion<
-    Intersect<Value<A>, Value<B>>,
-    Union<Excluded<A> | Excluded<B>>
+    Intersect<ExclusionSource<A>, ExclusionSource<B>>,
+    Union<ExclusionExcluded<A> | ExclusionExcluded<B>>
   >;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];

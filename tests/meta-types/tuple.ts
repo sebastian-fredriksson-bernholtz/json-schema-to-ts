@@ -1,7 +1,6 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 // --- OPEN ---
 
@@ -34,13 +33,13 @@ neverItem;
 // --- ISREPRESENTABLE ---
 
 const notRepresentable: A.Equals<
-  IsRepresentable<M.Tuple<[M.Const<"A">, M.Never]>>,
+  M.IsRepresentable<M.Tuple<[M.Const<"A">, M.Never]>>,
   false
 > = 1;
 notRepresentable;
 
 const representable: A.Equals<
-  IsRepresentable<M.Tuple<[M.Const<"A">]>>,
+  M.IsRepresentable<M.Tuple<[M.Const<"A">]>>,
   true
 > = 1;
 representable;

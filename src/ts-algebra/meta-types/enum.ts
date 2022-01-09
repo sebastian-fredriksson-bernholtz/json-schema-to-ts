@@ -6,10 +6,13 @@ export type EnumType = "enum";
 
 export type Enum<V> = { type: EnumType; values: V };
 
-export type Values<E> = Get<E, "values">;
+export type EnumValues<E> = Get<E, "values">;
 
-export type ResolveEnum<T> = Values<T>;
+export type ResolveEnum<T> = EnumValues<T>;
 
-export type IsEnumRepresentable<E> = A.Equals<Values<E>, never> extends B.True
+export type IsEnumRepresentable<E> = A.Equals<
+  EnumValues<E>,
+  never
+> extends B.True
   ? false
   : true;

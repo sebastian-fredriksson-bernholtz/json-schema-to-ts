@@ -1,7 +1,6 @@
 import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
-import { IsRepresentable } from "ts-algebra/utils";
 
 const test1: A.Equals<
   M.Resolve<M.Exclusion<M.Enum<"foo" | 42>, M.Primitive<string>>>,
@@ -40,13 +39,13 @@ test4;
 // --- ISREPRESENTABLE ---
 
 const notRepresentable: A.Equals<
-  IsRepresentable<M.Exclusion<M.Const<"A">, M.Primitive<string>>>,
+  M.IsRepresentable<M.Exclusion<M.Const<"A">, M.Primitive<string>>>,
   false
 > = 1;
 notRepresentable;
 
 const representable: A.Equals<
-  IsRepresentable<M.Exclusion<M.Primitive<string>, M.Const<"A">>>,
+  M.IsRepresentable<M.Exclusion<M.Primitive<string>, M.Const<"A">>>,
   true
 > = 1;
 representable;

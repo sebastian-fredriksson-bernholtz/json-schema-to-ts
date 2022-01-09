@@ -1,7 +1,7 @@
 import { Get } from "../../../utils";
 
-import { MetaType, Never, Error } from "..";
-import { Value } from "../primitive";
+import { Type, Never, Error } from "..";
+import { PrimitiveValue } from "../primitive";
 
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
@@ -12,7 +12,7 @@ export type ExcludeFromPrimitive<A, B> = {
   never: A;
   const: A;
   enum: A;
-  primitive: Value<A> extends Value<B> ? Never : A;
+  primitive: PrimitiveValue<A> extends PrimitiveValue<B> ? Never : A;
   array: A;
   tuple: A;
   object: A;
@@ -21,4 +21,4 @@ export type ExcludeFromPrimitive<A, B> = {
   exclusion: ExcludeExclusion<A, B>;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];

@@ -1,7 +1,7 @@
 import { Get, And } from "../../../utils";
 
-import { MetaType, Never, Error } from "..";
-import { Object, Values, Required, IsOpen, OpenProps } from "../object";
+import { Type, Never, Error } from "..";
+import { Object, ObjectValues, Required, IsOpen, OpenProps } from "../object";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -11,7 +11,7 @@ import { ClearIntersections, Intersect } from "./index";
 
 export type ClearObjectIntersections<
   A,
-  V = ClearObjectValuesIntersections<Values<A>>,
+  V = ClearObjectValuesIntersections<ObjectValues<A>>,
   N = NeverKeys<V>,
   O = ClearIntersections<OpenProps<A>>
 > = Required<A> extends Exclude<Required<A>, N>
@@ -43,7 +43,7 @@ export type IntersectObject<A, B> = {
   exclusion: IntersectExclusion<B, A>;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
 
 type IntersectObjects<
   A,
@@ -63,15 +63,17 @@ type IntersectObjects<
   : Never;
 
 type IntersectValues<A, B> = {
-  [key in keyof Values<A> | keyof Values<B>]: key extends keyof Values<A>
-    ? key extends keyof Values<B>
-      ? Intersect<Values<A>[key], Values<B>[key]>
+  [key in
+    | keyof ObjectValues<A>
+    | keyof ObjectValues<B>]: key extends keyof ObjectValues<A>
+    ? key extends keyof ObjectValues<B>
+      ? Intersect<ObjectValues<A>[key], ObjectValues<B>[key]>
       : IsOpen<B> extends true
-      ? Intersect<Values<A>[key], OpenProps<B>>
+      ? Intersect<ObjectValues<A>[key], OpenProps<B>>
       : Never
-    : key extends keyof Values<B>
+    : key extends keyof ObjectValues<B>
     ? IsOpen<A> extends true
-      ? Intersect<OpenProps<A>, Values<B>[key]>
+      ? Intersect<OpenProps<A>, ObjectValues<B>[key]>
       : Never
     : Never;
 };

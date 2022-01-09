@@ -1,12 +1,12 @@
 import { Get } from "../../../utils";
 
-import { MetaType, Never, Error } from "..";
-import { Union, Values } from "../union";
+import { Type, Never, Error } from "..";
+import { Union, UnionValues } from "../union";
 
 import { ClearIntersections, Intersect } from "./index";
 
 export type ClearUnionIntersections<A> = Union<
-  ClearUnionValuesIntersections<Values<A>>
+  ClearUnionValuesIntersections<UnionValues<A>>
 >;
 
 type ClearUnionValuesIntersections<V> = V extends infer T
@@ -27,8 +27,10 @@ export type IntersectUnion<A, B> = {
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends MetaType ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
 
-export type DistributeIntersection<A, B> = Union<RecurseOnUnion<Values<A>, B>>;
+export type DistributeIntersection<A, B> = Union<
+  RecurseOnUnion<UnionValues<A>, B>
+>;
 
 type RecurseOnUnion<V, B> = V extends infer T ? Intersect<T, B> : never;

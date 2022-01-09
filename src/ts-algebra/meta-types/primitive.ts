@@ -7,6 +7,6 @@ export type Primitive<L> = {
   value: L;
 };
 
-export type Value<L> = Get<L, "value">;
+export type PrimitiveValue<L> = Get<L, "value">;
 
 export type ResolvePrimitive<T> = Get<T, "value">;

@@ -2,12 +2,19 @@ import { A, B, U } from "ts-toolbelt";
 
 import { Get, And, Or, Not, DoesExtend, IsObject } from "../../../utils";
 
-import { MetaType, Never, Error } from "..";
-import { Const, Value as ConstValue } from "../const";
-import { Object, Values, Value, Required, IsOpen, OpenProps } from "../object";
-import { IsRepresentable } from "../../utils";
+import { Type, Never, Error } from "..";
+import { Const, ConstValue } from "../const";
+import {
+  Object,
+  ObjectValues,
+  ObjectValue,
+  Required,
+  IsOpen,
+  OpenProps,
+} from "../object";
+import { IsRepresentable } from "../isRepresentable";
 
-import { Exclude } from ".";
+import { $Exclude } from ".";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
@@ -36,14 +43,14 @@ export type ExcludeFromObject<S, E> = {
   exclusion: ExcludeExclusion<S, E>;
   error: E;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<E, "type"> extends MetaType ? Get<E, "type"> : "errorTypeProperty"];
+}[Get<E, "type"> extends Type ? Get<E, "type"> : "errorTypeProperty"];
 
 type ExcludeObjects<
   S,
   E,
   C = CrossObjectValues<S, E>,
   R = RepresentableKeys<C>,
-  P = Exclude<OpenProps<S>, OpenProps<E>>
+  P = $Exclude<OpenProps<S>, OpenProps<E>>
 > = DoesObjectSizesMatch<S, E, C> extends true
   ? {
       moreThanTwo: S;
@@ -56,14 +63,14 @@ type ExcludeObjects<
 
 type CrossObjectValues<S, E> = {
   [key in
-    | keyof Values<S>
-    | keyof Values<E>
+    | keyof ObjectValues<S>
+    | keyof ObjectValues<E>
     | Required<S>
     | Required<E>]: CrossValue<
-    Value<S, key>,
+    ObjectValue<S, key>,
     IsPossibleIn<S, key>,
     IsRequiredIn<S, key>,
-    Value<E, key>,
+    ObjectValue<E, key>,
     IsPossibleIn<E, key>,
     IsRequiredIn<E, key>
   >;
@@ -77,7 +84,7 @@ type GetUnionLength<Union> = A.Equals<Union, never> extends B.True
   ? "onlyOne"
   : "moreThanTwo";
 
-type IsPossibleIn<O, K> = Or<DoesExtend<K, keyof Values<O>>, IsOpen<O>>;
+type IsPossibleIn<O, K> = Or<DoesExtend<K, keyof ObjectValues<O>>, IsOpen<O>>;
 
 type IsRequiredIn<O, K> = DoesExtend<K, Required<O>>;
 
@@ -144,7 +151,7 @@ type OmittableKeys<C> = {
 // CONST
 
 type ExcludeConst<S, E, V = ConstValue<E>> = IsObject<V> extends true
-  ? Exclude<
+  ? $Exclude<
       S,
       Object<{ [key in keyof V]: Const<V[key]> }, keyof V, false, Never>
     >

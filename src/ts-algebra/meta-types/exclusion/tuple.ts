@@ -2,13 +2,13 @@ import { A, B, L } from "ts-toolbelt";
 
 import { Get, And, Not } from "../../../utils";
 
-import { MetaType, Never, Error } from "..";
-import { Const, Value as ConstValue } from "../const";
-import { Values as ArrayValues } from "../array";
-import { Tuple, Values, IsOpen, OpenProps } from "../tuple";
-import { IsRepresentable } from "../../utils";
+import { Type, Never, Error } from "..";
+import { Const, ConstValue } from "../const";
+import { ArrayValues } from "../array";
+import { Tuple, TupleValues, IsOpen, OpenProps } from "../tuple";
+import { IsRepresentable } from "../isRepresentable";
 
-import { Exclude } from ".";
+import { $Exclude } from ".";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
@@ -37,7 +37,7 @@ export type ExcludeFromTuple<S, E> = {
   exclusion: ExcludeExclusion<S, E>;
   error: E;
   errorMissingType: Error<"Missing type property in Exclusion excluded value">;
-}[Get<E, "type"> extends MetaType ? Get<E, "type"> : "errorMissingType"];
+}[Get<E, "type"> extends Type ? Get<E, "type"> : "errorMissingType"];
 
 type ExcludeArray<S, E> = ExcludeTuples<S, Tuple<[], true, ArrayValues<E>>>;
 
@@ -46,16 +46,16 @@ type ExcludeTuples<
   E,
   C extends L.List = CrossTupleValues<
     // 🔧 TOIMPROVE: Not cast here
-    A.Cast<Values<S>, L.List>,
+    A.Cast<TupleValues<S>, L.List>,
     // 🔧 TOIMPROVE: Not cast here
-    A.Cast<Values<E>, L.List>,
+    A.Cast<TupleValues<E>, L.List>,
     IsOpen<S>,
     IsOpen<E>,
     OpenProps<S>,
     OpenProps<E>
   >,
   R extends L.List = RepresentableItems<C>,
-  P = Exclude<OpenProps<S>, OpenProps<E>>,
+  P = $Exclude<OpenProps<S>, OpenProps<E>>,
   I = IsRepresentable<P>
 > = DoesTupleSizesMatch<S, E, C> extends true
   ? {
@@ -191,7 +191,7 @@ type RequiredTupleValues<C extends L.List, R extends L.List = []> = {
 // CONST
 
 type ExcludeConst<S, E, V = ConstValue<E>> = V extends L.List
-  ? Exclude<S, Tuple<ExtractConstValues<V>, false, Never>>
+  ? $Exclude<S, Tuple<ExtractConstValues<V>, false, Never>>
   : S;
 
 type ExtractConstValues<V extends L.List, R extends L.List = []> = {
