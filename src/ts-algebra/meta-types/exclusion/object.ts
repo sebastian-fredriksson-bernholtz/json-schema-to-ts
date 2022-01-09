@@ -1,11 +1,11 @@
 import { A, B, U } from "ts-toolbelt";
 
-import { Get, And, Or, Not, DoesExtend, IsObject } from "../../utils";
+import { Get, And, Or, Not, DoesExtend, IsObject } from "../../../utils";
 
 import { MetaType, Never, Error } from "..";
 import { Const, Value as ConstValue } from "../const";
 import { Object, Values, Value, Required, IsOpen, OpenProps } from "../object";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 import { Exclude } from ".";
 import { ExcludeEnum } from "./enum";

@@ -1,6 +1,6 @@
-import { Get, And, Not } from "../../utils";
+import { Get, And, Not } from "../../../utils";
 
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 import { Exclude } from ".";
 

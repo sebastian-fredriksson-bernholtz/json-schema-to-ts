@@ -1,9 +1,9 @@
 import { A, B } from "ts-toolbelt";
 
-import { DoesExtend, Or, Not, Get, DeepMergeUnsafe } from "../utils";
+import { DoesExtend, Or, Not, Get, DeepMergeUnsafe } from "../../utils";
 
 import { Resolve, Any, Never } from ".";
-import { IsRepresentable } from "./utils";
+import { IsRepresentable } from "../utils";
 
 export type ObjectType = "object";
 

@@ -1,4 +1,4 @@
-import { Get } from "../utils";
+import { Get } from "../../utils";
 
 export type ConstType = "const";
 

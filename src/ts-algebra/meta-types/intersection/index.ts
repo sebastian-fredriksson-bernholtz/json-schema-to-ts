@@ -1,4 +1,4 @@
-import { DoesExtend, Get } from "../../utils";
+import { DoesExtend, Get } from "../../../utils";
 
 import { Resolve, MetaType, Never, Error } from "..";
 import { ErrorType } from "../error";
@@ -11,7 +11,7 @@ import { ClearTupleIntersections, IntersectTuple } from "./tuple";
 import { ClearObjectIntersections, IntersectObject } from "./object";
 import { ClearUnionIntersections, IntersectUnion } from "./union";
 import { ClearExclusionIntersections, IntersectExclusion } from "./exclusion";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 export type IntersectionType = "intersection";
 

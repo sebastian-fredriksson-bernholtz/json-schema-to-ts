@@ -1,119 +1,109 @@
 import { A } from "ts-toolbelt";
 
-import {
-  Any,
-  Never,
-  Const,
-  Enum,
-  Union,
-  Primitive,
-  Arr,
-  Tuple,
-  Object,
-  Intersection,
-  Exclusion,
-  Error,
-} from "ts-algebra";
-import { Exclude } from "ts-algebra/exclusion";
+import { M } from "ts-algebra";
+import { Exclude } from "ts-algebra/meta-types/exclusion";
 
 // --- ANY ---
 
-const anysAlwaysExclude: A.Equals<Exclude<Any, Any>, Never> = 1;
+const anysAlwaysExclude: A.Equals<Exclude<M.Any, M.Any>, M.Never> = 1;
 anysAlwaysExclude;
 
 // --- NEVER ---
 
-const neversNeverExclude: A.Equals<Exclude<Any, Never>, Any> = 1;
+const neversNeverExclude: A.Equals<Exclude<M.Any, M.Never>, M.Any> = 1;
 neversNeverExclude;
 
 // --- CONSTS ---
 
-const constsNeverExclude: A.Equals<Exclude<Any, Const<"foo">>, Any> = 1;
+const constsNeverExclude: A.Equals<Exclude<M.Any, M.Const<"foo">>, M.Any> = 1;
 constsNeverExclude;
 
 // --- ENUM ---
 
 const enumsNeverExclude: A.Equals<
-  Exclude<Any, Enum<"foo" | "bar" | 42>>,
-  Any
+  Exclude<M.Any, M.Enum<"foo" | "bar" | 42>>,
+  M.Any
 > = 1;
 enumsNeverExclude;
 
 // --- PRIMITIVES ---
 
 const primitivesNeverExclude: A.Equals<
-  Exclude<Any, Primitive<string>>,
-  Any
+  Exclude<M.Any, M.Primitive<string>>,
+  M.Any
 > = 1;
 primitivesNeverExclude;
 
 // --- ARRAY ---
 
 const arraysNeverExclude: A.Equals<
-  Exclude<Any, Arr<Primitive<string>>>,
-  Any
+  Exclude<M.Any, M.Arr<M.Primitive<string>>>,
+  M.Any
 > = 1;
 arraysNeverExclude;
 
 // --- TUPLE ---
 
 const tuplesNeverExclude: A.Equals<
-  Exclude<Any, Tuple<[Primitive<string>]>>,
-  Any
+  Exclude<M.Any, M.Tuple<[M.Primitive<string>]>>,
+  M.Any
 > = 1;
 tuplesNeverExclude;
 
 // --- OBJECT ---
 
-const objectsNeverExclude: A.Equals<Exclude<Any, Object>, Any> = 1;
+const objectsNeverExclude: A.Equals<Exclude<M.Any, M.Object>, M.Any> = 1;
 objectsNeverExclude;
 
 // --- UNION ---
 
 const excludingUnion: A.Equals<
-  Exclude<Any, Union<Any | Arr<Primitive<number>>>>,
-  Never
+  Exclude<M.Any, M.Union<M.Any | M.Arr<M.Primitive<number>>>>,
+  M.Never
 > = 1;
 excludingUnion;
 
 const nonExcludingUnion: A.Equals<
-  Exclude<Any, Union<Const<["foo"]> | Primitive<number>>>,
-  Any
+  Exclude<M.Any, M.Union<M.Const<["foo"]> | M.Primitive<number>>>,
+  M.Any
 > = 1;
 nonExcludingUnion;
 
 // --- INTERSECTION ---
 
 const excludingIntersection: A.Equals<
-  Exclude<Any, Intersection<Any, Any>>,
-  Never
+  Exclude<M.Any, M.Intersection<M.Any, M.Any>>,
+  M.Never
 > = 1;
 excludingIntersection;
 
 const nonExcludingIntersection: A.Equals<
-  Exclude<Any, Intersection<Any, Const<"A">>>,
-  Any
+  Exclude<M.Any, M.Intersection<M.Any, M.Const<"A">>>,
+  M.Any
 > = 1;
 nonExcludingIntersection;
 
 // --- EXCLUSION ---
 
 const excludingExclusion: A.Equals<
-  Exclude<Any, Exclusion<Any, Const<"A">>>,
-  Never
+  Exclude<M.Any, M.Exclusion<M.Any, M.Const<"A">>>,
+  M.Never
 > = 1;
 excludingExclusion;
 
 const nonExcludingExclusion: A.Equals<
   Exclude<
-    Any,
-    Exclusion<Union<Primitive<number> | Primitive<string>>, Primitive<string>>
+    M.Any,
+    M.Exclusion<
+      M.Union<M.Primitive<number> | M.Primitive<string>>,
+      M.Primitive<string>
+    >
   >,
-  Any
+  M.Any
 > = 1;
 nonExcludingExclusion;
 
 // --- ERROR ---
 
-const error: A.Equals<Exclude<Any, Error<"Any">>, Error<"Any">> = 1;
+const error: A.Equals<Exclude<M.Any, M.Error<"Any">>, M.Error<"Any">> = 1;
 error;

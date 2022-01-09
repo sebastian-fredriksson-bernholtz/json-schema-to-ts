@@ -1,4 +1,4 @@
-import { Get } from "../../utils";
+import { Get } from "../../../utils";
 
 import { MetaType, Never, Arr, Error } from "..";
 import { Values } from "../array";

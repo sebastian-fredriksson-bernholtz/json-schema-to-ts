@@ -1,4 +1,4 @@
-import { Union, Error } from "ts-algebra";
+import { M } from "ts-algebra";
 import { L } from "ts-toolbelt";
 
 import { Get, DeepMergeUnsafe } from "../utils";
@@ -6,8 +6,8 @@ import { Get, DeepMergeUnsafe } from "../utils";
 import { ParseSchema } from ".";
 
 export type ParseMixedSchema<S, T = Get<S, "type">> = T extends L.List
-  ? Union<RecurseOnMixedSchema<T, S>>
-  : Error<"Mixed schema 'type' property should be an array">;
+  ? M.Union<RecurseOnMixedSchema<T, S>>
+  : M.Error<"Mixed schema 'type' property should be an array">;
 
 type RecurseOnMixedSchema<T extends L.List, S, R = never> = {
   stop: R;

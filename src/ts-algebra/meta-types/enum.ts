@@ -1,6 +1,6 @@
 import { A, B } from "ts-toolbelt";
 
-import { Get } from "../utils";
+import { Get } from "../../utils";
 
 export type EnumType = "enum";
 

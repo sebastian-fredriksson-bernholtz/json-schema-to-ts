@@ -1,9 +1,9 @@
 import { L } from "ts-toolbelt";
 
-import { Get } from "../utils";
+import { Get } from "../../utils";
 
 import { Resolve, Any } from ".";
-import { IsRepresentable } from "./utils";
+import { IsRepresentable } from "../utils";
 
 export type TupleType = "tuple";
 

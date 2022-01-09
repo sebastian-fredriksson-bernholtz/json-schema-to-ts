@@ -1,4 +1,4 @@
-import { Any, Primitive, Arr, Object, Union, Exclusion } from "ts-algebra";
+import { M } from "ts-algebra";
 import { IsRepresentable } from "ts-algebra/utils";
 
 import { Get, HasKeyIn } from "../utils";
@@ -6,19 +6,19 @@ import { Get, HasKeyIn } from "../utils";
 import { ParseSchema } from ".";
 import { MergeSubSchema } from "./utils";
 
-type AllTypes = Union<
-  | Primitive<null>
-  | Primitive<boolean>
-  | Primitive<number>
-  | Primitive<string>
-  | Arr<Any>
-  | Object
+type AllTypes = M.Union<
+  | M.Primitive<null>
+  | M.Primitive<boolean>
+  | M.Primitive<number>
+  | M.Primitive<string>
+  | M.Arr<M.Any>
+  | M.Object
 >;
 
 export type ParseNotSchema<
   S,
   P = ParseSchema<Omit<S, "not">>,
-  E = Exclusion<
+  E = M.Exclusion<
     HasKeyIn<
       S,
       "enum" | "const" | "type" | "anyOf" | "oneOf" | "allOf"

@@ -1,4 +1,4 @@
-import { Get, And } from "../../utils";
+import { Get, And } from "../../../utils";
 
 import { MetaType, Never, Error } from "..";
 import { Object, Values, Required, IsOpen, OpenProps } from "../object";

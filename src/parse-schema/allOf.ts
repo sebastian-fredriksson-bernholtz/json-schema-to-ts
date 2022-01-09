@@ -1,5 +1,5 @@
 import { L } from "ts-toolbelt";
-import { Any, Intersection } from "ts-algebra";
+import { M } from "ts-algebra";
 
 import { Get, HasKeyIn } from "../utils";
 
@@ -11,7 +11,7 @@ export type ParseAllOfSchema<S> = RecurseOnAllOfSchema<
   S,
   HasKeyIn<S, "enum" | "const" | "type" | "anyOf" | "oneOf"> extends true
     ? ParseSchema<Omit<S, "allOf">>
-    : Any
+    : M.Any
 >;
 
 type RecurseOnAllOfSchema<V, S, R> = {
@@ -20,7 +20,7 @@ type RecurseOnAllOfSchema<V, S, R> = {
     ? RecurseOnAllOfSchema<
         L.Tail<V>,
         S,
-        Intersection<
+        M.Intersection<
           ParseSchema<MergeSubSchema<Omit<S, "allOf">, L.Head<V>>>,
           R
         >

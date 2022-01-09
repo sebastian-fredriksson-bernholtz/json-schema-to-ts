@@ -1,12 +1,12 @@
 import { A } from "ts-toolbelt";
 
-import { Resolve, Any } from "ts-algebra";
+import { M } from "ts-algebra";
 import { IsRepresentable } from "ts-algebra/utils";
 
-const test: A.Equals<Resolve<Any>, unknown> = 1;
+const test: A.Equals<M.Resolve<M.Any>, unknown> = 1;
 test;
 
 // --- ISREPRESENTABLE ---
 
-const representable: A.Equals<IsRepresentable<Any>, true> = 1;
+const representable: A.Equals<IsRepresentable<M.Any>, true> = 1;
 representable;

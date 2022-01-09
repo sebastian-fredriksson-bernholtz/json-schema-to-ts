@@ -1,12 +1,12 @@
 import { A, B, L } from "ts-toolbelt";
 
-import { Get, And, Not } from "../../utils";
+import { Get, And, Not } from "../../../utils";
 
 import { MetaType, Never, Error } from "..";
 import { Const, Value as ConstValue } from "../const";
 import { Values as ArrayValues } from "../array";
 import { Tuple, Values, IsOpen, OpenProps } from "../tuple";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 import { Exclude } from ".";
 import { ExcludeEnum } from "./enum";

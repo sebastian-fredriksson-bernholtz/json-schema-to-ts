@@ -1,6 +1,6 @@
 import { A, B } from "ts-toolbelt";
 
-import { Get, And, DoesExtend } from "../../utils";
+import { Get, And, DoesExtend } from "../../../utils";
 
 import { MetaType, Never, Const, Error } from "..";
 import { Arr, Values } from "../array";
@@ -10,7 +10,7 @@ import { Exclude } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 export type ExcludeFromArray<Source, Excluded> = {
   any: Never;

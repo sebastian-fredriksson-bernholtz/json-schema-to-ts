@@ -1,4 +1,4 @@
-import { Resolve } from "ts-algebra";
+import { M } from "ts-algebra";
 import { A, O } from "ts-toolbelt";
 import { JSONSchema6Definition } from "json-schema";
 
@@ -22,6 +22,6 @@ export type JSONSchema =
  *
  * @param S JSON schema
  */
-export type FromSchema<S extends JSONSchema> = Resolve<
+export type FromSchema<S extends JSONSchema> = M.Resolve<
   ParseSchema<S extends object ? O.Writable<S, A.Key, "deep"> : S>
 >;

@@ -1,34 +1,21 @@
 import { A } from "ts-toolbelt";
 
-import {
-  Any,
-  Never,
-  Const,
-  Enum,
-  Primitive,
-  Arr,
-  Tuple,
-  Object,
-  Union,
-  Intersection,
-  Exclusion,
-  Error,
-} from "ts-algebra";
-import { Intersect } from "ts-algebra/intersection";
+import { M } from "ts-algebra";
+import { Intersect } from "ts-algebra/meta-types/intersection";
 
 // --- ANY ---
 
 const anyAlwaysIntersect: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Any>,
-  Object<{ str: Primitive<string> }, "str">
+  Intersect<M.Object<{ str: M.Primitive<string> }, "str">, M.Any>,
+  M.Object<{ str: M.Primitive<string> }, "str">
 > = 1;
 anyAlwaysIntersect;
 
 // --- NEVER ---
 
 const neverNeverIntersect: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Never>,
-  Never
+  Intersect<M.Object<{ str: M.Primitive<string> }, "str">, M.Never>,
+  M.Never
 > = 1;
 neverNeverIntersect;
 
@@ -36,34 +23,37 @@ neverNeverIntersect;
 
 const intersectingConst1: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Const<{ str: "str"; bar: "str" }>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Const<{ str: "str"; bar: "str" }>
   >,
-  Const<{ str: "str"; bar: "str" }>
+  M.Const<{ str: "str"; bar: "str" }>
 > = 1;
 intersectingConst1;
 
 const intersectingConst2: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Const<{ num: 42; str: "string" }>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Const<{ num: 42; str: "string" }>
   >,
-  Const<{ num: 42; str: "string" }>
+  M.Const<{ num: 42; str: "string" }>
 > = 1;
 intersectingConst2;
 
 const nonIntersectingConst1: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str", false>,
-    Const<{ str: "str"; bar: "str" }>
+    M.Object<{ str: M.Primitive<string> }, "str", false>,
+    M.Const<{ str: "str"; bar: "str" }>
   >,
-  Never
+  M.Never
 > = 1;
 nonIntersectingConst1;
 
 const nonIntersectingConst2: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Const<{ num: 42 }>>,
-  Never
+  Intersect<
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Const<{ num: 42 }>
+  >,
+  M.Never
 > = 1;
 nonIntersectingConst2;
 
@@ -71,50 +61,56 @@ nonIntersectingConst2;
 
 const intersectingEnum: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Enum<{ str: "string" } | 42>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Enum<{ str: "string" } | 42>
   >,
-  Enum<{ str: "string" }>
+  M.Enum<{ str: "string" }>
 > = 1;
 intersectingEnum;
 
 const nonIntersectingEnum1: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str", false>,
-    Enum<"bar" | { str: "string"; bar: 42 }>
+    M.Object<{ str: M.Primitive<string> }, "str", false>,
+    M.Enum<"bar" | { str: "string"; bar: 42 }>
   >,
-  Enum<never>
+  M.Enum<never>
 > = 1;
 nonIntersectingEnum1;
 
 const nonIntersectingEnum2: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Enum<"bar" | true | { num: 42 }>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Enum<"bar" | true | { num: 42 }>
   >,
-  Enum<never>
+  M.Enum<never>
 > = 1;
 nonIntersectingEnum2;
 
 // --- PRIMITIVES ---
 
 const primitivesNeverIntersect1: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Primitive<string>>,
-  Never
+  Intersect<M.Object<{ str: M.Primitive<string> }, "str">, M.Primitive<string>>,
+  M.Never
 > = 1;
 primitivesNeverIntersect1;
 
 const primitivesNeverIntersect2: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Primitive<boolean>>,
-  Never
+  Intersect<
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Primitive<boolean>
+  >,
+  M.Never
 > = 1;
 primitivesNeverIntersect2;
 
 // --- ARRAY ---
 
 const arraysNeverIntersect: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Arr<Primitive<string>>>,
-  Never
+  Intersect<
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Arr<M.Primitive<string>>
+  >,
+  M.Never
 > = 1;
 arraysNeverIntersect;
 
@@ -122,10 +118,10 @@ arraysNeverIntersect;
 
 const tuplesNeverIntersect: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Tuple<[Primitive<string>], true, Primitive<string>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
   >,
-  Never
+  M.Never
 > = 1;
 tuplesNeverIntersect;
 
@@ -133,53 +129,53 @@ tuplesNeverIntersect;
 
 const intersectingObject1: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Object<{ foo: Primitive<string> }, "foo", true, Primitive<string>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Object<{ foo: M.Primitive<string> }, "foo", true, M.Primitive<string>>
   >,
-  Object<
-    { str: Primitive<string>; foo: Primitive<string> },
+  M.Object<
+    { str: M.Primitive<string>; foo: M.Primitive<string> },
     "str" | "foo",
     true,
-    Primitive<string>
+    M.Primitive<string>
   >
 > = 1;
 intersectingObject1;
 
 const intersectingObject2: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Object<{ str: Primitive<string> }, "str", false>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Object<{ str: M.Primitive<string> }, "str", false>
   >,
-  Object<{ str: Primitive<string> }, "str", false, Any>
+  M.Object<{ str: M.Primitive<string> }, "str", false, M.Any>
 > = 1;
 intersectingObject2;
 
 const intersectingObject3: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str", true>,
-    Object<{ str: Primitive<string> }, "str", false>
+    M.Object<{ str: M.Primitive<string> }, "str", true>,
+    M.Object<{ str: M.Primitive<string> }, "str", false>
   >,
-  Object<{ str: Primitive<string> }, "str", false, Any>
+  M.Object<{ str: M.Primitive<string> }, "str", false, M.Any>
 > = 1;
 intersectingObject3;
 
 // Rejects "str" property because B is closed
 const nonIntersectingObject1: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Object<{ otherStr: Primitive<string> }, "otherStr", false>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Object<{ otherStr: M.Primitive<string> }, "otherStr", false>
   >,
-  Never
+  M.Never
 > = 1;
 nonIntersectingObject1;
 
 // Rejects "str" property because it should be bool AND str
 const nonIntersectingObject2: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Object<{ bool: Primitive<boolean> }, "bool", true, Primitive<boolean>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Object<{ bool: M.Primitive<boolean> }, "bool", true, M.Primitive<boolean>>
   >,
-  Never
+  M.Never
 > = 1;
 nonIntersectingObject2;
 
@@ -187,29 +183,31 @@ nonIntersectingObject2;
 
 const intersectingUnion: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Union<Primitive<string> | Const<{ str: "str" }>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Union<M.Primitive<string> | M.Const<{ str: "str" }>>
   >,
-  Union<Never | Const<{ str: "str" }>>
+  M.Union<M.Never | M.Const<{ str: "str" }>>
 > = 1;
 intersectingUnion;
 
 // Doesn't match string, neither object because it is closed
 const nonIntersectingUnion1: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Union<Const<"foo"> | Object<{ foo: Primitive<string> }, "foo", false>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Union<
+      M.Const<"foo"> | M.Object<{ foo: M.Primitive<string> }, "foo", false>
+    >
   >,
-  Union<Never>
+  M.Union<M.Never>
 > = 1;
 nonIntersectingUnion1;
 
 const nonIntersectingUnion2: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Union<Arr<Primitive<boolean>>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Union<M.Arr<M.Primitive<boolean>>>
   >,
-  Union<Never>
+  M.Union<M.Never>
 > = 1;
 nonIntersectingUnion2;
 
@@ -217,10 +215,10 @@ nonIntersectingUnion2;
 
 const cannotIntersectIntersection: A.Equals<
   Intersect<
-    Object<{ str: Primitive<string> }, "str">,
-    Intersection<Primitive<string>, Primitive<number>>
+    M.Object<{ str: M.Primitive<string> }, "str">,
+    M.Intersection<M.Primitive<string>, M.Primitive<number>>
   >,
-  Error<"Cannot intersect intersection">
+  M.Error<"Cannot intersect intersection">
 > = 1;
 cannotIntersectIntersection;
 
@@ -228,20 +226,20 @@ cannotIntersectIntersection;
 
 const intersectingExclusion: A.Equals<
   Intersect<
-    Object<{ baz: Primitive<string> }, "baz", true>,
-    Exclusion<
-      Object<{ foo: Primitive<string> }, "foo", true, Primitive<string>>,
-      Const<{ foo: "bar" }>
+    M.Object<{ baz: M.Primitive<string> }, "baz", true>,
+    M.Exclusion<
+      M.Object<{ foo: M.Primitive<string> }, "foo", true, M.Primitive<string>>,
+      M.Const<{ foo: "bar" }>
     >
   >,
-  Exclusion<
-    Object<
-      { foo: Primitive<string>; baz: Primitive<string> },
+  M.Exclusion<
+    M.Object<
+      { foo: M.Primitive<string>; baz: M.Primitive<string> },
       "foo" | "baz",
       true,
-      Primitive<string>
+      M.Primitive<string>
     >,
-    Const<{ foo: "bar" }>
+    M.Const<{ foo: "bar" }>
   >
 > = 1;
 intersectingExclusion;
@@ -249,7 +247,7 @@ intersectingExclusion;
 // --- ERROR ---
 
 const error: A.Equals<
-  Intersect<Object<{ str: Primitive<string> }, "str">, Error<"Any">>,
-  Error<"Any">
+  Intersect<M.Object<{ str: M.Primitive<string> }, "str">, M.Error<"Any">>,
+  M.Error<"Any">
 > = 1;
 error;

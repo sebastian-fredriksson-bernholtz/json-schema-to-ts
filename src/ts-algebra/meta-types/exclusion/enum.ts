@@ -1,11 +1,11 @@
 import { A, B, U } from "ts-toolbelt";
 
-import { Get } from "../../utils";
+import { Get } from "../../../utils";
 
 import { MetaType, Never, Const, Error } from "..";
 import { Enum, Values } from "../enum";
 import { Intersect } from "../intersection";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 import { Exclude } from ".";
 import { ExcludeUnion } from "./union";
@@ -34,14 +34,12 @@ type FilterExcluded<SourceEnum, Excluded> = Enum<
   RecurseOnEnumValues<Values<SourceEnum>, Excluded>
 >;
 
-type RecurseOnEnumValues<
-  EnumValues,
-  Excluded
-> = EnumValues extends infer EnumValue
-  ? IsRepresentable<Exclude<Const<EnumValue>, Excluded>> extends false
-    ? never
-    : EnumValue
-  : never;
+type RecurseOnEnumValues<EnumValues, Excluded> =
+  EnumValues extends infer EnumValue
+    ? IsRepresentable<Exclude<Const<EnumValue>, Excluded>> extends false
+      ? never
+      : EnumValue
+    : never;
 
 export type ExcludeEnum<
   Source,

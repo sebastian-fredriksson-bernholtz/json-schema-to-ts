@@ -1,12 +1,12 @@
 import { L } from "ts-toolbelt";
-import { Intersection, Union } from "ts-algebra";
+import { M } from "ts-algebra";
 
 import { Get, HasKeyIn, Merge } from "../utils";
 
 import { ParseSchema } from ".";
 import { MergeSubSchema, RemoveInvalidAdditionalItems } from "./utils";
 
-export type ParseAnyOfSchema<S> = Union<
+export type ParseAnyOfSchema<S> = M.Union<
   RecurseOnAnyOfSchema<Get<S, "anyOf">, S>
 >;
 
@@ -19,7 +19,7 @@ type RecurseOnAnyOfSchema<S, P, R = never> = {
         P,
         | R
         | (HasKeyIn<P, "enum" | "const" | "type"> extends true
-            ? Intersection<
+            ? M.Intersection<
                 ParseSchema<Omit<P, "anyOf">>,
                 ParseSchema<MergeSubSchema<Omit<P, "anyOf">, L.Head<S>>>
               >

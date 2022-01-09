@@ -1,6 +1,6 @@
 import { A, L } from "ts-toolbelt";
 
-import { Get, And } from "../../utils";
+import { Get, And } from "../../../utils";
 
 import { MetaType, Never, Tuple, Error } from "..";
 import { Values as ArrValues } from "../array";
@@ -12,13 +12,15 @@ import { DistributeIntersection } from "./union";
 import { IntersectExclusion } from "./exclusion";
 import { ClearIntersections, Intersect } from ".";
 
-export type ClearTupleIntersections<T, O = ClearIntersections<OpenProps<T>>> =
-  Tuple<
-    // 🔧 TOIMPROVE: Not cast here
-    ClearTupleValuesIntersections<A.Cast<Values<T>, L.List>>,
-    O extends Never ? false : IsOpen<T>,
-    O
-  >;
+export type ClearTupleIntersections<
+  T,
+  O = ClearIntersections<OpenProps<T>>
+> = Tuple<
+  // 🔧 TOIMPROVE: Not cast here
+  ClearTupleValuesIntersections<A.Cast<Values<T>, L.List>>,
+  O extends Never ? false : IsOpen<T>,
+  O
+>;
 
 type ClearTupleValuesIntersections<V extends L.List, R extends L.List = []> = {
   stop: L.Reverse<R>;

@@ -1,12 +1,12 @@
 import { Get } from "../utils";
 
-import { MetaType } from ".";
-import { IsEnumRepresentable } from "./enum";
-import { IsTupleRepresentable } from "./tuple";
-import { IsObjectRepresentable } from "./object";
-import { IsUnionRepresentable } from "./union";
-import { IsIntersectionRepresentable } from "./intersection";
-import { IsExclusionRepresentable } from "./exclusion";
+import { MetaType } from "./meta-types";
+import { IsEnumRepresentable } from "./meta-types/enum";
+import { IsTupleRepresentable } from "./meta-types/tuple";
+import { IsObjectRepresentable } from "./meta-types/object";
+import { IsUnionRepresentable } from "./meta-types/union";
+import { IsIntersectionRepresentable } from "./meta-types/intersection";
+import { IsExclusionRepresentable } from "./meta-types/exclusion";
 
 export type IsRepresentable<A> = {
   any: true;

@@ -1,41 +1,31 @@
 import { A } from "ts-toolbelt";
 
-import {
-  Resolve,
-  Any,
-  Never,
-  Const,
-  Enum,
-  Primitive,
-  Arr,
-  Tuple,
-  Object,
-  Union,
-  Intersection,
-  Error,
-} from "ts-algebra";
+import { M } from "ts-algebra";
 import { IsRepresentable } from "ts-algebra/utils";
 
 // --- ANY ---
 
-const testAny: A.Equals<Resolve<Union<Any | Primitive<string>>>, unknown> = 1;
+const testAny: A.Equals<
+  M.Resolve<M.Union<M.Any | M.Primitive<string>>>,
+  unknown
+> = 1;
 testAny;
 
 // --- NEVER ---
 
 const testNeverNonEmpty: A.Equals<
-  Resolve<Union<Never | Primitive<string>>>,
+  M.Resolve<M.Union<M.Never | M.Primitive<string>>>,
   string
 > = 1;
 testNeverNonEmpty;
 
-const testNeverEmpty: A.Equals<Resolve<Union<never>>, never> = 1;
+const testNeverEmpty: A.Equals<M.Resolve<M.Union<never>>, never> = 1;
 testNeverEmpty;
 
 // --- CONSTS ---
 
 const testConst: A.Equals<
-  Resolve<Union<Const<"foo"> | Const<"bar"> | Const<42>>>,
+  M.Resolve<M.Union<M.Const<"foo"> | M.Const<"bar"> | M.Const<42>>>,
   "foo" | "bar" | 42
 > = 1;
 testConst;
@@ -43,7 +33,7 @@ testConst;
 // --- ENUMS ---
 
 const testEnum: A.Equals<
-  Resolve<Union<Enum<"foo" | "bar" | 42> | Enum<"baz" | 43>>>,
+  M.Resolve<M.Union<M.Enum<"foo" | "bar" | 42> | M.Enum<"baz" | 43>>>,
   "foo" | "bar" | "baz" | 42 | 43
 > = 1;
 testEnum;
@@ -51,7 +41,7 @@ testEnum;
 // --- PRIMITIVES ---
 
 const testPrimitive: A.Equals<
-  Resolve<Union<Primitive<string> | Primitive<number>>>,
+  M.Resolve<M.Union<M.Primitive<string> | M.Primitive<number>>>,
   string | number
 > = 1;
 testPrimitive;
@@ -59,7 +49,7 @@ testPrimitive;
 // --- ARRAYS ---
 
 const testArray: A.Equals<
-  Resolve<Union<Arr<Primitive<string>> | Arr<Primitive<number>>>>,
+  M.Resolve<M.Union<M.Arr<M.Primitive<string>> | M.Arr<M.Primitive<number>>>>,
   string[] | number[]
 > = 1;
 testArray;
@@ -67,10 +57,10 @@ testArray;
 // --- TUPLES ---
 
 const testTuple: A.Equals<
-  Resolve<
-    Union<
-      | Tuple<[Primitive<string>, Primitive<number>]>
-      | Tuple<[Primitive<string>, Primitive<boolean>], false>
+  M.Resolve<
+    M.Union<
+      | M.Tuple<[M.Primitive<string>, M.Primitive<number>]>
+      | M.Tuple<[M.Primitive<string>, M.Primitive<boolean>], false>
     >
   >,
   [string, number, ...unknown[]] | [string, boolean]
@@ -80,10 +70,10 @@ testTuple;
 // --- OBJECTS ---
 
 const testObjects: A.Equals<
-  Resolve<
-    Union<
-      | Object<{ bar: Primitive<number> }, "bar">
-      | Object<{ foo: Primitive<string> }, "foo", false>
+  M.Resolve<
+    M.Union<
+      | M.Object<{ bar: M.Primitive<number> }, "bar">
+      | M.Object<{ foo: M.Primitive<string> }, "foo", false>
     >
   >,
   { bar: number; [k: string]: unknown } | { foo: string }
@@ -93,10 +83,10 @@ testObjects;
 // --- UNIONS ---
 
 const testUnions: A.Equals<
-  Resolve<
-    Union<
-      | Union<Primitive<string> | Primitive<boolean>>
-      | Union<Const<"foo"> | Const<42>>
+  M.Resolve<
+    M.Union<
+      | M.Union<M.Primitive<string> | M.Primitive<boolean>>
+      | M.Union<M.Const<"foo"> | M.Const<42>>
     >
   >,
   string | boolean | 42
@@ -106,10 +96,10 @@ testUnions;
 // --- INTERSECTIONS ---
 
 const testIntersections: A.Equals<
-  Resolve<
-    Union<
-      | Intersection<Primitive<string>, Const<"foo">>
-      | Intersection<Primitive<number>, Const<42>>
+  M.Resolve<
+    M.Union<
+      | M.Intersection<M.Primitive<string>, M.Const<"foo">>
+      | M.Intersection<M.Primitive<number>, M.Const<42>>
     >
   >,
   "foo" | 42
@@ -119,18 +109,18 @@ testIntersections;
 // --- ERROR ---
 
 const testError: A.Equals<
-  Resolve<Union<Const<"foo"> | Error<"Other value">>>,
+  M.Resolve<M.Union<M.Const<"foo"> | M.Error<"Other value">>>,
   "foo"
 > = 1;
 testError;
 
 // --- ISREPRESENTABLE ---
 
-const notRepresentable: A.Equals<IsRepresentable<Union<never>>, false> = 1;
+const notRepresentable: A.Equals<IsRepresentable<M.Union<never>>, false> = 1;
 notRepresentable;
 
 const representable: A.Equals<
-  IsRepresentable<Union<Never | Const<"A">>>,
+  IsRepresentable<M.Union<M.Never | M.Const<"A">>>,
   true
 > = 1;
 representable;

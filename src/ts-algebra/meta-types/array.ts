@@ -1,4 +1,4 @@
-import { Get, Prettify } from "../utils";
+import { Get, Prettify } from "../../utils";
 
 import { Resolve, Any } from ".";
 

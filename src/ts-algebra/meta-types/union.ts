@@ -1,7 +1,7 @@
-import { DoesExtend, Get } from "../utils";
+import { DoesExtend, Get } from "../../utils";
 
 import { Resolve } from ".";
-import { IsRepresentable } from "./utils";
+import { IsRepresentable } from "../utils";
 
 export type UnionType = "union";
 

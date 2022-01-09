@@ -1,4 +1,4 @@
-import { Get } from "../../utils";
+import { Get } from "../../../utils";
 
 import { MetaType, Never, Const, Error } from "..";
 import { Enum, Values } from "../enum";

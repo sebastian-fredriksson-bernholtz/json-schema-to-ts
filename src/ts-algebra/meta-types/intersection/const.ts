@@ -1,4 +1,4 @@
-import { Get, IsObject } from "../../utils";
+import { Get, IsObject } from "../../../utils";
 
 import { Resolve, MetaType, Never, Error } from "..";
 import { Const, Value } from "../const";

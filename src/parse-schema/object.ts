@@ -1,11 +1,11 @@
-import { Object, Any, Never, Union, Error } from "ts-algebra";
+import { M } from "ts-algebra";
 
 import { IsObject } from "../utils";
 
 import { ParseSchema } from ".";
 
 export type ParseObjectSchema<S> = "properties" extends keyof S
-  ? Object<
+  ? M.Object<
       {
         [key in keyof S["properties"]]: ParseSchema<S["properties"][key]>;
       },
@@ -17,7 +17,7 @@ export type ParseObjectSchema<S> = "properties" extends keyof S
         : true,
       GetOpenProps<S>
     >
-  : Object<{}, GetRequired<S>, true, GetOpenProps<S>>;
+  : M.Object<{}, GetRequired<S>, true, GetOpenProps<S>>;
 
 type GetRequired<S> = S extends { required: ReadonlyArray<string> }
   ? S["required"][number]
@@ -32,15 +32,15 @@ type GetOpenProps<S> = "additionalProperties" extends keyof S
     : AdditionalProps<S["additionalProperties"]>
   : "patternProperties" extends keyof S
   ? PatternProps<S["patternProperties"]>
-  : Any;
+  : M.Any;
 
 type AdditionalProps<A> = A extends false
-  ? Never
+  ? M.Never
   : A extends true
-  ? Any
+  ? M.Any
   : IsObject<A> extends true
   ? ParseSchema<A>
-  : Error<'Invalid value in "additionalProperties" property'>;
+  : M.Error<'Invalid value in "additionalProperties" property'>;
 
 type PatternProps<P> = {
   type: "union";
@@ -50,13 +50,13 @@ type PatternProps<P> = {
 };
 
 type AdditionalAndPatternProps<A, P> = A extends boolean
-  ? Union<
+  ? M.Union<
       {
         [key in keyof P]: ParseSchema<P[key]>;
       }[keyof P]
     >
   : IsObject<A> extends true
-  ? Union<
+  ? M.Union<
       | ParseSchema<A>
       | {
           [key in keyof P]: ParseSchema<P[key]>;

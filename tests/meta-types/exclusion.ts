@@ -1,36 +1,25 @@
 import { A } from "ts-toolbelt";
 
-import {
-  Resolve,
-  Exclusion,
-  Any,
-  Never,
-  Enum,
-  Const,
-  Primitive,
-  Union,
-  Object,
-  Tuple,
-} from "ts-algebra";
+import { M } from "ts-algebra";
 import { IsRepresentable } from "ts-algebra/utils";
 
 const test1: A.Equals<
-  Resolve<Exclusion<Enum<"foo" | 42>, Primitive<string>>>,
+  M.Resolve<M.Exclusion<M.Enum<"foo" | 42>, M.Primitive<string>>>,
   42
 > = 1;
 test1;
 
 const test2: A.Equals<
-  Resolve<Exclusion<Enum<"foo" | "bar">, Const<"bar">>>,
+  M.Resolve<M.Exclusion<M.Enum<"foo" | "bar">, M.Const<"bar">>>,
   "foo"
 > = 1;
 test2;
 
 const test3: A.Equals<
-  Resolve<
-    Exclusion<
-      Union<Object | Tuple<[Primitive<string>]> | Primitive<string>>,
-      Union<Primitive<string> | Tuple<[Any]>>
+  M.Resolve<
+    M.Exclusion<
+      M.Union<M.Object | M.Tuple<[M.Primitive<string>]> | M.Primitive<string>>,
+      M.Union<M.Primitive<string> | M.Tuple<[M.Any]>>
     >
   >,
   { [k: string]: unknown }
@@ -38,10 +27,10 @@ const test3: A.Equals<
 test3;
 
 const test4: A.Equals<
-  Resolve<
-    Exclusion<
-      Union<Never | Const<"B"> | Const<"C">>,
-      Union<Const<"A"> | Const<"B">>
+  M.Resolve<
+    M.Exclusion<
+      M.Union<M.Never | M.Const<"B"> | M.Const<"C">>,
+      M.Union<M.Const<"A"> | M.Const<"B">>
     >
   >,
   "C"
@@ -51,13 +40,13 @@ test4;
 // --- ISREPRESENTABLE ---
 
 const notRepresentable: A.Equals<
-  IsRepresentable<Exclusion<Const<"A">, Primitive<string>>>,
+  IsRepresentable<M.Exclusion<M.Const<"A">, M.Primitive<string>>>,
   false
 > = 1;
 notRepresentable;
 
 const representable: A.Equals<
-  IsRepresentable<Exclusion<Primitive<string>, Const<"A">>>,
+  IsRepresentable<M.Exclusion<M.Primitive<string>, M.Const<"A">>>,
   true
 > = 1;
 representable;

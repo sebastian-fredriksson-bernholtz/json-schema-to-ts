@@ -1,4 +1,4 @@
-import { Primitive, Any, Never } from "ts-algebra";
+import { M } from "ts-algebra";
 
 import { ParseMixedSchema } from "./mixed";
 import { ParseConstSchema } from "./const";
@@ -12,12 +12,12 @@ import { ParseNotSchema } from "./not";
 import { ParseIfThenElseSchema } from "./ifThenElse";
 
 export type ParseSchema<S> = {
-  any: Any;
-  never: Never;
-  null: Primitive<null>;
-  boolean: Primitive<boolean>;
-  number: Primitive<number>;
-  string: Primitive<string>;
+  any: M.Any;
+  never: M.Never;
+  null: M.Primitive<null>;
+  boolean: M.Primitive<boolean>;
+  number: M.Primitive<number>;
+  string: M.Primitive<string>;
   mixed: ParseMixedSchema<S>;
   object: ParseObjectSchema<S>;
   array: ParseArrSchema<S>;

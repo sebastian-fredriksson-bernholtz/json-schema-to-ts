@@ -1,4 +1,4 @@
-import { Get } from "../../utils";
+import { Get } from "../../../utils";
 
 import { Resolve, MetaType, Never, Error } from "..";
 import { ClearIntersections } from "../intersection";
@@ -11,7 +11,7 @@ import { ExcludeFromArray } from "./array";
 import { ExcludeFromTuple } from "./tuple";
 import { ExcludeFromObject } from "./object";
 import { DistributeUnion } from "./union";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 export type ExclusionType = "exclusion";
 

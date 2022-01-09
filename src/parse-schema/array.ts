@@ -1,5 +1,5 @@
 import { A, L } from "ts-toolbelt";
-import { Arr, Tuple, Union, Error } from "ts-algebra";
+import { M } from "ts-algebra";
 
 import { DoesExtend, Get, IsObject } from "../utils";
 
@@ -7,12 +7,12 @@ import { ParseSchema } from ".";
 
 export type ParseArrSchema<S> = "items" extends keyof S
   ? IsObject<S["items"]> extends true
-    ? Arr<ParseSchema<S["items"]>>
+    ? M.Arr<ParseSchema<S["items"]>>
     : S["items"] extends L.List
     ? // 🔧 TOIMPROVE: Not cast here
-      Union<FromTreeTuple<ParseTuple<A.Cast<S["items"], L.List>>, S>>
-    : Error<'Invalid value in "items" property'>
-  : Arr;
+      M.Union<FromTreeTuple<ParseTuple<A.Cast<S["items"], L.List>>, S>>
+    : M.Error<'Invalid value in "items" property'>
+  : M.Arr;
 
 export type ParseTuple<S extends L.List, R extends L.List = []> = {
   stop: R;
@@ -39,14 +39,14 @@ type ApplyBoundaries<
 > = {
   stop: {
     result: Max extends undefined
-      ? R | Tuple<L.Reverse<T>, false>
+      ? R | M.Tuple<L.Reverse<T>, false>
       : HasMax extends true
-      ? R | Tuple<L.Reverse<T>, false>
+      ? R | M.Tuple<L.Reverse<T>, false>
       : Max extends T["length"]
-      ? Tuple<L.Reverse<T>, false>
+      ? M.Tuple<L.Reverse<T>, false>
       : IsLongerThan<L.Tail<T>, Max> extends true
       ? never
-      : R | Tuple<L.Reverse<T>, false>;
+      : R | M.Tuple<L.Reverse<T>, false>;
     hasEncounteredMin: DoesExtend<Min, T["length"]>;
     hasEncounteredMax: HasMax extends true
       ? true
@@ -60,8 +60,8 @@ type ApplyBoundaries<
     Min,
     Max,
     T["length"] extends Max
-      ? Tuple<L.Reverse<T>, false>
-      : R | Tuple<L.Reverse<T>, false>,
+      ? M.Tuple<L.Reverse<T>, false>
+      : R | M.Tuple<L.Reverse<T>, false>,
     HasMin extends true ? true : DoesExtend<Min, T["length"]>,
     HasMax extends true ? true : DoesExtend<Max, T["length"]>,
     C
@@ -80,32 +80,32 @@ type IsLongerThan<T extends L.List, N, R = false> = {
 type ApplyAdditionalItems<R, A> = Get<R, "hasEncounteredMax"> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ? Get<R, "result">
-    : Error<'"minItems" property is lower than "maxItems"'>
+    : M.Error<'"minItems" property is lower than "maxItems"'>
   : A extends false
   ? Get<R, "hasEncounteredMin"> extends true
     ? Get<R, "result">
-    : Error<'"minItems" property is higher than allowed number of items'>
+    : M.Error<'"minItems" property is higher than allowed number of items'>
   : A extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ?
         | Get<R, "result">
-        | Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>>
+        | M.Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>>
     : // 🔧 TOIMPROVE: Not cast here
-      Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>>
+      M.Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>>
   : IsObject<A> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ?
         | Get<R, "result">
-        | Tuple<
+        | M.Tuple<
             // 🔧 TOIMPROVE: Not cast here
             L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>,
             true,
             ParseSchema<A>
           >
-    : Tuple<
+    : M.Tuple<
         // 🔧 TOIMPROVE: Not cast here
         L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>,
         true,
         ParseSchema<A>
       >
-  : Error<'Invalid value in "additionalItems" property'>;
+  : M.Error<'Invalid value in "additionalItems" property'>;

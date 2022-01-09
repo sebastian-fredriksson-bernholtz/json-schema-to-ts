@@ -1,9 +1,9 @@
-import { Get, IsObject } from "../../utils";
+import { Get, IsObject } from "../../../utils";
 
 import { Resolve, MetaType, Never, Error } from "..";
 import { Const, Value } from "../const";
 import { Values, Required, IsOpen, OpenProps } from "../object";
-import { IsRepresentable } from "../utils";
+import { IsRepresentable } from "../../utils";
 
 import { Exclude } from ".";
 import { ExcludeUnion } from "./union";
@@ -28,10 +28,8 @@ export type ExcludeFromConst<Source, Excluded> = {
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
-type CheckNotExtendsResolved<
-  Source,
-  Excluded
-> = Value<Source> extends Resolve<Excluded> ? Never : Source;
+type CheckNotExtendsResolved<Source, Excluded> =
+  Value<Source> extends Resolve<Excluded> ? Never : Source;
 
 type ExcludeObject<Source, Excluded> = IsObject<Value<Source>> extends true
   ? Required<Source> extends keyof Value<Source>
