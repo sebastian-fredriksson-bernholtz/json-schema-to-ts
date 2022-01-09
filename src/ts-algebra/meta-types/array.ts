@@ -2,10 +2,11 @@ import { Get, Prettify } from "../../utils";
 
 import { Resolve, Any } from ".";
 
-export type ArrType = "array";
+export type ArrayTypeId = "array";
 
-export type Arr<V = Any> = {
-  type: ArrType;
+// Prefixed with $ to not confuse with native Array type
+export type $Array<V = Any> = {
+  type: ArrayTypeId;
   values: V;
 };
 

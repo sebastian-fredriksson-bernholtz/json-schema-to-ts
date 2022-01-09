@@ -75,13 +75,13 @@ nonIntersectingPrimitive;
 // --- ARRAY ---
 
 const intersectingArray: A.Equals<
-  M.Intersect<M.Enum<["foo", "bar"] | [42]>, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Enum<["foo", "bar"] | [42]>, M.Array<M.Primitive<string>>>,
   M.Enum<["foo", "bar"]>
 > = 1;
 intersectingArray;
 
 const nonIntersectingArray: A.Equals<
-  M.Intersect<M.Enum<"foo" | 42>, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Enum<"foo" | 42>, M.Array<M.Primitive<string>>>,
   M.Enum<never>
 > = 1;
 nonIntersectingArray;

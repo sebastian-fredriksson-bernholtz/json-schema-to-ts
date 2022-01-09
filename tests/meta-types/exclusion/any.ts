@@ -36,7 +36,7 @@ primitivesNeverExclude;
 // --- ARRAY ---
 
 const arraysNeverExclude: A.Equals<
-  M.Exclude<M.Any, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Any, M.Array<M.Primitive<string>>>,
   M.Any
 > = 1;
 arraysNeverExclude;
@@ -57,7 +57,7 @@ objectsNeverExclude;
 // --- UNION ---
 
 const excludingUnion: A.Equals<
-  M.Exclude<M.Any, M.Union<M.Any | M.Arr<M.Primitive<number>>>>,
+  M.Exclude<M.Any, M.Union<M.Any | M.Array<M.Primitive<number>>>>,
   M.Never
 > = 1;
 excludingUnion;

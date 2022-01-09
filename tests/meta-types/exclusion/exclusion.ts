@@ -55,8 +55,8 @@ excludingPrimitive;
 
 const excludingArray1: A.Equals<
   M.Exclude<
-    M.Exclusion<M.Arr<M.Primitive<string>>, M.Never>,
-    M.Arr<M.Primitive<string>>
+    M.Exclusion<M.Array<M.Primitive<string>>, M.Never>,
+    M.Array<M.Primitive<string>>
   >,
   M.Const<[]>
 > = 1;
@@ -65,12 +65,12 @@ excludingArray1;
 const excludingArray2: A.Equals<
   M.Exclude<
     M.Exclusion<
-      M.Arr<M.Union<M.Primitive<string> | M.Primitive<number>>>,
+      M.Array<M.Union<M.Primitive<string> | M.Primitive<number>>>,
       M.Never
     >,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
-  M.Arr<M.Union<M.Primitive<string> | M.Primitive<number>>>
+  M.Array<M.Union<M.Primitive<string> | M.Primitive<number>>>
 > = 1;
 excludingArray2;
 

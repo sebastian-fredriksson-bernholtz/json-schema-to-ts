@@ -1,12 +1,12 @@
 import { Get } from "../../utils";
 
-export type PrimitiveType = "primitive";
+export type PrimitiveTypeId = "primitive";
 
-export type Primitive<L> = {
-  type: PrimitiveType;
-  value: L;
+export type Primitive<T> = {
+  type: PrimitiveTypeId;
+  value: T;
 };
 
-export type PrimitiveValue<L> = Get<L, "value">;
+export type PrimitiveValue<T> = Get<T, "value">;
 
-export type ResolvePrimitive<T> = Get<T, "value">;
+export type ResolvePrimitive<T> = PrimitiveValue<T>;

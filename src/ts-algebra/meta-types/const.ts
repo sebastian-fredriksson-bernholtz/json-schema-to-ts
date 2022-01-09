@@ -1,9 +1,9 @@
 import { Get } from "../../utils";
 
-export type ConstType = "const";
+export type ConstTypeId = "const";
 
 export type Const<V> = {
-  type: ConstType;
+  type: ConstTypeId;
   value: V;
 };
 

@@ -1,6 +1,6 @@
 import { Get } from "../../../utils";
 
-import { Type, Never, Error, Union } from "..";
+import { TypeId, Never, Error, Union } from "..";
 import { Exclusion, ExclusionSource, ExclusionExcluded } from "../exclusion";
 
 import { IntersectUnion } from "./union";
@@ -28,4 +28,4 @@ export type IntersectExclusion<A, B> = {
   >;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];

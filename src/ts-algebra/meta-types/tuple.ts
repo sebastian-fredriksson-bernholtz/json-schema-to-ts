@@ -5,11 +5,11 @@ import { Get } from "../../utils";
 import { Resolve, Any } from ".";
 import { IsRepresentable } from "./isRepresentable";
 
-export type TupleType = "tuple";
+export type TupleTypeId = "tuple";
 
 // 🔧 TOIMPROVE: Type inputs and preserve types by not using Get
 export type Tuple<V, O = true, P = Any> = {
-  type: TupleType;
+  type: TupleTypeId;
   values: V;
   isOpen: O;
   openProps: P;
@@ -17,12 +17,12 @@ export type Tuple<V, O = true, P = Any> = {
 
 export type TupleValues<T> = Get<T, "values">;
 
-export type IsOpen<T> = Get<T, "isOpen">;
+export type IsTupleOpen<T> = Get<T, "isOpen">;
 
-export type OpenProps<T> = Get<T, "openProps">;
+export type TupleOpenProps<T> = Get<T, "openProps">;
 
-export type ResolveTuple<T> = IsOpen<T> extends true
-  ? L.Concat<RecurseOnTuple<TupleValues<T>>, [...Resolve<OpenProps<T>>[]]>
+export type ResolveTuple<T> = IsTupleOpen<T> extends true
+  ? L.Concat<RecurseOnTuple<TupleValues<T>>, [...Resolve<TupleOpenProps<T>>[]]>
   : RecurseOnTuple<TupleValues<T>>;
 
 type RecurseOnTuple<V, R extends L.List = []> = {

@@ -69,7 +69,7 @@ primitivesNeverExclude;
 // --- ARRAY ---
 
 const arrayTooSmall1: A.Equals<
-  M.Exclude<M.Tuple<[M.Primitive<string>]>, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Tuple<[M.Primitive<string>]>, M.Array<M.Primitive<string>>>,
   M.Tuple<[M.Primitive<string>]>
 > = 1;
 arrayTooSmall1;
@@ -77,7 +77,7 @@ arrayTooSmall1;
 const arrayTooSmall2: A.Equals<
   M.Exclude<
     M.Tuple<[M.Primitive<string>], true, M.Enum<"A" | 42>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Primitive<string>], true, M.Enum<"A" | 42>>
 > = 1;
@@ -86,7 +86,7 @@ arrayTooSmall2;
 const excludingArray1: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | "B">], true, M.Primitive<string>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Never
 > = 1;
@@ -95,7 +95,7 @@ excludingArray1;
 const excludingArray2: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | 42>], true, M.Primitive<string>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Enum<42>], false, M.Never>
 > = 1;
@@ -104,7 +104,7 @@ excludingArray2;
 const excludingArray3: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | 42>, M.Const<"A">], true, M.Primitive<string>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Enum<42>, M.Const<"A">], false, M.Never>
 > = 1;
@@ -113,7 +113,7 @@ excludingArray3;
 const nonExcludingArray1: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | 42>, M.Enum<"A" | 42>], true, M.Primitive<string>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Enum<"A" | 42>, M.Enum<"A" | 42>], true, M.Primitive<string>>
 > = 1;
@@ -126,7 +126,7 @@ const nonExcludingArray2: A.Equals<
       true,
       M.Primitive<string>
     >,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Primitive<string>, M.Primitive<boolean>], false, M.Never>
 > = 1;

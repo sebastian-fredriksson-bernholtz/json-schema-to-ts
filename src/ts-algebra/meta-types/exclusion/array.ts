@@ -2,9 +2,9 @@ import { A, B } from "ts-toolbelt";
 
 import { Get, And, DoesExtend } from "../../../utils";
 
-import { Type, Never, Const, Error } from "..";
-import { Arr, ArrayValues } from "../array";
-import { TupleValues, IsOpen, OpenProps } from "../tuple";
+import { TypeId, Never, Const, Error } from "..";
+import { $Array, ArrayValues } from "../array";
+import { TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
 
 import { $Exclude } from ".";
 import { ExcludeUnion } from "./union";
@@ -21,9 +21,9 @@ export type ExcludeFromArray<Source, Excluded> = {
   array: ExcludeArrs<Source, Excluded>;
   tuple: And<
     DoesExtend<A.Equals<TupleValues<Excluded>, []>, B.True>,
-    IsOpen<Excluded>
+    IsTupleOpen<Excluded>
   > extends true
-    ? ExcludeArrs<Source, Arr<OpenProps<Excluded>>>
+    ? ExcludeArrs<Source, $Array<TupleOpenProps<Excluded>>>
     : Source;
   object: Source;
   union: ExcludeUnion<Source, Excluded>;
@@ -31,7 +31,7 @@ export type ExcludeFromArray<Source, Excluded> = {
   exclusion: ExcludeExclusion<Source, Excluded>;
   error: Excluded;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends Type
+}[Get<Excluded, "type"> extends TypeId
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 

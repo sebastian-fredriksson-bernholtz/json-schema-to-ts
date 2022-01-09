@@ -51,7 +51,7 @@ nonExcludingPrimitive;
 // --- ARRAY ---
 
 const arraysNeverExclude: A.Equals<
-  M.Exclude<M.Primitive<string>, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Primitive<string>, M.Array<M.Primitive<string>>>,
   M.Primitive<string>
 > = 1;
 arraysNeverExclude;

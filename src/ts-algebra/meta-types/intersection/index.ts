@@ -1,7 +1,7 @@
 import { DoesExtend, Get } from "../../../utils";
 
-import { Resolve, Type, Never, Error } from "..";
-import { ErrorType } from "../error";
+import { Resolve, TypeId, Never, Error } from "..";
+import { ErrorTypeId } from "../error";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -13,15 +13,15 @@ import { ClearUnionIntersections, IntersectUnion } from "./union";
 import { ClearExclusionIntersections, IntersectExclusion } from "./exclusion";
 import { IsRepresentable } from "../isRepresentable";
 
-export type IntersectionType = "intersection";
+export type IntersectionTypeId = "intersection";
 
 export type Intersection<L, R> = {
-  type: IntersectionType;
+  type: IntersectionTypeId;
   left: L;
   right: R;
 };
 
-export type IsIntersection<I> = DoesExtend<Get<I, "type">, IntersectionType>;
+export type IsIntersection<I> = DoesExtend<Get<I, "type">, IntersectionTypeId>;
 
 export type IntersectionLeft<I> = Get<I, "left">;
 
@@ -46,11 +46,11 @@ export type ClearIntersections<T> = {
   exclusion: ClearExclusionIntersections<T>;
   error: T;
   errorMissingType: Error<"Missing type property">;
-}[Get<T, "type"> extends Type ? Get<T, "type"> : "errorMissingType"];
+}[Get<T, "type"> extends TypeId ? Get<T, "type"> : "errorMissingType"];
 
 export type Intersect<A, B> = {
   any: B;
-  never: Get<B, "type"> extends ErrorType ? B : Never;
+  never: Get<B, "type"> extends ErrorTypeId ? B : Never;
   const: IntersectConst<A, B>;
   enum: IntersectEnum<A, B>;
   primitive: IntersectPrimitive<A, B>;
@@ -62,7 +62,7 @@ export type Intersect<A, B> = {
   exclusion: IntersectExclusion<A, B>;
   error: A;
   errorMissingType: Error<"Missing type property">;
-}[Get<A, "type"> extends Type ? Get<A, "type"> : "errorMissingType"];
+}[Get<A, "type"> extends TypeId ? Get<A, "type"> : "errorMissingType"];
 
 export type IsIntersectionRepresentable<A> = IsRepresentable<
   ClearIntersections<A>

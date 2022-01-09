@@ -60,19 +60,19 @@ nonExcludingPrimitive;
 // --- ARRAY ---
 
 const excludingArray1: A.Equals<
-  M.Exclude<M.Const<["A"]>, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Const<["A"]>, M.Array<M.Primitive<string>>>,
   M.Never
 > = 1;
 excludingArray1;
 
 const excludingArray2: A.Equals<
-  M.Exclude<M.Const<["A"]>, M.Arr<M.Const<"A">>>,
+  M.Exclude<M.Const<["A"]>, M.Array<M.Const<"A">>>,
   M.Never
 > = 1;
 excludingArray2;
 
 const nonExcludingArray: A.Equals<
-  M.Exclude<M.Const<["A"]>, M.Arr<M.Primitive<number>>>,
+  M.Exclude<M.Const<["A"]>, M.Array<M.Primitive<number>>>,
   M.Const<["A"]>
 > = 1;
 nonExcludingArray;

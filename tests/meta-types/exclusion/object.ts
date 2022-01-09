@@ -90,7 +90,7 @@ primitivesNeverExclude;
 // --- ARRAY ---
 
 const arraysNeverExclude: A.Equals<
-  M.Exclude<M.Object<{ a: M.Const<"A"> }, "a", false>, M.Arr<M.Const<"A">>>,
+  M.Exclude<M.Object<{ a: M.Const<"A"> }, "a", false>, M.Array<M.Const<"A">>>,
   M.Object<{ a: M.Const<"A"> }, "a", false>
 > = 1;
 arraysNeverExclude;

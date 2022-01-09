@@ -3,10 +3,10 @@ import { DoesExtend, Get } from "../../utils";
 import { Resolve } from ".";
 import { IsRepresentable } from "./isRepresentable";
 
-export type UnionType = "union";
+export type UnionTypeId = "union";
 
 export type Union<V> = {
-  type: UnionType;
+  type: UnionTypeId;
   values: V;
 };
 

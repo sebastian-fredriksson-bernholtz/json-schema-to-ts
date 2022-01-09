@@ -90,17 +90,17 @@ const excludingArray: A.Equals<
   M.Exclude<
     M.Intersection<
       M.Union<
-        | M.Arr<M.Primitive<string>>
-        | M.Arr<M.Primitive<number>>
-        | M.Arr<M.Primitive<boolean>>
+        | M.Array<M.Primitive<string>>
+        | M.Array<M.Primitive<number>>
+        | M.Array<M.Primitive<boolean>>
       >,
-      M.Union<M.Arr<M.Primitive<string>> | M.Arr<M.Primitive<number>>>
+      M.Union<M.Array<M.Primitive<string>> | M.Array<M.Primitive<number>>>
     >,
-    M.Arr<M.Primitive<number>>
+    M.Array<M.Primitive<number>>
   >,
   M.Union<
     | M.Union<M.Never>
-    | M.Union<M.Never | M.Arr<M.Primitive<string>>>
+    | M.Union<M.Never | M.Array<M.Primitive<string>>>
     | M.Union<M.Never | M.Const<[]>>
   >
 > = 1;
@@ -110,18 +110,18 @@ const nonExcludingArray: A.Equals<
   M.Exclude<
     M.Intersection<
       M.Union<
-        | M.Arr<M.Primitive<string>>
-        | M.Arr<M.Primitive<number>>
-        | M.Arr<M.Primitive<boolean>>
+        | M.Array<M.Primitive<string>>
+        | M.Array<M.Primitive<number>>
+        | M.Array<M.Primitive<boolean>>
       >,
-      M.Union<M.Arr<M.Primitive<string>> | M.Arr<M.Primitive<number>>>
+      M.Union<M.Array<M.Primitive<string>> | M.Array<M.Primitive<number>>>
     >,
-    M.Arr<M.Primitive<boolean>>
+    M.Array<M.Primitive<boolean>>
   >,
   M.Union<
     | M.Union<M.Never>
-    | M.Union<M.Never | M.Arr<M.Primitive<string>>>
-    | M.Union<M.Never | M.Arr<M.Primitive<number>>>
+    | M.Union<M.Never | M.Array<M.Primitive<string>>>
+    | M.Union<M.Never | M.Array<M.Primitive<number>>>
   >
 > = 1;
 nonExcludingArray;

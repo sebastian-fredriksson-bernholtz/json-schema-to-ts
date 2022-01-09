@@ -39,8 +39,8 @@ anyToPrimitive;
 // --- ARRAY ---
 
 const anyToArray: A.Equals<
-  M.Intersect<M.Any, M.Arr<M.Primitive<string>>>,
-  M.Arr<M.Primitive<string>>
+  M.Intersect<M.Any, M.Array<M.Primitive<string>>>,
+  M.Array<M.Primitive<string>>
 > = 1;
 anyToArray;
 
@@ -60,8 +60,8 @@ anyToObject;
 // --- UNION ---
 
 const anyToUnion: A.Equals<
-  M.Intersect<M.Any, M.Union<M.Const<"foo"> | M.Arr<M.Primitive<number>>>>,
-  M.Union<M.Const<"foo"> | M.Arr<M.Primitive<number>>>
+  M.Intersect<M.Any, M.Union<M.Const<"foo"> | M.Array<M.Primitive<number>>>>,
+  M.Union<M.Const<"foo"> | M.Array<M.Primitive<number>>>
 > = 1;
 anyToUnion;
 

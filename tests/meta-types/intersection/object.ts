@@ -110,7 +110,7 @@ primitivesNeverIntersect2;
 const arraysNeverIntersect: A.Equals<
   M.Intersect<
     M.Object<{ str: M.Primitive<string> }, "str">,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Never
 > = 1;
@@ -207,7 +207,7 @@ nonIntersectingUnion1;
 const nonIntersectingUnion2: A.Equals<
   M.Intersect<
     M.Object<{ str: M.Primitive<string> }, "str">,
-    M.Union<M.Arr<M.Primitive<boolean>>>
+    M.Union<M.Array<M.Primitive<boolean>>>
   >,
   M.Union<M.Never>
 > = 1;

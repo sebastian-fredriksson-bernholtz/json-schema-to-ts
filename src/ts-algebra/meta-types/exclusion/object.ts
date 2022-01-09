@@ -2,15 +2,15 @@ import { A, B, U } from "ts-toolbelt";
 
 import { Get, And, Or, Not, DoesExtend, IsObject } from "../../../utils";
 
-import { Type, Never, Error } from "..";
+import { TypeId, Never, Error } from "..";
 import { Const, ConstValue } from "../const";
 import {
   Object,
   ObjectValues,
   ObjectValue,
-  Required,
-  IsOpen,
-  OpenProps,
+  ObjectRequiredKeys,
+  IsObjectOpen,
+  ObjectOpenProps,
 } from "../object";
 import { IsRepresentable } from "../isRepresentable";
 
@@ -43,20 +43,20 @@ export type ExcludeFromObject<S, E> = {
   exclusion: ExcludeExclusion<S, E>;
   error: E;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<E, "type"> extends Type ? Get<E, "type"> : "errorTypeProperty"];
+}[Get<E, "type"> extends TypeId ? Get<E, "type"> : "errorTypeProperty"];
 
 type ExcludeObjects<
   S,
   E,
   C = CrossObjectValues<S, E>,
   R = RepresentableKeys<C>,
-  P = $Exclude<OpenProps<S>, OpenProps<E>>
+  P = $Exclude<ObjectOpenProps<S>, ObjectOpenProps<E>>
 > = DoesObjectSizesMatch<S, E, C> extends true
   ? {
       moreThanTwo: S;
       onlyOne: PropagateExclusion<S, C>;
       none: OmitOmittableKeys<S, C>;
-    }[And<IsOpen<S>, IsRepresentable<P>> extends true
+    }[And<IsObjectOpen<S>, IsRepresentable<P>> extends true
       ? "moreThanTwo"
       : GetUnionLength<R>]
   : S;
@@ -65,8 +65,8 @@ type CrossObjectValues<S, E> = {
   [key in
     | keyof ObjectValues<S>
     | keyof ObjectValues<E>
-    | Required<S>
-    | Required<E>]: CrossValue<
+    | ObjectRequiredKeys<S>
+    | ObjectRequiredKeys<E>]: CrossValue<
     ObjectValue<S, key>,
     IsPossibleIn<S, key>,
     IsRequiredIn<S, key>,
@@ -84,13 +84,19 @@ type GetUnionLength<Union> = A.Equals<Union, never> extends B.True
   ? "onlyOne"
   : "moreThanTwo";
 
-type IsPossibleIn<O, K> = Or<DoesExtend<K, keyof ObjectValues<O>>, IsOpen<O>>;
+type IsPossibleIn<O, K> = Or<
+  DoesExtend<K, keyof ObjectValues<O>>,
+  IsObjectOpen<O>
+>;
 
-type IsRequiredIn<O, K> = DoesExtend<K, Required<O>>;
+type IsRequiredIn<O, K> = DoesExtend<K, ObjectRequiredKeys<O>>;
 
 // SIZE CHECK
 
-type DoesObjectSizesMatch<S, E, C> = And<IsOpen<S>, Not<IsOpen<E>>> extends true
+type DoesObjectSizesMatch<S, E, C> = And<
+  IsObjectOpen<S>,
+  Not<IsObjectOpen<E>>
+> extends true
   ? false
   : And<IsExcludedSmallEnough<C>, IsExcludedBigEnough<C>>;
 
@@ -124,9 +130,9 @@ type PropagateExclusion<S, C> = Object<
   {
     [key in keyof C]: Propagate<C[key]>;
   },
-  Required<S>,
-  IsOpen<S>,
-  OpenProps<S>
+  ObjectRequiredKeys<S>,
+  IsObjectOpen<S>,
+  ObjectOpenProps<S>
 >;
 
 // OMITTABLE KEYS
@@ -137,9 +143,9 @@ type OmitOmittableKeys<S, C, K = OmittableKeys<C>> = {
     {
       [key in keyof C]: key extends K ? Never : SourceValue<C[key]>;
     },
-    Required<S>,
-    IsOpen<S>,
-    OpenProps<S>
+    ObjectRequiredKeys<S>,
+    IsObjectOpen<S>,
+    ObjectOpenProps<S>
   >;
   none: Never;
 }[GetUnionLength<K>];

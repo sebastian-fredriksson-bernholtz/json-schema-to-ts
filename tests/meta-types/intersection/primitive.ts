@@ -69,7 +69,7 @@ nonIntersectingPrimitive;
 // --- ARRAY ---
 
 const arraysNeverIntersect: A.Equals<
-  M.Intersect<M.Primitive<string>, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Primitive<string>, M.Array<M.Primitive<string>>>,
   M.Never
 > = 1;
 arraysNeverIntersect;
@@ -119,7 +119,7 @@ intersectingUnion2;
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Primitive<string>,
-    M.Union<M.Primitive<number> | M.Arr<M.Primitive<string>>>
+    M.Union<M.Primitive<number> | M.Array<M.Primitive<string>>>
   >,
   M.Union<M.Never>
 > = 1;

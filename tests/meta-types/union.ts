@@ -48,7 +48,9 @@ testPrimitive;
 // --- ARRAYS ---
 
 const testArray: A.Equals<
-  M.Resolve<M.Union<M.Arr<M.Primitive<string>> | M.Arr<M.Primitive<number>>>>,
+  M.Resolve<
+    M.Union<M.Array<M.Primitive<string>> | M.Array<M.Primitive<number>>>
+  >,
   string[] | number[]
 > = 1;
 testArray;

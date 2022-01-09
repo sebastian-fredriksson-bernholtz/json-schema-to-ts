@@ -2,10 +2,10 @@ import { A, B, L } from "ts-toolbelt";
 
 import { Get, And, Not } from "../../../utils";
 
-import { Type, Never, Error } from "..";
+import { TypeId, Never, Error } from "..";
 import { Const, ConstValue } from "../const";
 import { ArrayValues } from "../array";
-import { Tuple, TupleValues, IsOpen, OpenProps } from "../tuple";
+import { Tuple, TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
 import { IsRepresentable } from "../isRepresentable";
 
 import { $Exclude } from ".";
@@ -37,7 +37,7 @@ export type ExcludeFromTuple<S, E> = {
   exclusion: ExcludeExclusion<S, E>;
   error: E;
   errorMissingType: Error<"Missing type property in Exclusion excluded value">;
-}[Get<E, "type"> extends Type ? Get<E, "type"> : "errorMissingType"];
+}[Get<E, "type"> extends TypeId ? Get<E, "type"> : "errorMissingType"];
 
 type ExcludeArray<S, E> = ExcludeTuples<S, Tuple<[], true, ArrayValues<E>>>;
 
@@ -49,24 +49,24 @@ type ExcludeTuples<
     A.Cast<TupleValues<S>, L.List>,
     // 🔧 TOIMPROVE: Not cast here
     A.Cast<TupleValues<E>, L.List>,
-    IsOpen<S>,
-    IsOpen<E>,
-    OpenProps<S>,
-    OpenProps<E>
+    IsTupleOpen<S>,
+    IsTupleOpen<E>,
+    TupleOpenProps<S>,
+    TupleOpenProps<E>
   >,
   R extends L.List = RepresentableItems<C>,
-  P = $Exclude<OpenProps<S>, OpenProps<E>>,
+  P = $Exclude<TupleOpenProps<S>, TupleOpenProps<E>>,
   I = IsRepresentable<P>
 > = DoesTupleSizesMatch<S, E, C> extends true
   ? {
       moreThanTwo: S;
       onlyOne: Tuple<
         PropagateExclusion<C>,
-        I extends true ? IsOpen<S> : false,
+        I extends true ? IsTupleOpen<S> : false,
         P
       >;
       none: OmitOmittableItems<S, C>;
-    }[And<IsOpen<S>, I> extends true ? "moreThanTwo" : GetTupleLength<R>]
+    }[And<IsTupleOpen<S>, I> extends true ? "moreThanTwo" : GetTupleLength<R>]
   : S;
 
 type CrossTupleValues<
@@ -128,8 +128,8 @@ type GetTupleLength<T extends L.List, R extends L.List = L.Tail<T>> = A.Equals<
 // SIZE CHECK
 
 type DoesTupleSizesMatch<S, E, C extends L.List> = And<
-  IsOpen<S>,
-  Not<IsOpen<E>>
+  IsTupleOpen<S>,
+  Not<IsTupleOpen<E>>
 > extends true
   ? false
   : And<IsExcludedSmallEnough<C>, IsExcludedBigEnough<C>>;
@@ -170,7 +170,7 @@ type OmitOmittableItems<
   I extends L.List = OmittableItems<C>
 > = {
   moreThanTwo: S;
-  onlyOne: Tuple<RequiredTupleValues<C>, false, OpenProps<S>>;
+  onlyOne: Tuple<RequiredTupleValues<C>, false, TupleOpenProps<S>>;
   none: Never;
 }[GetTupleLength<I>];
 

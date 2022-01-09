@@ -1,7 +1,7 @@
-export type AnyType = "any";
+export type AnyTypeId = "any";
 
 export type Any = {
-  type: AnyType;
+  type: AnyTypeId;
 };
 
 export type ResolveAny = unknown;

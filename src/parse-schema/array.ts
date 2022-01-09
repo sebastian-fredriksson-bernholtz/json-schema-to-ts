@@ -7,12 +7,12 @@ import { ParseSchema } from ".";
 
 export type ParseArrSchema<S> = "items" extends keyof S
   ? IsObject<S["items"]> extends true
-    ? M.Arr<ParseSchema<S["items"]>>
+    ? M.Array<ParseSchema<S["items"]>>
     : S["items"] extends L.List
     ? // 🔧 TOIMPROVE: Not cast here
       M.Union<FromTreeTuple<ParseTuple<A.Cast<S["items"], L.List>>, S>>
     : M.Error<'Invalid value in "items" property'>
-  : M.Arr;
+  : M.Array;
 
 export type ParseTuple<S extends L.List, R extends L.List = []> = {
   stop: R;

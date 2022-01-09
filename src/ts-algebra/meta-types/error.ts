@@ -1,9 +1,9 @@
 import { Get } from "../../utils";
 
-export type ErrorType = "error";
+export type ErrorTypeId = "error";
 
 export type Error<M = "Unknown error"> = {
-  type: ErrorType;
+  type: ErrorTypeId;
   message: M;
 };
 

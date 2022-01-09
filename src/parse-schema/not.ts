@@ -10,7 +10,7 @@ type AllTypes = M.Union<
   | M.Primitive<boolean>
   | M.Primitive<number>
   | M.Primitive<string>
-  | M.Arr<M.Any>
+  | M.Array<M.Any>
   | M.Object
 >;
 

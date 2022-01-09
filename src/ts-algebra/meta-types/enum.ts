@@ -2,9 +2,12 @@ import { A, B } from "ts-toolbelt";
 
 import { Get } from "../../utils";
 
-export type EnumType = "enum";
+export type EnumTypeId = "enum";
 
-export type Enum<V> = { type: EnumType; values: V };
+export type Enum<V> = {
+  type: EnumTypeId;
+  values: V;
+};
 
 export type EnumValues<E> = Get<E, "values">;
 

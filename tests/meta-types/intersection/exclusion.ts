@@ -61,10 +61,10 @@ nonIntersectingPrimitive;
 
 const intersectingArray: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Arr<M.Primitive<string>>, M.Const<[]>>,
-    M.Arr<M.Const<"foo">>
+    M.Exclusion<M.Array<M.Primitive<string>>, M.Const<[]>>,
+    M.Array<M.Const<"foo">>
   >,
-  M.Exclusion<M.Arr<M.Const<"foo">>, M.Const<[]>>
+  M.Exclusion<M.Array<M.Const<"foo">>, M.Const<[]>>
 > = 1;
 intersectingArray;
 

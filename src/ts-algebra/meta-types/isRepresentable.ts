@@ -1,6 +1,6 @@
 import { Get } from "../../utils";
 
-import { Type } from ".";
+import { TypeId } from ".";
 import { IsEnumRepresentable } from "./enum";
 import { IsTupleRepresentable } from "./tuple";
 import { IsObjectRepresentable } from "./object";
@@ -22,4 +22,4 @@ export type IsRepresentable<A> = {
   exclusion: IsExclusionRepresentable<A>;
   error: false;
   errorMissingType: false;
-}[Get<A, "type"> extends Type ? Get<A, "type"> : "errorMissingType"];
+}[Get<A, "type"> extends TypeId ? Get<A, "type"> : "errorMissingType"];

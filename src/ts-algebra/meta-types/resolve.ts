@@ -11,7 +11,8 @@ import { ResolveObject } from "./object";
 import { ResolveUnion } from "./union";
 import { ResolveIntersection } from "./intersection";
 import { ResolveExclusion } from "./exclusion";
-import { Type } from "./type";
+
+import { TypeId } from "./typeId";
 
 export type Resolve<T> = {
   any: ResolveAny;
@@ -26,4 +27,4 @@ export type Resolve<T> = {
   intersection: ResolveIntersection<T>;
   exclusion: ResolveExclusion<T>;
   error: never;
-}[Get<T, "type"> extends Type ? Get<T, "type"> : "error"];
+}[Get<T, "type"> extends TypeId ? Get<T, "type"> : "error"];

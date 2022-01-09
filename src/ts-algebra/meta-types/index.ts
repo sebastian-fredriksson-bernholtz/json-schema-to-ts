@@ -1,17 +1,17 @@
-import { Any, AnyType } from "./any";
-import { Never, NeverType } from "./never";
-import { Const, ConstType } from "./const";
-import { Enum, EnumType } from "./enum";
-import { Primitive, PrimitiveType } from "./primitive";
-import { Arr, ArrType } from "./array";
-import { Tuple, TupleType } from "./tuple";
-import { Object, ObjectType } from "./object";
-import { Union, UnionType } from "./union";
-import { Intersection, Intersect } from "./intersection";
-import { Exclusion, $Exclude as Exclude } from "./exclusion";
-import { Error, ErrorType } from "./error";
+import { Any, AnyTypeId } from "./any";
+import { Never, NeverTypeId } from "./never";
+import { Const, ConstTypeId } from "./const";
+import { Enum, EnumTypeId } from "./enum";
+import { Primitive, PrimitiveTypeId } from "./primitive";
+import { $Array, ArrayTypeId } from "./array";
+import { Tuple, TupleTypeId } from "./tuple";
+import { Object, ObjectTypeId } from "./object";
+import { Union, UnionTypeId } from "./union";
+import { Intersection, Intersect, IntersectionTypeId } from "./intersection";
+import { Exclusion, $Exclude, ExclusionTypeId } from "./exclusion";
+import { Error, ErrorTypeId } from "./error";
 
-import { Type } from "./type";
+import { TypeId } from "./typeId";
 
 import { IsRepresentable } from "./isRepresentable";
 import { Resolve } from "./resolve";
@@ -23,7 +23,7 @@ export {
   Const,
   Enum,
   Primitive,
-  Arr,
+  $Array as Array,
   Tuple,
   Object,
   Union,
@@ -31,20 +31,22 @@ export {
   Exclusion,
   Error,
   // Definitions
-  AnyType,
-  NeverType,
-  ConstType,
-  EnumType,
-  PrimitiveType,
-  ArrType,
-  TupleType,
-  ObjectType,
-  UnionType,
-  ErrorType,
-  Type,
+  AnyTypeId,
+  NeverTypeId,
+  ConstTypeId,
+  EnumTypeId,
+  PrimitiveTypeId,
+  ArrayTypeId,
+  TupleTypeId,
+  ObjectTypeId,
+  UnionTypeId,
+  IntersectionTypeId,
+  ExclusionTypeId,
+  ErrorTypeId,
+  TypeId,
   // Methods
   Resolve,
   Intersect,
-  Exclude,
+  $Exclude as Exclude,
   IsRepresentable,
 };

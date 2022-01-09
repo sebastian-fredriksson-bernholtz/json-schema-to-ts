@@ -1,8 +1,13 @@
 import { Get, IsObject } from "../../../utils";
 
-import { Resolve, Type, Never, Error } from "..";
+import { Resolve, TypeId, Never, Error } from "..";
 import { Const, ConstValue } from "../const";
-import { ObjectValues, Required, IsOpen, OpenProps } from "../object";
+import {
+  ObjectValues,
+  ObjectRequiredKeys,
+  IsObjectOpen,
+  ObjectOpenProps,
+} from "../object";
 
 import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
@@ -22,7 +27,7 @@ export type IntersectConst<A, B> = {
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
 type CheckExtendsResolved<A, B> = ConstValue<A> extends Resolve<B> ? A : Never;
 
@@ -37,11 +42,11 @@ type IntersectConstToObject<
 > = NeverKeys<V> extends never ? A : Never;
 
 type IntersectConstValues<V, B> = {
-  [key in keyof V | Required<B>]: key extends keyof V
+  [key in keyof V | ObjectRequiredKeys<B>]: key extends keyof V
     ? key extends keyof ObjectValues<B>
       ? Intersect<Const<V[key]>, ObjectValues<B>[key]>
-      : IsOpen<B> extends true
-      ? Intersect<Const<V[key]>, OpenProps<B>>
+      : IsObjectOpen<B> extends true
+      ? Intersect<Const<V[key]>, ObjectOpenProps<B>>
       : Never
     : Never;
 };

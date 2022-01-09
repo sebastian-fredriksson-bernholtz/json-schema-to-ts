@@ -63,13 +63,13 @@ nonIntersectingPrimitive;
 // --- ARRAY ---
 
 const intersectingArray: A.Equals<
-  M.Intersect<M.Const<["foo", "bar"]>, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Const<["foo", "bar"]>, M.Array<M.Primitive<string>>>,
   M.Const<["foo", "bar"]>
 > = 1;
 intersectingArray;
 
 const nonIntersectingArray: A.Equals<
-  M.Intersect<M.Const<"foo">, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Const<"foo">, M.Array<M.Primitive<string>>>,
   M.Never
 > = 1;
 nonIntersectingArray;
@@ -156,7 +156,7 @@ intersectingUnion2;
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Const<"foo">,
-    M.Union<M.Primitive<number> | M.Arr<M.Primitive<string>>>
+    M.Union<M.Primitive<number> | M.Array<M.Primitive<string>>>
   >,
   M.Union<M.Never>
 > = 1;

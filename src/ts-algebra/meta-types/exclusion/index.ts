@@ -1,6 +1,6 @@
 import { Get } from "../../../utils";
 
-import { Resolve, Type, Never, Error } from "..";
+import { Resolve, TypeId, Never, Error } from "..";
 import { ClearIntersections } from "../intersection";
 
 import { ExcludeFromAny } from "./any";
@@ -13,9 +13,13 @@ import { ExcludeFromObject } from "./object";
 import { DistributeUnion } from "./union";
 import { IsRepresentable } from "../isRepresentable";
 
-export type ExclusionType = "exclusion";
+export type ExclusionTypeId = "exclusion";
 
-export type Exclusion<V, E> = { type: ExclusionType; source: V; excluded: E };
+export type Exclusion<V, E> = {
+  type: ExclusionTypeId;
+  source: V;
+  excluded: E;
+};
 
 export type ExclusionSource<E> = Get<E, "source">;
 
@@ -40,7 +44,7 @@ export type $Exclude<A, B> = {
   exclusion: $Exclude<$Exclude<ExclusionSource<A>, ExclusionExcluded<A>>, B>;
   error: A;
   errorMissingType: Error<"Missing type property in Exclusion source value">;
-}[Get<A, "type"> extends Type ? Get<A, "type"> : "errorMissingType"];
+}[Get<A, "type"> extends TypeId ? Get<A, "type"> : "errorMissingType"];
 
 export type IsExclusionRepresentable<E> = IsRepresentable<
   $Exclude<ExclusionSource<E>, ExclusionExcluded<E>>

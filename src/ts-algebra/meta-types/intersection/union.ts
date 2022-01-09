@@ -1,6 +1,6 @@
 import { Get } from "../../../utils";
 
-import { Type, Never, Error } from "..";
+import { TypeId, Never, Error } from "..";
 import { Union, UnionValues } from "../union";
 
 import { ClearIntersections, Intersect } from "./index";
@@ -27,7 +27,7 @@ export type IntersectUnion<A, B> = {
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
 export type DistributeIntersection<A, B> = Union<
   RecurseOnUnion<UnionValues<A>, B>

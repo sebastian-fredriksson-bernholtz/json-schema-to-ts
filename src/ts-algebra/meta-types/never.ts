@@ -1,7 +1,7 @@
-export type NeverType = "never";
+export type NeverTypeId = "never";
 
 export type Never = {
-  type: NeverType;
+  type: NeverTypeId;
 };
 
 export type ResolveNever = never;

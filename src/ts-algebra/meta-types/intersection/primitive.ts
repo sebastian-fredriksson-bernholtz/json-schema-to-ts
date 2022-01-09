@@ -1,6 +1,6 @@
 import { Get } from "../../../utils";
 
-import { Type, Never, Error } from "..";
+import { TypeId, Never, Error } from "..";
 import { PrimitiveValue } from "../primitive";
 
 import { IntersectConst } from "./const";
@@ -26,4 +26,4 @@ export type IntersectPrimitive<A, B> = {
   exclusion: IntersectExclusion<B, A>;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];

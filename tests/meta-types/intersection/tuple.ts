@@ -116,7 +116,7 @@ primitivesNeverIntersect;
 // --- ARRAY ---
 
 const intersectingArray1: A.Equals<
-  M.Intersect<M.Tuple<[M.Primitive<string>]>, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Tuple<[M.Primitive<string>]>, M.Array<M.Primitive<string>>>,
   M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
 > = 1;
 intersectingArray1;
@@ -124,7 +124,7 @@ intersectingArray1;
 const intersectingArray2: A.Equals<
   M.Intersect<
     M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
 > = 1;
@@ -133,7 +133,7 @@ intersectingArray2;
 const intersectingArray3: A.Equals<
   M.Intersect<
     M.Tuple<[M.Primitive<string>], true, M.Const<"foo">>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Primitive<string>], true, M.Const<"foo">>
 > = 1;
@@ -142,7 +142,7 @@ intersectingArray3;
 const intersectingArray4: A.Equals<
   M.Intersect<
     M.Tuple<[M.Primitive<string>], true, M.Enum<"foo" | 42>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Primitive<string>], true, M.Enum<"foo">>
 > = 1;
@@ -151,7 +151,7 @@ intersectingArray4;
 const intersectingArray5: A.Equals<
   M.Intersect<
     M.Tuple<[M.Primitive<string>], true, M.Primitive<number>>,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Tuple<[M.Primitive<string>], false, M.Never>
 > = 1;
@@ -164,7 +164,7 @@ const nonIntersectingArray: A.Equals<
       true,
       M.Primitive<string>
     >,
-    M.Arr<M.Primitive<string>>
+    M.Array<M.Primitive<string>>
   >,
   M.Never
 > = 1;
@@ -292,7 +292,7 @@ intersectingUnion2;
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Tuple<[M.Primitive<string>]>,
-    M.Union<M.Arr<M.Primitive<number>> | M.Tuple<[M.Primitive<boolean>]>>
+    M.Union<M.Array<M.Primitive<number>> | M.Tuple<[M.Primitive<boolean>]>>
   >,
   M.Union<M.Never>
 > = 1;

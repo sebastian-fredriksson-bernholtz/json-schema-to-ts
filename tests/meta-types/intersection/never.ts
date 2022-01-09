@@ -36,7 +36,7 @@ neverToPrimitive;
 // --- ARRAY ---
 
 const neverToArray: A.Equals<
-  M.Intersect<M.Never, M.Arr<M.Primitive<string>>>,
+  M.Intersect<M.Never, M.Array<M.Primitive<string>>>,
   M.Never
 > = 1;
 neverToArray;
@@ -57,7 +57,7 @@ neverToObject;
 // --- UNION ---
 
 const neverToUnion: A.Equals<
-  M.Intersect<M.Never, M.Union<M.Any | M.Arr<M.Primitive<number>>>>,
+  M.Intersect<M.Never, M.Union<M.Any | M.Array<M.Primitive<number>>>>,
   M.Never
 > = 1;
 neverToUnion;

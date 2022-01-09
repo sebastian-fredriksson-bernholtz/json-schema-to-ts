@@ -1,8 +1,13 @@
 import { Get, IsObject } from "../../../utils";
 
-import { Resolve, Type, Never, Error } from "..";
+import { Resolve, TypeId, Never, Error } from "..";
 import { Const, ConstValue } from "../const";
-import { ObjectValues, Required, IsOpen, OpenProps } from "../object";
+import {
+  ObjectValues,
+  ObjectRequiredKeys,
+  IsObjectOpen,
+  ObjectOpenProps,
+} from "../object";
 import { IsRepresentable } from "../isRepresentable";
 
 import { $Exclude } from ".";
@@ -24,7 +29,7 @@ export type ExcludeFromConst<Source, Excluded> = {
   exclusion: ExcludeExclusion<Source, Excluded>;
   error: Excluded;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends Type
+}[Get<Excluded, "type"> extends TypeId
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
@@ -32,7 +37,7 @@ type CheckNotExtendsResolved<Source, Excluded> =
   ConstValue<Source> extends Resolve<Excluded> ? Never : Source;
 
 type ExcludeObject<Source, Excluded> = IsObject<ConstValue<Source>> extends true
-  ? Required<Source> extends keyof ConstValue<Source>
+  ? ObjectRequiredKeys<Source> extends keyof ConstValue<Source>
     ? ExcludeObjectFromConst<Source, Excluded>
     : Source
   : Source;
@@ -46,8 +51,8 @@ type ExcludeObjectFromConst<
 type ExcludeConstValues<SourceValue, Excluded> = {
   [key in keyof SourceValue]: key extends keyof ObjectValues<Excluded>
     ? $Exclude<Const<SourceValue[key]>, ObjectValues<Excluded>[key]>
-    : IsOpen<Excluded> extends true
-    ? $Exclude<Const<SourceValue[key]>, OpenProps<Excluded>>
+    : IsObjectOpen<Excluded> extends true
+    ? $Exclude<Const<SourceValue[key]>, ObjectOpenProps<Excluded>>
     : SourceValue[key];
 };
 

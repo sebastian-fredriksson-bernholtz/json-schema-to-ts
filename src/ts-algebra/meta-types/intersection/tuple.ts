@@ -2,9 +2,9 @@ import { A, L } from "ts-toolbelt";
 
 import { Get, And } from "../../../utils";
 
-import { Type, Never, Tuple, Error } from "..";
+import { TypeId, Never, Tuple, Error } from "..";
 import { ArrayValues } from "../array";
-import { TupleValues, IsOpen, OpenProps } from "../tuple";
+import { TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -14,11 +14,11 @@ import { ClearIntersections, Intersect } from ".";
 
 export type ClearTupleIntersections<
   T,
-  O = ClearIntersections<OpenProps<T>>
+  O = ClearIntersections<TupleOpenProps<T>>
 > = Tuple<
   // 🔧 TOIMPROVE: Not cast here
   ClearTupleValuesIntersections<A.Cast<TupleValues<T>, L.List>>,
-  O extends Never ? false : IsOpen<T>,
+  O extends Never ? false : IsTupleOpen<T>,
   O
 >;
 
@@ -44,7 +44,7 @@ export type IntersectTuple<A, B> = {
   exclusion: IntersectExclusion<B, A>;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends Type ? Get<B, "type"> : "errorTypeProperty"];
+}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
 type IntersectTupleToArray<
   T,
@@ -55,12 +55,12 @@ type IntersectTupleToArray<
     ArrayValues<A>
   >,
   N = HasNeverValue<V>,
-  O = Intersect<OpenProps<T>, ArrayValues<A>>
+  O = Intersect<TupleOpenProps<T>, ArrayValues<A>>
 > = N extends true
   ? Never
   : Tuple<
       V,
-      IsOpen<T> extends true ? (O extends Never ? false : true) : false,
+      IsTupleOpen<T> extends true ? (O extends Never ? false : true) : false,
       O
     >;
 
@@ -88,16 +88,16 @@ type IntersectTuples<
     A.Cast<TupleValues<A>, L.List>,
     // 🔧 TOIMPROVE: Not cast here
     A.Cast<TupleValues<B>, L.List>,
-    IsOpen<A>,
-    IsOpen<B>,
-    OpenProps<A>,
-    OpenProps<B>
+    IsTupleOpen<A>,
+    IsTupleOpen<B>,
+    TupleOpenProps<A>,
+    TupleOpenProps<B>
   >,
   N = HasNeverValue<V>,
-  O = Intersect<OpenProps<A>, OpenProps<B>>
+  O = Intersect<TupleOpenProps<A>, TupleOpenProps<B>>
 > = N extends true
   ? Never
-  : Tuple<V, O extends Never ? false : And<IsOpen<A>, IsOpen<B>>, O>;
+  : Tuple<V, O extends Never ? false : And<IsTupleOpen<A>, IsTupleOpen<B>>, O>;
 
 type IntersectTupleValues<
   V1 extends L.List,

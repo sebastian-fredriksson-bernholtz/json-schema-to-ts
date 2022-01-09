@@ -63,13 +63,13 @@ nonExcludingPrimitive;
 // --- ARRAY ---
 
 const excludingArray: A.Equals<
-  M.Exclude<M.Enum<["A"] | ["B"] | [42] | "C">, M.Arr<M.Primitive<string>>>,
+  M.Exclude<M.Enum<["A"] | ["B"] | [42] | "C">, M.Array<M.Primitive<string>>>,
   M.Enum<[42] | "C">
 > = 1;
 excludingArray;
 
 const nonExcludingArray: A.Equals<
-  M.Exclude<M.Enum<["A"] | ["B"] | 42>, M.Arr<M.Primitive<number>>>,
+  M.Exclude<M.Enum<["A"] | ["B"] | 42>, M.Array<M.Primitive<number>>>,
   M.Enum<["A"] | ["B"] | 42>
 > = 1;
 nonExcludingArray;

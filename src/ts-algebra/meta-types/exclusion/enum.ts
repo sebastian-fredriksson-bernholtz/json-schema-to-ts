@@ -2,7 +2,7 @@ import { A, B, U } from "ts-toolbelt";
 
 import { Get } from "../../../utils";
 
-import { Type, Never, Const, Error } from "..";
+import { TypeId, Never, Const, Error } from "..";
 import { Enum, EnumValues } from "../enum";
 import { Intersect } from "../intersection";
 import { IsRepresentable } from "../isRepresentable";
@@ -26,7 +26,7 @@ export type ExcludeFromEnum<Source, Excluded> = {
   exclusion: ExcludeExclusion<Source, Excluded>;
   error: Excluded;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends Type
+}[Get<Excluded, "type"> extends TypeId
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
