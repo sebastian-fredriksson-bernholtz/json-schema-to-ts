@@ -1,12 +1,15 @@
-import { Get } from "../../utils";
-
 export type ConstTypeId = "const";
 
-export type Const<V> = {
+export type Const<V extends any> = {
   type: ConstTypeId;
   value: V;
 };
 
-export type ConstValue<C> = Get<C, "value">;
+export type ConstType = {
+  type: ConstTypeId;
+  value: any;
+};
 
-export type ResolveConst<T> = ConstValue<T>;
+export type ConstValue<C extends ConstType> = C["value"];
+
+export type ResolveConst<T extends ConstType> = ConstValue<T>;

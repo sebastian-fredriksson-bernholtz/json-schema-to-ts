@@ -1,23 +1,27 @@
 import { Get } from "../../../utils";
 
 import { TypeId, Never, Error } from "..";
-import { PrimitiveValue } from "../primitive";
+import { ConstType } from "../const";
+import { EnumType } from "../enum";
+import { PrimitiveValue, PrimitiveType } from "../primitive";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
 import { IntersectExclusion } from "./exclusion";
 import { Intersect } from ".";
 
-export type IntersectPrimitive<A, B> = {
+export type IntersectPrimitive<A extends PrimitiveType, B> = {
   any: A;
   never: Never;
-  const: IntersectConst<B, A>;
-  enum: IntersectEnum<B, A>;
-  primitive: PrimitiveValue<A> extends PrimitiveValue<B>
-    ? A
-    : PrimitiveValue<B> extends PrimitiveValue<A>
-    ? B
-    : Never;
+  const: B extends ConstType ? IntersectConst<B, A> : never;
+  enum: B extends EnumType ? IntersectEnum<B, A> : never;
+  primitive: B extends PrimitiveType
+    ? PrimitiveValue<A> extends PrimitiveValue<B>
+      ? A
+      : PrimitiveValue<B> extends PrimitiveValue<A>
+      ? B
+      : Never
+    : never;
   array: Never;
   tuple: Never;
   object: Never;

@@ -2,9 +2,9 @@ import { Get } from "../../utils";
 
 import { ResolveAny } from "./any";
 import { ResolveNever } from "./never";
-import { ResolveConst } from "./const";
-import { ResolveEnum } from "./enum";
-import { ResolvePrimitive } from "./primitive";
+import { ConstType, ResolveConst } from "./const";
+import { ResolveEnum, EnumType } from "./enum";
+import { ResolvePrimitive, PrimitiveType } from "./primitive";
 import { ResolveArr } from "./array";
 import { ResolveTuple } from "./tuple";
 import { ResolveObject } from "./object";
@@ -17,9 +17,9 @@ import { TypeId } from "./typeId";
 export type Resolve<T> = {
   any: ResolveAny;
   never: ResolveNever;
-  const: ResolveConst<T>;
-  enum: ResolveEnum<T>;
-  primitive: ResolvePrimitive<T>;
+  const: T extends ConstType ? ResolveConst<T> : never;
+  enum: T extends EnumType ? ResolveEnum<T> : never;
+  primitive: T extends PrimitiveType ? ResolvePrimitive<T> : never;
   array: ResolveArr<T>;
   tuple: ResolveTuple<T>;
   object: ResolveObject<T>;

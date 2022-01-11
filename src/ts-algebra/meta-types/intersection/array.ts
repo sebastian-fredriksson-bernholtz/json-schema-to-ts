@@ -1,6 +1,8 @@
 import { Get } from "../../../utils";
 
 import { TypeId, Never, Error } from "..";
+import { ConstType } from "../const";
+import { EnumType } from "../enum";
 import { $Array, ArrayValues } from "../array";
 
 import { IntersectConst } from "./const";
@@ -17,8 +19,8 @@ export type ClearArrIntersections<A> = $Array<
 export type IntersectArr<A, B> = {
   any: A;
   never: Never;
-  const: IntersectConst<B, A>;
-  enum: IntersectEnum<B, A>;
+  const: B extends ConstType ? IntersectConst<B, A> : never;
+  enum: B extends EnumType ? IntersectEnum<B, A> : never;
   primitive: Never;
   array: IntersectArrs<A, B>;
   tuple: IntersectTuple<B, A>;

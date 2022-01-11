@@ -1,19 +1,22 @@
 import { A, B } from "ts-toolbelt";
 
-import { Get } from "../../utils";
-
 export type EnumTypeId = "enum";
 
-export type Enum<V> = {
+export type Enum<V extends any> = {
   type: EnumTypeId;
   values: V;
 };
 
-export type EnumValues<E> = Get<E, "values">;
+export type EnumType = {
+  type: EnumTypeId;
+  values: any;
+};
 
-export type ResolveEnum<T> = EnumValues<T>;
+export type EnumValues<E extends EnumType> = E["values"];
 
-export type IsEnumRepresentable<E> = A.Equals<
+export type ResolveEnum<T extends EnumType> = EnumValues<T>;
+
+export type IsEnumRepresentable<E extends EnumType> = A.Equals<
   EnumValues<E>,
   never
 > extends B.True

@@ -1,7 +1,7 @@
 import { Get } from "../../utils";
 
 import { TypeId } from ".";
-import { IsEnumRepresentable } from "./enum";
+import { EnumType, IsEnumRepresentable } from "./enum";
 import { IsTupleRepresentable } from "./tuple";
 import { IsObjectRepresentable } from "./object";
 import { IsUnionRepresentable } from "./union";
@@ -12,7 +12,7 @@ export type IsRepresentable<A> = {
   any: true;
   never: false;
   const: true;
-  enum: IsEnumRepresentable<A>;
+  enum: A extends EnumType ? IsEnumRepresentable<A> : never;
   primitive: true;
   array: true; // Empty array will represent any array
   tuple: IsTupleRepresentable<A>;

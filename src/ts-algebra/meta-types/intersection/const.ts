@@ -1,7 +1,7 @@
 import { Get, IsObject } from "../../../utils";
 
 import { Resolve, TypeId, Never, Error } from "..";
-import { Const, ConstValue } from "../const";
+import { Const, ConstType, ConstValue } from "../const";
 import {
   ObjectValues,
   ObjectRequiredKeys,
@@ -13,7 +13,7 @@ import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
 import { Intersect } from "./index";
 
-export type IntersectConst<A, B> = {
+export type IntersectConst<A extends ConstType, B> = {
   any: A;
   never: Never;
   const: CheckExtendsResolved<A, B>;
@@ -29,14 +29,17 @@ export type IntersectConst<A, B> = {
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
-type CheckExtendsResolved<A, B> = ConstValue<A> extends Resolve<B> ? A : Never;
+type CheckExtendsResolved<
+  A extends ConstType,
+  B
+> = ConstValue<A> extends Resolve<B> ? A : Never;
 
-type ToObject<A, B> = IsObject<ConstValue<A>> extends true
+type ToObject<A extends ConstType, B> = IsObject<ConstValue<A>> extends true
   ? IntersectConstToObject<A, B>
   : Never;
 
 type IntersectConstToObject<
-  A,
+  A extends ConstType,
   B,
   V = IntersectConstValues<ConstValue<A>, B>
 > = NeverKeys<V> extends never ? A : Never;

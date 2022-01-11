@@ -1,17 +1,18 @@
 import { Get } from "../../../utils";
 
 import { TypeId, Never, Const, Error } from "..";
-import { Enum, EnumValues } from "../enum";
+import { ConstType } from "../const";
+import { Enum, EnumType, EnumValues } from "../enum";
 
 import { IntersectConst } from "./const";
 import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
 import { Intersect } from "./index";
 
-export type IntersectEnum<A, B> = {
+export type IntersectEnum<A extends EnumType, B> = {
   any: A;
   never: Never;
-  const: IntersectConst<B, A>;
+  const: B extends ConstType ? IntersectConst<B, A> : never;
   enum: FilterUnintersecting<A, B>;
   primitive: FilterUnintersecting<A, B>;
   array: FilterUnintersecting<A, B>;
@@ -24,7 +25,9 @@ export type IntersectEnum<A, B> = {
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
-type FilterUnintersecting<A, B> = Enum<RecurseOnEnumValues<EnumValues<A>, B>>;
+type FilterUnintersecting<A extends EnumType, B> = Enum<
+  RecurseOnEnumValues<EnumValues<A>, B>
+>;
 
 type RecurseOnEnumValues<V, B> = V extends infer T
   ? Intersect<Const<T>, B> extends Never

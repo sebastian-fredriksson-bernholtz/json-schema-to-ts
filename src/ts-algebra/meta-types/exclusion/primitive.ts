@@ -1,18 +1,22 @@
 import { Get } from "../../../utils";
 
 import { TypeId, Never, Error } from "..";
-import { PrimitiveValue } from "../primitive";
+import { PrimitiveType, PrimitiveValue } from "../primitive";
 
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 
-export type ExcludeFromPrimitive<A, B> = {
+export type ExcludeFromPrimitive<A extends PrimitiveType, B> = {
   any: Never;
   never: A;
   const: A;
   enum: A;
-  primitive: PrimitiveValue<A> extends PrimitiveValue<B> ? Never : A;
+  primitive: B extends PrimitiveType
+    ? PrimitiveValue<A> extends PrimitiveValue<B>
+      ? Never
+      : A
+    : never;
   array: A;
   tuple: A;
   object: A;

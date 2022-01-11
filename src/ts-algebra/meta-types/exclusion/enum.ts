@@ -3,7 +3,7 @@ import { A, B, U } from "ts-toolbelt";
 import { Get } from "../../../utils";
 
 import { TypeId, Never, Const, Error } from "..";
-import { Enum, EnumValues } from "../enum";
+import { Enum, EnumType, EnumValues } from "../enum";
 import { Intersect } from "../intersection";
 import { IsRepresentable } from "../isRepresentable";
 
@@ -12,7 +12,7 @@ import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 
-export type ExcludeFromEnum<Source, Excluded> = {
+export type ExcludeFromEnum<Source extends EnumType, Excluded> = {
   any: Never;
   never: Source;
   const: FilterExcluded<Source, Excluded>;
@@ -30,7 +30,7 @@ export type ExcludeFromEnum<Source, Excluded> = {
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
-type FilterExcluded<SourceEnum, Excluded> = Enum<
+type FilterExcluded<SourceEnum extends EnumType, Excluded> = Enum<
   RecurseOnEnumValues<EnumValues<SourceEnum>, Excluded>
 >;
 
@@ -43,7 +43,7 @@ type RecurseOnEnumValues<EnumValues, Excluded> =
 
 export type ExcludeEnum<
   Source,
-  ExcludedEnum,
+  ExcludedEnum extends EnumType,
   ExcludedEnumValues = EnumValues<ExcludedEnum>
 > = A.Equals<ExcludedEnumValues, never> extends B.True
   ? Source

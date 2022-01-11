@@ -1,7 +1,7 @@
 import { Get, IsObject } from "../../../utils";
 
 import { Resolve, TypeId, Never, Error } from "..";
-import { Const, ConstValue } from "../const";
+import { Const, ConstType, ConstValue } from "../const";
 import {
   ObjectValues,
   ObjectRequiredKeys,
@@ -15,7 +15,7 @@ import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 
-export type ExcludeFromConst<Source, Excluded> = {
+export type ExcludeFromConst<Source extends ConstType, Excluded> = {
   any: Never;
   never: Source;
   const: CheckNotExtendsResolved<Source, Excluded>;
@@ -33,17 +33,21 @@ export type ExcludeFromConst<Source, Excluded> = {
   ? Get<Excluded, "type">
   : "errorTypeProperty"];
 
-type CheckNotExtendsResolved<Source, Excluded> =
-  ConstValue<Source> extends Resolve<Excluded> ? Never : Source;
+type CheckNotExtendsResolved<
+  Source extends ConstType,
+  Excluded
+> = ConstValue<Source> extends Resolve<Excluded> ? Never : Source;
 
-type ExcludeObject<Source, Excluded> = IsObject<ConstValue<Source>> extends true
+type ExcludeObject<Source extends ConstType, Excluded> = IsObject<
+  ConstValue<Source>
+> extends true
   ? ObjectRequiredKeys<Source> extends keyof ConstValue<Source>
     ? ExcludeObjectFromConst<Source, Excluded>
     : Source
   : Source;
 
 type ExcludeObjectFromConst<
-  Source,
+  Source extends ConstType,
   Excluded,
   ExcludedValues = ExcludeConstValues<ConstValue<Source>, Excluded>
 > = RepresentableKeys<ExcludedValues> extends never ? Never : Source;

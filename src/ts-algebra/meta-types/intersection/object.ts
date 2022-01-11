@@ -1,6 +1,8 @@
 import { Get, And } from "../../../utils";
 
 import { TypeId, Never, Error } from "..";
+import { ConstType } from "../const";
+import { EnumType } from "../enum";
 import {
   Object,
   ObjectValues,
@@ -38,8 +40,8 @@ type ClearObjectValuesIntersections<V> = {
 export type IntersectObject<A, B> = {
   any: A;
   never: Never;
-  const: IntersectConst<B, A>;
-  enum: IntersectEnum<B, A>;
+  const: B extends ConstType ? IntersectConst<B, A> : never;
+  enum: B extends EnumType ? IntersectEnum<B, A> : never;
   primitive: Never;
   array: Never;
   tuple: Never;

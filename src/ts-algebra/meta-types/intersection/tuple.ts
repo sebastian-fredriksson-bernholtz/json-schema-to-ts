@@ -3,6 +3,8 @@ import { A, L } from "ts-toolbelt";
 import { Get, And } from "../../../utils";
 
 import { TypeId, Never, Tuple, Error } from "..";
+import { ConstType } from "../const";
+import { EnumType } from "../enum";
 import { ArrayValues } from "../array";
 import { TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
 
@@ -33,8 +35,8 @@ type ClearTupleValuesIntersections<V extends L.List, R extends L.List = []> = {
 export type IntersectTuple<A, B> = {
   any: A;
   never: Never;
-  const: IntersectConst<B, A>;
-  enum: IntersectEnum<B, A>;
+  const: B extends ConstType ? IntersectConst<B, A> : never;
+  enum: B extends EnumType ? IntersectEnum<B, A> : never;
   primitive: Never;
   array: IntersectTupleToArray<A, B>;
   tuple: IntersectTuples<A, B>;

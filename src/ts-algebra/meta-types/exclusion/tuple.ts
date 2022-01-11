@@ -3,7 +3,8 @@ import { A, B, L } from "ts-toolbelt";
 import { Get, And, Not } from "../../../utils";
 
 import { TypeId, Never, Error } from "..";
-import { Const, ConstValue } from "../const";
+import { Const, ConstType, ConstValue } from "../const";
+import { EnumType } from "../enum";
 import { ArrayValues } from "../array";
 import { Tuple, TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
 import { IsRepresentable } from "../isRepresentable";
@@ -26,8 +27,8 @@ import {
 export type ExcludeFromTuple<S, E> = {
   any: Never;
   never: S;
-  const: ExcludeConst<S, E>;
-  enum: ExcludeEnum<S, E>;
+  const: E extends ConstType ? ExcludeConst<S, E> : never;
+  enum: E extends EnumType ? ExcludeEnum<S, E> : never;
   primitive: S;
   array: ExcludeArray<S, E>;
   tuple: ExcludeTuples<S, E>;
@@ -190,7 +191,7 @@ type RequiredTupleValues<C extends L.List, R extends L.List = []> = {
 
 // CONST
 
-type ExcludeConst<S, E, V = ConstValue<E>> = V extends L.List
+type ExcludeConst<S, E extends ConstType, V = ConstValue<E>> = V extends L.List
   ? $Exclude<S, Tuple<ExtractConstValues<V>, false, Never>>
   : S;
 

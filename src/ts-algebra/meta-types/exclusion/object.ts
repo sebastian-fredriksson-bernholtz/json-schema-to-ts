@@ -3,7 +3,8 @@ import { A, B, U } from "ts-toolbelt";
 import { Get, And, Or, Not, DoesExtend, IsObject } from "../../../utils";
 
 import { TypeId, Never, Error } from "..";
-import { Const, ConstValue } from "../const";
+import { Const, ConstType, ConstValue } from "../const";
+import { EnumType } from "../enum";
 import {
   Object,
   ObjectValues,
@@ -32,8 +33,8 @@ import {
 export type ExcludeFromObject<S, E> = {
   any: Never;
   never: S;
-  const: ExcludeConst<S, E>;
-  enum: ExcludeEnum<S, E>;
+  const: E extends ConstType ? ExcludeConst<S, E> : never;
+  enum: E extends EnumType ? ExcludeEnum<S, E> : never;
   primitive: S;
   array: S;
   tuple: S;
@@ -156,7 +157,11 @@ type OmittableKeys<C> = {
 
 // CONST
 
-type ExcludeConst<S, E, V = ConstValue<E>> = IsObject<V> extends true
+type ExcludeConst<
+  S,
+  E extends ConstType,
+  V = ConstValue<E>
+> = IsObject<V> extends true
   ? $Exclude<
       S,
       Object<{ [key in keyof V]: Const<V[key]> }, keyof V, false, Never>

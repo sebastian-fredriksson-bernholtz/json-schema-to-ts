@@ -1,6 +1,9 @@
 import { Get } from "../../../utils";
 
 import { Resolve, TypeId, Never, Error } from "..";
+import { ConstType } from "../const";
+import { EnumType } from "../enum";
+import { PrimitiveType } from "../primitive";
 import { ClearIntersections } from "../intersection";
 
 import { ExcludeFromAny } from "./any";
@@ -33,9 +36,9 @@ export type ResolveExclusion<E> = Resolve<
 export type $Exclude<A, B> = {
   any: ExcludeFromAny<A, B>;
   never: Never;
-  const: ExcludeFromConst<A, B>;
-  enum: ExcludeFromEnum<A, B>;
-  primitive: ExcludeFromPrimitive<A, B>;
+  const: A extends ConstType ? ExcludeFromConst<A, B> : never;
+  enum: A extends EnumType ? ExcludeFromEnum<A, B> : never;
+  primitive: A extends PrimitiveType ? ExcludeFromPrimitive<A, B> : never;
   array: ExcludeFromArray<A, B>;
   tuple: ExcludeFromTuple<A, B>;
   object: ExcludeFromObject<A, B>;
