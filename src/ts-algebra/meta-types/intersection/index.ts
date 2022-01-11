@@ -1,15 +1,20 @@
-import { DoesExtend, Get } from "../../../utils";
+import { Get } from "../../../utils";
 
-import { Resolve, TypeId, Never, Error } from "..";
+import { Resolve, Type, TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import { PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
+import { ObjectType } from "../object";
+import { UnionType } from "../union";
+import { ExclusionType } from "../exclusion";
 import { ErrorTypeId } from "../error";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
 import { IntersectPrimitive } from "./primitive";
-import { ClearArrIntersections, IntersectArr } from "./array";
+import { ClearArrIntersections, IntersectArray } from "./array";
 import { ClearTupleIntersections, IntersectTuple } from "./tuple";
 import { ClearObjectIntersections, IntersectObject } from "./object";
 import { ClearUnionIntersections, IntersectUnion } from "./union";
@@ -24,13 +29,19 @@ export type Intersection<L, R> = {
   right: R;
 };
 
-export type IsIntersection<I> = DoesExtend<Get<I, "type">, IntersectionTypeId>;
+export type IntersectionType = {
+  type: IntersectionTypeId;
+  left: Type;
+  right: Type;
+};
 
-export type IntersectionLeft<I> = Get<I, "left">;
+export type IntersectionLeft<I extends IntersectionType> = I["left"];
 
-export type IntersectionRight<I> = Get<I, "right">;
+export type IntersectionRight<I extends IntersectionType> = I["right"];
 
-export type ResolveIntersection<T> = Resolve<ClearIntersections<T>>;
+export type ResolveIntersection<T extends IntersectionType> = Resolve<
+  ClearIntersections<T>
+>;
 
 export type ClearIntersections<T> = {
   any: T;
@@ -38,15 +49,17 @@ export type ClearIntersections<T> = {
   const: T;
   enum: T;
   primitive: T;
-  array: ClearArrIntersections<T>;
-  tuple: ClearTupleIntersections<T>;
-  object: ClearObjectIntersections<T>;
-  union: ClearUnionIntersections<T>;
-  intersection: Intersect<
-    ClearIntersections<IntersectionLeft<T>>,
-    ClearIntersections<IntersectionRight<T>>
-  >;
-  exclusion: ClearExclusionIntersections<T>;
+  array: T extends ArrayType ? ClearArrIntersections<T> : never;
+  tuple: T extends TupleType ? ClearTupleIntersections<T> : never;
+  object: T extends ObjectType ? ClearObjectIntersections<T> : never;
+  union: T extends UnionType ? ClearUnionIntersections<T> : never;
+  intersection: T extends IntersectionType
+    ? Intersect<
+        ClearIntersections<IntersectionLeft<T>>,
+        ClearIntersections<IntersectionRight<T>>
+      >
+    : never;
+  exclusion: T extends ExclusionType ? ClearExclusionIntersections<T> : never;
   error: T;
   errorMissingType: Error<"Missing type property">;
 }[Get<T, "type"> extends TypeId ? Get<T, "type"> : "errorMissingType"];
@@ -57,16 +70,15 @@ export type Intersect<A, B> = {
   const: A extends ConstType ? IntersectConst<A, B> : never;
   enum: A extends EnumType ? IntersectEnum<A, B> : never;
   primitive: A extends PrimitiveType ? IntersectPrimitive<A, B> : never;
-  array: IntersectArr<A, B>;
-  tuple: IntersectTuple<A, B>;
-  object: IntersectObject<A, B>;
-  union: IntersectUnion<A, B>;
+  array: A extends ArrayType ? IntersectArray<A, B> : never;
+  tuple: A extends TupleType ? IntersectTuple<A, B> : never;
+  object: A extends ObjectType ? IntersectObject<A, B> : never;
+  union: A extends UnionType ? IntersectUnion<A, B> : never;
   intersection: Error<"Cannot intersect intersection">;
-  exclusion: IntersectExclusion<A, B>;
+  exclusion: A extends ExclusionType ? IntersectExclusion<A, B> : never;
   error: A;
   errorMissingType: Error<"Missing type property">;
 }[Get<A, "type"> extends TypeId ? Get<A, "type"> : "errorMissingType"];
 
-export type IsIntersectionRepresentable<A> = IsRepresentable<
-  ClearIntersections<A>
->;
+export type IsIntersectionRepresentable<A extends IntersectionType> =
+  IsRepresentable<ClearIntersections<A>>;

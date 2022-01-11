@@ -1,9 +1,13 @@
 import { Get } from "../../../utils";
 
-import { Resolve, TypeId, Never, Error } from "..";
+import { Resolve, Type, TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import { PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
+import { ObjectType } from "../object";
+import { UnionType } from "../union";
 import { ClearIntersections } from "../intersection";
 
 import { ExcludeFromAny } from "./any";
@@ -24,11 +28,17 @@ export type Exclusion<V, E> = {
   excluded: E;
 };
 
-export type ExclusionSource<E> = Get<E, "source">;
+export type ExclusionType = {
+  type: ExclusionTypeId;
+  source: Type;
+  excluded: Type;
+};
 
-export type ExclusionExcluded<E> = Get<E, "excluded">;
+export type ExclusionSource<E extends ExclusionType> = E["source"];
 
-export type ResolveExclusion<E> = Resolve<
+export type ExclusionExcluded<E extends ExclusionType> = E["excluded"];
+
+export type ResolveExclusion<E extends ExclusionType> = Resolve<
   $Exclude<ExclusionSource<E>, ExclusionExcluded<E>>
 >;
 
@@ -39,16 +49,18 @@ export type $Exclude<A, B> = {
   const: A extends ConstType ? ExcludeFromConst<A, B> : never;
   enum: A extends EnumType ? ExcludeFromEnum<A, B> : never;
   primitive: A extends PrimitiveType ? ExcludeFromPrimitive<A, B> : never;
-  array: ExcludeFromArray<A, B>;
-  tuple: ExcludeFromTuple<A, B>;
-  object: ExcludeFromObject<A, B>;
-  union: DistributeUnion<A, B>;
+  array: A extends ArrayType ? ExcludeFromArray<A, B> : never;
+  tuple: A extends TupleType ? ExcludeFromTuple<A, B> : never;
+  object: A extends ObjectType ? ExcludeFromObject<A, B> : never;
+  union: A extends UnionType ? DistributeUnion<A, B> : never;
   intersection: $Exclude<ClearIntersections<A>, B>;
-  exclusion: $Exclude<$Exclude<ExclusionSource<A>, ExclusionExcluded<A>>, B>;
+  exclusion: A extends ExclusionType
+    ? $Exclude<$Exclude<ExclusionSource<A>, ExclusionExcluded<A>>, B>
+    : never;
   error: A;
   errorMissingType: Error<"Missing type property in Exclusion source value">;
 }[Get<A, "type"> extends TypeId ? Get<A, "type"> : "errorMissingType"];
 
-export type IsExclusionRepresentable<E> = IsRepresentable<
+export type IsExclusionRepresentable<E extends ExclusionType> = IsRepresentable<
   $Exclude<ExclusionSource<E>, ExclusionExcluded<E>>
 >;

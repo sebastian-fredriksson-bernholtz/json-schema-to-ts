@@ -146,7 +146,7 @@ intersectingUnion2;
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Enum<"foo" | "bar" | 42>,
-    M.Union<Object | M.Primitive<boolean>>
+    M.Union<M.Object | M.Primitive<boolean>>
   >,
   M.Union<M.Enum<never>>
 > = 1;

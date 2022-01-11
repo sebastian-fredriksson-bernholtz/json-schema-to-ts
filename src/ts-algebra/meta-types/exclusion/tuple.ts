@@ -5,11 +5,18 @@ import { Get, And, Not } from "../../../utils";
 import { TypeId, Never, Error } from "..";
 import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
-import { ArrayValues } from "../array";
-import { Tuple, TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
+import { ArrayValues, ArrayType } from "../array";
+import {
+  Tuple,
+  TupleType,
+  TupleValues,
+  IsTupleOpen,
+  TupleOpenProps,
+} from "../tuple";
+import { UnionType } from "../union";
 import { IsRepresentable } from "../isRepresentable";
 
-import { $Exclude } from ".";
+import { $Exclude, ExclusionType } from ".";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
@@ -24,27 +31,30 @@ import {
   IsOmittable,
 } from "./utils";
 
-export type ExcludeFromTuple<S, E> = {
+export type ExcludeFromTuple<S extends TupleType, E> = {
   any: Never;
   never: S;
   const: E extends ConstType ? ExcludeConst<S, E> : never;
   enum: E extends EnumType ? ExcludeEnum<S, E> : never;
   primitive: S;
-  array: ExcludeArray<S, E>;
-  tuple: ExcludeTuples<S, E>;
+  array: E extends ArrayType ? ExcludeArray<S, E> : never;
+  tuple: E extends TupleType ? ExcludeTuples<S, E> : never;
   object: S;
-  union: ExcludeUnion<S, E>;
+  union: E extends UnionType ? ExcludeUnion<S, E> : never;
   intersection: ExcludeIntersection<S, E>;
-  exclusion: ExcludeExclusion<S, E>;
+  exclusion: E extends ExclusionType ? ExcludeExclusion<S, E> : never;
   error: E;
   errorMissingType: Error<"Missing type property in Exclusion excluded value">;
 }[Get<E, "type"> extends TypeId ? Get<E, "type"> : "errorMissingType"];
 
-type ExcludeArray<S, E> = ExcludeTuples<S, Tuple<[], true, ArrayValues<E>>>;
+type ExcludeArray<S extends TupleType, E extends ArrayType> = ExcludeTuples<
+  S,
+  Tuple<[], true, ArrayValues<E>>
+>;
 
 type ExcludeTuples<
-  S,
-  E,
+  S extends TupleType,
+  E extends TupleType,
   C extends L.List = CrossTupleValues<
     // 🔧 TOIMPROVE: Not cast here
     A.Cast<TupleValues<S>, L.List>,
@@ -128,10 +138,11 @@ type GetTupleLength<T extends L.List, R extends L.List = L.Tail<T>> = A.Equals<
 
 // SIZE CHECK
 
-type DoesTupleSizesMatch<S, E, C extends L.List> = And<
-  IsTupleOpen<S>,
-  Not<IsTupleOpen<E>>
-> extends true
+type DoesTupleSizesMatch<
+  S extends TupleType,
+  E extends TupleType,
+  C extends L.List
+> = And<IsTupleOpen<S>, Not<IsTupleOpen<E>>> extends true
   ? false
   : And<IsExcludedSmallEnough<C>, IsExcludedBigEnough<C>>;
 
@@ -166,7 +177,7 @@ type PropagateExclusion<C extends L.List, R extends L.List = []> = {
 // OMITTABLE ITEMS
 
 type OmitOmittableItems<
-  S,
+  S extends TupleType,
   C extends L.List,
   I extends L.List = OmittableItems<C>
 > = {

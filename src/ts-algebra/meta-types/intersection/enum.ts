@@ -3,6 +3,8 @@ import { Get } from "../../../utils";
 import { TypeId, Never, Const, Error } from "..";
 import { ConstType } from "../const";
 import { Enum, EnumType, EnumValues } from "../enum";
+import { UnionType } from "../union";
+import { ExclusionType } from "../exclusion";
 
 import { IntersectConst } from "./const";
 import { IntersectUnion } from "./union";
@@ -18,8 +20,8 @@ export type IntersectEnum<A extends EnumType, B> = {
   array: FilterUnintersecting<A, B>;
   tuple: FilterUnintersecting<A, B>;
   object: FilterUnintersecting<A, B>;
-  union: IntersectUnion<B, A>;
-  exclusion: IntersectExclusion<B, A>;
+  union: B extends UnionType ? IntersectUnion<B, A> : never;
+  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;

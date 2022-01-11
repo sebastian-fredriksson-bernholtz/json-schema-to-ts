@@ -1,15 +1,20 @@
+import { A } from "ts-toolbelt";
+
 import { Get, And } from "../../../utils";
 
-import { TypeId, Never, Error } from "..";
+import { Type, TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import {
   Object,
+  ObjectType,
   ObjectValues,
   ObjectRequiredKeys,
   IsObjectOpen,
   ObjectOpenProps,
 } from "../object";
+import { UnionType } from "../union";
+import { ExclusionType } from "../exclusion";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -18,7 +23,7 @@ import { IntersectExclusion } from "./exclusion";
 import { ClearIntersections, Intersect } from "./index";
 
 export type ClearObjectIntersections<
-  A,
+  A extends ObjectType,
   V = ClearObjectValuesIntersections<ObjectValues<A>>,
   N = NeverKeys<V>,
   O = ClearIntersections<ObjectOpenProps<A>>
@@ -33,11 +38,11 @@ export type ClearObjectIntersections<
     >
   : Never;
 
-type ClearObjectValuesIntersections<V> = {
+type ClearObjectValuesIntersections<V extends Record<A.Key, Type>> = {
   [key in keyof V]: ClearIntersections<V[key]>;
 };
 
-export type IntersectObject<A, B> = {
+export type IntersectObject<A extends ObjectType, B> = {
   any: A;
   never: Never;
   const: B extends ConstType ? IntersectConst<B, A> : never;
@@ -45,17 +50,17 @@ export type IntersectObject<A, B> = {
   primitive: Never;
   array: Never;
   tuple: Never;
-  object: IntersectObjects<A, B>;
-  union: DistributeIntersection<B, A>;
+  object: B extends ObjectType ? IntersectObjects<A, B> : never;
+  union: B extends UnionType ? DistributeIntersection<B, A> : never;
   intersection: Error<"Cannot intersect intersection">;
-  exclusion: IntersectExclusion<B, A>;
+  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
 type IntersectObjects<
-  A,
-  B,
+  A extends ObjectType,
+  B extends ObjectType,
   V = IntersectValues<A, B>,
   N = NeverKeys<V>,
   O = IntersectOpenProps<A, B>
@@ -73,7 +78,7 @@ type IntersectObjects<
     >
   : Never;
 
-type IntersectValues<A, B> = {
+type IntersectValues<A extends ObjectType, B extends ObjectType> = {
   [key in
     | keyof ObjectValues<A>
     | keyof ObjectValues<B>]: key extends keyof ObjectValues<A>
@@ -93,7 +98,7 @@ type NeverKeys<O> = {
   [key in keyof O]: O[key] extends Never ? key : never;
 }[keyof O];
 
-type IntersectOpenProps<A, B> = Intersect<
+type IntersectOpenProps<A extends ObjectType, B extends ObjectType> = Intersect<
   ObjectOpenProps<A>,
   ObjectOpenProps<B>
 >;

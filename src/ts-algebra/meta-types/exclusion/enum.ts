@@ -5,9 +5,10 @@ import { Get } from "../../../utils";
 import { TypeId, Never, Const, Error } from "..";
 import { Enum, EnumType, EnumValues } from "../enum";
 import { Intersect } from "../intersection";
+import { UnionType } from "../union";
 import { IsRepresentable } from "../isRepresentable";
 
-import { $Exclude } from ".";
+import { $Exclude, ExclusionType } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
@@ -21,9 +22,11 @@ export type ExcludeFromEnum<Source extends EnumType, Excluded> = {
   array: FilterExcluded<Source, Excluded>;
   tuple: FilterExcluded<Source, Excluded>;
   object: FilterExcluded<Source, Excluded>;
-  union: ExcludeUnion<Source, Excluded>;
+  union: Excluded extends UnionType ? ExcludeUnion<Source, Excluded> : never;
   intersection: ExcludeIntersection<Source, Excluded>;
-  exclusion: ExcludeExclusion<Source, Excluded>;
+  exclusion: Excluded extends ExclusionType
+    ? ExcludeExclusion<Source, Excluded>
+    : never;
   error: Excluded;
   errorTypeProperty: Error<"Missing type property">;
 }[Get<Excluded, "type"> extends TypeId

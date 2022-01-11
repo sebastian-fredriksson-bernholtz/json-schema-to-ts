@@ -1,19 +1,19 @@
 import { Get } from "../../../utils";
 
-import { TypeId, Never, Error } from "..";
-import { Union, UnionValues } from "../union";
+import { Type, TypeId, Never, Error } from "..";
+import { Union, UnionType, UnionValues } from "../union";
 
 import { ClearIntersections, Intersect } from "./index";
 
-export type ClearUnionIntersections<A> = Union<
+export type ClearUnionIntersections<A extends UnionType> = Union<
   ClearUnionValuesIntersections<UnionValues<A>>
 >;
 
-type ClearUnionValuesIntersections<V> = V extends infer T
+type ClearUnionValuesIntersections<V extends Type> = V extends infer T
   ? ClearIntersections<T>
   : never;
 
-export type IntersectUnion<A, B> = {
+export type IntersectUnion<A extends UnionType, B> = {
   any: A;
   never: Never;
   const: DistributeIntersection<A, B>;
@@ -29,8 +29,10 @@ export type IntersectUnion<A, B> = {
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
-export type DistributeIntersection<A, B> = Union<
-  RecurseOnUnion<UnionValues<A>, B>
+export type DistributeIntersection<A extends UnionType, B> = Union<
+  RecurseOnUnionValues<UnionValues<A>, B>
 >;
 
-type RecurseOnUnion<V, B> = V extends infer T ? Intersect<T, B> : never;
+type RecurseOnUnionValues<V extends Type, B> = V extends infer T
+  ? Intersect<T, B>
+  : never;

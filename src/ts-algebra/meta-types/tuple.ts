@@ -1,8 +1,7 @@
 import { L } from "ts-toolbelt";
 
-import { Get } from "../../utils";
-
 import { Resolve, Any } from ".";
+import { Type } from "./type";
 import { IsRepresentable } from "./isRepresentable";
 
 export type TupleTypeId = "tuple";
@@ -15,29 +14,33 @@ export type Tuple<V, O = true, P = Any> = {
   openProps: P;
 };
 
-export type TupleValues<T> = Get<T, "values">;
+export type TupleType = {
+  type: TupleTypeId;
+  values: Type[];
+  isOpen: boolean;
+  openProps: Type;
+};
 
-export type IsTupleOpen<T> = Get<T, "isOpen">;
+export type TupleValues<T extends TupleType> = T["values"];
 
-export type TupleOpenProps<T> = Get<T, "openProps">;
+export type IsTupleOpen<T extends TupleType> = T["isOpen"];
 
-export type ResolveTuple<T> = IsTupleOpen<T> extends true
+export type TupleOpenProps<T extends TupleType> = T["openProps"];
+
+export type ResolveTuple<T extends TupleType> = IsTupleOpen<T> extends true
   ? L.Concat<RecurseOnTuple<TupleValues<T>>, [...Resolve<TupleOpenProps<T>>[]]>
   : RecurseOnTuple<TupleValues<T>>;
 
-type RecurseOnTuple<V, R extends L.List = []> = {
+type RecurseOnTuple<V extends Type[], R extends L.List = []> = {
   stop: L.Reverse<R>;
   // 🔧 TOIMPROVE: Not cast here
-  continue: V extends L.List
-    ? RecurseOnTuple<L.Tail<V>, L.Prepend<R, Resolve<L.Head<V>>>>
-    : never;
+  continue: RecurseOnTuple<L.Tail<V>, L.Prepend<R, Resolve<L.Head<V>>>>;
 }[V extends [any, ...L.List] ? "continue" : "stop"];
 
-export type IsTupleRepresentable<T> = AreAllTupleValuesRepresentable<
-  TupleValues<T>
->;
+export type IsTupleRepresentable<T extends TupleType> =
+  AreAllTupleValuesRepresentable<TupleValues<T>>;
 
-type AreAllTupleValuesRepresentable<V> = {
+type AreAllTupleValuesRepresentable<V extends Type[]> = {
   stop: true;
   // 🔧 TOIMPROVE: Not cast here
   continue: V extends L.List

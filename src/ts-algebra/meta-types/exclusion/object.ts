@@ -7,15 +7,17 @@ import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
 import {
   Object,
+  ObjectType,
   ObjectValues,
   ObjectValue,
   ObjectRequiredKeys,
   IsObjectOpen,
   ObjectOpenProps,
 } from "../object";
+import { UnionType } from "../union";
 import { IsRepresentable } from "../isRepresentable";
 
-import { $Exclude } from ".";
+import { $Exclude, ExclusionType } from ".";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
@@ -30,7 +32,7 @@ import {
   IsOmittable,
 } from "./utils";
 
-export type ExcludeFromObject<S, E> = {
+export type ExcludeFromObject<S extends ObjectType, E> = {
   any: Never;
   never: S;
   const: E extends ConstType ? ExcludeConst<S, E> : never;
@@ -38,17 +40,17 @@ export type ExcludeFromObject<S, E> = {
   primitive: S;
   array: S;
   tuple: S;
-  object: ExcludeObjects<S, E>;
-  union: ExcludeUnion<S, E>;
+  object: E extends ObjectType ? ExcludeObjects<S, E> : never;
+  union: E extends UnionType ? ExcludeUnion<S, E> : never;
   intersection: ExcludeIntersection<S, E>;
-  exclusion: ExcludeExclusion<S, E>;
+  exclusion: E extends ExclusionType ? ExcludeExclusion<S, E> : never;
   error: E;
   errorTypeProperty: Error<"Missing type property">;
 }[Get<E, "type"> extends TypeId ? Get<E, "type"> : "errorTypeProperty"];
 
 type ExcludeObjects<
-  S,
-  E,
+  S extends ObjectType,
+  E extends ObjectType,
   C = CrossObjectValues<S, E>,
   R = RepresentableKeys<C>,
   P = $Exclude<ObjectOpenProps<S>, ObjectOpenProps<E>>
@@ -62,7 +64,7 @@ type ExcludeObjects<
       : GetUnionLength<R>]
   : S;
 
-type CrossObjectValues<S, E> = {
+type CrossObjectValues<S extends ObjectType, E extends ObjectType> = {
   [key in
     | keyof ObjectValues<S>
     | keyof ObjectValues<E>
@@ -85,16 +87,19 @@ type GetUnionLength<Union> = A.Equals<Union, never> extends B.True
   ? "onlyOne"
   : "moreThanTwo";
 
-type IsPossibleIn<O, K> = Or<
+type IsPossibleIn<O extends ObjectType, K extends A.Key> = Or<
   DoesExtend<K, keyof ObjectValues<O>>,
   IsObjectOpen<O>
 >;
 
-type IsRequiredIn<O, K> = DoesExtend<K, ObjectRequiredKeys<O>>;
+type IsRequiredIn<O extends ObjectType, K extends A.Key> = DoesExtend<
+  K,
+  ObjectRequiredKeys<O>
+>;
 
 // SIZE CHECK
 
-type DoesObjectSizesMatch<S, E, C> = And<
+type DoesObjectSizesMatch<S extends ObjectType, E extends ObjectType, C> = And<
   IsObjectOpen<S>,
   Not<IsObjectOpen<E>>
 > extends true
@@ -127,7 +132,7 @@ type RepresentableKeys<C> = {
     : never;
 }[keyof C];
 
-type PropagateExclusion<S, C> = Object<
+type PropagateExclusion<S extends ObjectType, C> = Object<
   {
     [key in keyof C]: Propagate<C[key]>;
   },
@@ -138,7 +143,7 @@ type PropagateExclusion<S, C> = Object<
 
 // OMITTABLE KEYS
 
-type OmitOmittableKeys<S, C, K = OmittableKeys<C>> = {
+type OmitOmittableKeys<S extends ObjectType, C, K = OmittableKeys<C>> = {
   moreThanTwo: S;
   onlyOne: Object<
     {

@@ -1,5 +1,3 @@
-import { Get } from "../../utils";
-
 export type ErrorTypeId = "error";
 
 export type Error<M = "Unknown error"> = {
@@ -7,4 +5,9 @@ export type Error<M = "Unknown error"> = {
   message: M;
 };
 
-export type ErrorMessage<E> = Get<E, "message">;
+export type ErrorType = {
+  type: ErrorTypeId;
+  message: string;
+};
+
+export type ErrorMessage<E extends ErrorType> = E["message"];

@@ -26,6 +26,7 @@ export type ParseSchema<S> = {
   anyOf: ParseAnyOfSchema<S>;
   oneOf: ParseOneOfSchema<S>;
   allOf: ParseAllOfSchema<S>;
+  // @ts-expect-error "Type instanciation is too deep and potentially infinite" error
   not: ParseNotSchema<S>;
   ifThenElse: ParseIfThenElseSchema<S>;
 }[InferSchemaType<S>];

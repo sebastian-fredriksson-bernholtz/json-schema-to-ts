@@ -5,8 +5,10 @@ import { Get, And } from "../../../utils";
 import { TypeId, Never, Tuple, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
-import { ArrayValues } from "../array";
-import { TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
+import { ArrayType, ArrayValues } from "../array";
+import { TupleType, TupleValues, IsTupleOpen, TupleOpenProps } from "../tuple";
+import { UnionType } from "../union";
+import { ExclusionType } from "../exclusion";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -15,7 +17,7 @@ import { IntersectExclusion } from "./exclusion";
 import { ClearIntersections, Intersect } from ".";
 
 export type ClearTupleIntersections<
-  T,
+  T extends TupleType,
   O = ClearIntersections<TupleOpenProps<T>>
 > = Tuple<
   // 🔧 TOIMPROVE: Not cast here
@@ -32,30 +34,26 @@ type ClearTupleValuesIntersections<V extends L.List, R extends L.List = []> = {
   >;
 }[V extends [any, ...L.List] ? "continue" : "stop"];
 
-export type IntersectTuple<A, B> = {
+export type IntersectTuple<A extends TupleType, B> = {
   any: A;
   never: Never;
   const: B extends ConstType ? IntersectConst<B, A> : never;
   enum: B extends EnumType ? IntersectEnum<B, A> : never;
   primitive: Never;
-  array: IntersectTupleToArray<A, B>;
-  tuple: IntersectTuples<A, B>;
+  array: B extends ArrayType ? IntersectTupleToArray<A, B> : never;
+  tuple: B extends TupleType ? IntersectTuples<A, B> : never;
   object: Never;
-  union: DistributeIntersection<B, A>;
+  union: B extends UnionType ? DistributeIntersection<B, A> : never;
   intersection: Error<"Cannot intersect intersection">;
-  exclusion: IntersectExclusion<B, A>;
+  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
 type IntersectTupleToArray<
-  T,
-  A,
-  V extends L.List = IntersectTupleToArrValues<
-    // 🔧 TOIMPROVE: Not cast here
-    A.Cast<TupleValues<T>, L.List>,
-    ArrayValues<A>
-  >,
+  T extends TupleType,
+  A extends ArrayType,
+  V extends L.List = IntersectTupleToArrValues<TupleValues<T>, ArrayValues<A>>,
   N = HasNeverValue<V>,
   O = Intersect<TupleOpenProps<T>, ArrayValues<A>>
 > = N extends true
@@ -83,13 +81,11 @@ type HasNeverValue<V extends L.List, R = false> = {
 }[V extends [any, ...L.List] ? "continue" : "stop"];
 
 type IntersectTuples<
-  A,
-  B,
+  A extends TupleType,
+  B extends TupleType,
   V extends L.List = IntersectTupleValues<
-    // 🔧 TOIMPROVE: Not cast here
-    A.Cast<TupleValues<A>, L.List>,
-    // 🔧 TOIMPROVE: Not cast here
-    A.Cast<TupleValues<B>, L.List>,
+    TupleValues<A>,
+    TupleValues<B>,
     IsTupleOpen<A>,
     IsTupleOpen<B>,
     TupleOpenProps<A>,

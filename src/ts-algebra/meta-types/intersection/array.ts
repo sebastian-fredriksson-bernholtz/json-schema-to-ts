@@ -3,7 +3,10 @@ import { Get } from "../../../utils";
 import { TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
-import { $Array, ArrayValues } from "../array";
+import { $Array, ArrayType, ArrayValues } from "../array";
+import { TupleType } from "../tuple";
+import { UnionType } from "../union";
+import { ExclusionType } from "../exclusion";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -12,28 +15,28 @@ import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
 import { ClearIntersections, Intersect } from "./index";
 
-export type ClearArrIntersections<A> = $Array<
+export type ClearArrIntersections<A extends ArrayType> = $Array<
   ClearIntersections<ArrayValues<A>>
 >;
 
-export type IntersectArr<A, B> = {
+export type IntersectArray<A extends ArrayType, B> = {
   any: A;
   never: Never;
   const: B extends ConstType ? IntersectConst<B, A> : never;
   enum: B extends EnumType ? IntersectEnum<B, A> : never;
   primitive: Never;
-  array: IntersectArrs<A, B>;
-  tuple: IntersectTuple<B, A>;
+  array: B extends ArrayType ? IntersectArrs<A, B> : never;
+  tuple: B extends TupleType ? IntersectTuple<B, A> : never;
   object: Never;
-  union: IntersectUnion<B, A>;
-  exclusion: IntersectExclusion<B, A>;
+  union: B extends UnionType ? IntersectUnion<B, A> : never;
+  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
 
 type IntersectArrs<
-  A,
-  B,
+  A extends ArrayType,
+  B extends ArrayType,
   I = Intersect<ArrayValues<A>, ArrayValues<B>>
 > = I extends Never ? Never : $Array<I>;

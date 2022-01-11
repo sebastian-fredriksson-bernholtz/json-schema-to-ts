@@ -4,6 +4,7 @@ import { TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import { PrimitiveValue, PrimitiveType } from "../primitive";
+import { ExclusionType } from "../exclusion";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
@@ -27,7 +28,7 @@ export type IntersectPrimitive<A extends PrimitiveType, B> = {
   object: Never;
   union: Intersect<B, A>;
   intersection: Error<"Cannot intersect intersection">;
-  exclusion: IntersectExclusion<B, A>;
+  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
 }[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];

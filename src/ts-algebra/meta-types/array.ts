@@ -1,6 +1,7 @@
-import { Get, Prettify } from "../../utils";
+import { Prettify } from "../../utils";
 
 import { Resolve, Any } from ".";
+import { Type } from "./type";
 
 export type ArrayTypeId = "array";
 
@@ -10,6 +11,13 @@ export type $Array<V = Any> = {
   values: V;
 };
 
-export type ArrayValues<A> = Get<A, "values">;
+export type ArrayType = {
+  type: ArrayTypeId;
+  values: Type;
+};
 
-export type ResolveArr<T> = Prettify<Resolve<ArrayValues<T>>[]>;
+export type ArrayValues<A extends ArrayType> = A["values"];
+
+export type ResolveArray<T extends ArrayType> = Prettify<
+  Resolve<ArrayValues<T>>[]
+>;

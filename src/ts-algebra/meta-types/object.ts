@@ -3,6 +3,7 @@ import { A, B } from "ts-toolbelt";
 import { DoesExtend, Or, Not, Get, DeepMergeUnsafe } from "../../utils";
 
 import { Resolve, Any, Never } from ".";
+import { Type } from "./type";
 import { IsRepresentable } from "./isRepresentable";
 
 export type ObjectTypeId = "object";
@@ -15,38 +16,47 @@ export type Object<V = {}, R = never, O = true, P = Any> = {
   openProps: P;
 };
 
-export type ObjectValues<O> = Get<O, "values">;
+export type ObjectType = {
+  type: ObjectTypeId;
+  values: Record<A.Key, Type>;
+  required: A.Key;
+  isOpen: boolean;
+  openProps: Type;
+};
 
-export type ObjectValue<O, K> = K extends keyof ObjectValues<O>
+export type ObjectValues<O extends ObjectType> = O["values"];
+
+export type ObjectValue<
+  O extends ObjectType,
+  K extends A.Key
+> = K extends keyof ObjectValues<O>
   ? ObjectValues<O>[K]
   : IsObjectOpen<O> extends true
   ? ObjectOpenProps<O>
   : Never;
 
-export type ObjectRequiredKeys<O> = Get<O, "required"> extends string
-  ? Get<O, "required">
-  : never;
+export type ObjectRequiredKeys<O extends ObjectType> = O["required"];
 
-export type IsObjectOpen<O> = Get<O, "isOpen">;
+export type IsObjectOpen<O extends ObjectType> = O["isOpen"];
 
-export type ObjectOpenProps<O> = Get<O, "openProps">;
+export type ObjectOpenProps<O extends ObjectType> = O["openProps"];
 
-type IsObjectEmpty<O> = DoesExtend<
+type IsObjectEmpty<O extends ObjectType> = DoesExtend<
   Extract<keyof ObjectValues<O>, keyof ObjectValues<O>>,
   never
 >;
 
-export type ResolveObject<O> = IsObjectValid<O> extends true
+export type ResolveObject<O extends ObjectType> = IsObjectValid<O> extends true
   ? ResolveValidObject<O>
   : never;
 
-type IsObjectValid<O> = IsObjectOpen<O> extends false
+type IsObjectValid<O extends ObjectType> = IsObjectOpen<O> extends false
   ? ObjectRequiredKeys<O> extends keyof ObjectValues<O>
     ? true
     : false
   : true;
 
-type ResolveValidObject<O> = DeepMergeUnsafe<
+type ResolveValidObject<O extends ObjectType> = DeepMergeUnsafe<
   IsObjectOpen<O> extends true
     ? IsObjectEmpty<O> extends true
       ? { [key: string]: Resolve<Get<O, "openProps">> }
@@ -66,13 +76,16 @@ type ResolveValidObject<O> = DeepMergeUnsafe<
   >
 >;
 
-type IsObjectValueRepresentable<O, K> = K extends keyof ObjectValues<O>
+type IsObjectValueRepresentable<
+  O extends ObjectType,
+  K extends A.Key
+> = K extends keyof ObjectValues<O>
   ? IsRepresentable<ObjectValues<O>[K]>
   : IsObjectOpen<O> extends true
   ? IsRepresentable<ObjectOpenProps<O>>
   : false;
 
-export type IsObjectRepresentable<O> = Or<
+export type IsObjectRepresentable<O extends ObjectType> = Or<
   DoesExtend<A.Equals<ObjectRequiredKeys<O>, never>, B.True>,
   Not<
     DoesExtend<
