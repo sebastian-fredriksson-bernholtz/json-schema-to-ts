@@ -1,12 +1,17 @@
 import { DoesExtend } from "../../utils";
 
-import { Resolve } from ".";
-import { IsRepresentable } from "./isRepresentable";
+import { $Resolve } from "./resolve";
+import { $IsRepresentable } from "./isRepresentable";
 import { Type } from "./type";
 
 export type UnionTypeId = "union";
 
-export type Union<V> = {
+export type Union<V extends Type> = {
+  type: UnionTypeId;
+  values: V;
+};
+
+export type $Union<V> = {
   type: UnionTypeId;
   values: V;
 };
@@ -20,7 +25,7 @@ export type UnionValues<U extends UnionType> = U["values"];
 
 export type ResolveUnion<U extends UnionType> = RecurseOnUnion<UnionValues<U>>;
 
-type RecurseOnUnion<V extends Type> = V extends infer T ? Resolve<T> : never;
+type RecurseOnUnion<V extends Type> = V extends infer T ? $Resolve<T> : never;
 
 export type IsUnionRepresentable<U extends UnionType> = DoesExtend<
   true,
@@ -28,5 +33,5 @@ export type IsUnionRepresentable<U extends UnionType> = DoesExtend<
 >;
 
 type AreUnionValuesRepresentable<V extends Type> = V extends infer T
-  ? IsRepresentable<T>
+  ? $IsRepresentable<T>
   : never;

@@ -1,22 +1,22 @@
 import { A, B, L } from "ts-toolbelt";
 
-import { Get, And, Not } from "../../../utils";
+import { And, Not } from "../../../utils";
 
-import { TypeId, Never, Error } from "..";
+import { Type, TypeId, Never, Error } from "..";
 import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
 import { ArrayValues, ArrayType } from "../array";
 import {
-  Tuple,
+  $Tuple,
   TupleType,
   TupleValues,
   IsTupleOpen,
   TupleOpenProps,
 } from "../tuple";
 import { UnionType } from "../union";
-import { IsRepresentable } from "../isRepresentable";
+import { $IsRepresentable } from "../isRepresentable";
 
-import { $Exclude, ExclusionType } from ".";
+import { _Exclude, ExclusionType } from ".";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
@@ -31,65 +31,61 @@ import {
   IsOmittable,
 } from "./utils";
 
-export type ExcludeFromTuple<S extends TupleType, E> = {
+export type ExcludeFromTuple<A extends TupleType, B> = {
   any: Never;
-  never: S;
-  const: E extends ConstType ? ExcludeConst<S, E> : never;
-  enum: E extends EnumType ? ExcludeEnum<S, E> : never;
-  primitive: S;
-  array: E extends ArrayType ? ExcludeArray<S, E> : never;
-  tuple: E extends TupleType ? ExcludeTuples<S, E> : never;
-  object: S;
-  union: E extends UnionType ? ExcludeUnion<S, E> : never;
-  intersection: ExcludeIntersection<S, E>;
-  exclusion: E extends ExclusionType ? ExcludeExclusion<S, E> : never;
-  error: E;
+  never: A;
+  const: B extends ConstType ? ExcludeConst<A, B> : never;
+  enum: B extends EnumType ? ExcludeEnum<A, B> : never;
+  primitive: A;
+  array: B extends ArrayType ? ExcludeArray<A, B> : never;
+  tuple: B extends TupleType ? ExcludeTuples<A, B> : never;
+  object: A;
+  union: B extends UnionType ? ExcludeUnion<A, B> : never;
+  intersection: ExcludeIntersection<A, B>;
+  exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
+  error: B;
   errorMissingType: Error<"Missing type property in Exclusion excluded value">;
-}[Get<E, "type"> extends TypeId ? Get<E, "type"> : "errorMissingType"];
+}[B extends { type: TypeId } ? B["type"] : "errorMissingType"];
 
-type ExcludeArray<S extends TupleType, E extends ArrayType> = ExcludeTuples<
-  S,
-  Tuple<[], true, ArrayValues<E>>
+type ExcludeArray<A extends TupleType, B extends ArrayType> = ExcludeTuples<
+  A,
+  $Tuple<[], true, ArrayValues<B>>
 >;
 
 type ExcludeTuples<
-  S extends TupleType,
-  E extends TupleType,
-  C extends L.List = CrossTupleValues<
-    // 🔧 TOIMPROVE: Not cast here
-    A.Cast<TupleValues<S>, L.List>,
-    // 🔧 TOIMPROVE: Not cast here
-    A.Cast<TupleValues<E>, L.List>,
-    IsTupleOpen<S>,
-    IsTupleOpen<E>,
-    TupleOpenProps<S>,
-    TupleOpenProps<E>
+  A extends TupleType,
+  B extends TupleType,
+  // TOIMPROVE: Type as crossed value
+  C extends any[] = CrossTupleValues<
+    TupleValues<A>,
+    TupleValues<B>,
+    IsTupleOpen<A>,
+    IsTupleOpen<B>,
+    TupleOpenProps<A>,
+    TupleOpenProps<B>
   >,
-  R extends L.List = RepresentableItems<C>,
-  P = $Exclude<TupleOpenProps<S>, TupleOpenProps<E>>,
-  I = IsRepresentable<P>
-> = DoesTupleSizesMatch<S, E, C> extends true
+  R extends any[] = RepresentableItems<C>,
+  P = _Exclude<TupleOpenProps<A>, TupleOpenProps<B>>,
+  I = $IsRepresentable<P>
+> = DoesTupleSizesMatch<A, B, C> extends true
   ? {
-      moreThanTwo: S;
-      onlyOne: Tuple<
-        PropagateExclusion<C>,
-        I extends true ? IsTupleOpen<S> : false,
-        P
-      >;
-      none: OmitOmittableItems<S, C>;
-    }[And<IsTupleOpen<S>, I> extends true ? "moreThanTwo" : GetTupleLength<R>]
-  : S;
+      moreThanTwo: A;
+      onlyOne: $Tuple<PropagateExclusion<C>, IsTupleOpen<A>, TupleOpenProps<A>>;
+      none: OmitOmittableItems<A, C>;
+    }[And<IsTupleOpen<A>, I> extends true ? "moreThanTwo" : GetTupleLength<R>]
+  : A;
 
 type CrossTupleValues<
-  V1 extends L.List,
-  V2 extends L.List,
-  O1,
-  O2,
-  P1,
-  P2,
-  R extends L.List = []
+  V1 extends Type[],
+  V2 extends Type[],
+  O1 extends boolean,
+  O2 extends boolean,
+  P1 extends Type,
+  P2 extends Type,
+  // TOIMPROVE: Type as crossed value
+  C extends any[] = []
 > = {
-  stop: L.Reverse<R>;
+  stop: L.Reverse<C>;
   continue1: CrossTupleValues<
     L.Tail<V1>,
     [],
@@ -97,7 +93,7 @@ type CrossTupleValues<
     O2,
     P1,
     P2,
-    L.Prepend<R, CrossValue<L.Head<V1>, true, true, P2, O2, false>>
+    L.Prepend<C, CrossValue<L.Head<V1>, true, true, P2, O2, false>>
   >;
   continue2: CrossTupleValues<
     [],
@@ -106,7 +102,7 @@ type CrossTupleValues<
     O2,
     P1,
     P2,
-    L.Prepend<R, CrossValue<P1, O1, false, L.Head<V2>, true, true>>
+    L.Prepend<C, CrossValue<P1, O1, false, L.Head<V2>, true, true>>
   >;
   continueBoth: CrossTupleValues<
     L.Tail<V1>,
@@ -115,19 +111,19 @@ type CrossTupleValues<
     O2,
     P1,
     P2,
-    L.Prepend<R, CrossValue<L.Head<V1>, true, true, L.Head<V2>, true, true>>
+    L.Prepend<C, CrossValue<L.Head<V1>, true, true, L.Head<V2>, true, true>>
   >;
-}[V1 extends [any, ...L.List]
-  ? V2 extends [any, ...L.List]
+}[V1 extends [any, ...any[]]
+  ? V2 extends [any, ...any[]]
     ? "continueBoth"
     : "continue1"
-  : V2 extends [any, ...L.List]
+  : V2 extends [any, ...any[]]
   ? "continue2"
   : "stop"];
 
 // UTILS
 
-type GetTupleLength<T extends L.List, R extends L.List = L.Tail<T>> = A.Equals<
+type GetTupleLength<T extends any[], R extends any[] = L.Tail<T>> = A.Equals<
   T,
   []
 > extends B.True
@@ -141,72 +137,84 @@ type GetTupleLength<T extends L.List, R extends L.List = L.Tail<T>> = A.Equals<
 type DoesTupleSizesMatch<
   S extends TupleType,
   E extends TupleType,
-  C extends L.List
+  // TOIMPROVE: Type as crossed value
+  C extends any[]
 > = And<IsTupleOpen<S>, Not<IsTupleOpen<E>>> extends true
   ? false
   : And<IsExcludedSmallEnough<C>, IsExcludedBigEnough<C>>;
 
-type IsExcludedSmallEnough<C extends L.List> = {
+// TOIMPROVE: Type as crossed value
+type IsExcludedSmallEnough<C extends any[]> = {
   stop: true;
   continue: IsOutsideOfSourceScope<L.Head<C>> extends true
     ? false
     : IsExcludedSmallEnough<L.Tail<C>>;
-}[C extends [any, ...L.List] ? "continue" : "stop"];
+}[C extends [any, ...any[]] ? "continue" : "stop"];
 
-type IsExcludedBigEnough<C extends L.List> = {
+// TOIMPROVE: Type as crossed value
+type IsExcludedBigEnough<C extends any[]> = {
   stop: true;
   continue: IsOutsideOfExcludedScope<L.Head<C>> extends true
     ? false
     : IsExcludedBigEnough<L.Tail<C>>;
-}[C extends [any, ...L.List] ? "continue" : "stop"];
+}[C extends [any, ...any[]] ? "continue" : "stop"];
 
 // PROPAGATION
 
-type RepresentableItems<C extends L.List, R extends L.List = []> = {
+// TOIMPROVE: Type as crossed value
+type RepresentableItems<C extends any[], R extends any[] = []> = {
   stop: R;
   continue: IsExclusionValueRepresentable<L.Head<C>> extends true
     ? RepresentableItems<L.Tail<C>, L.Prepend<R, L.Head<C>>>
     : RepresentableItems<L.Tail<C>, R>;
-}[C extends [any, ...L.List] ? "continue" : "stop"];
+}[C extends [any, ...any[]] ? "continue" : "stop"];
 
-type PropagateExclusion<C extends L.List, R extends L.List = []> = {
+// TOIMPROVE: Type as crossed value
+type PropagateExclusion<C extends any[], R extends any[] = []> = {
   stop: L.Reverse<R>;
   continue: PropagateExclusion<L.Tail<C>, L.Prepend<R, Propagate<L.Head<C>>>>;
-}[C extends [any, ...L.List] ? "continue" : "stop"];
+}[C extends [any, ...any[]] ? "continue" : "stop"];
 
 // OMITTABLE ITEMS
 
 type OmitOmittableItems<
   S extends TupleType,
-  C extends L.List,
-  I extends L.List = OmittableItems<C>
+  // TOIMPROVE: Type as crossed value
+  C extends any[],
+  I extends any[] = OmittableItems<C>
 > = {
   moreThanTwo: S;
-  onlyOne: Tuple<RequiredTupleValues<C>, false, TupleOpenProps<S>>;
+  onlyOne: $Tuple<RequiredTupleValues<C>, false, TupleOpenProps<S>>;
   none: Never;
 }[GetTupleLength<I>];
 
-type OmittableItems<C extends L.List, R extends L.List = []> = {
+// TOIMPROVE: Type as crossed value
+type OmittableItems<C extends any[], R extends any[] = []> = {
   stop: R;
   continue: IsOmittable<L.Head<C>> extends true
     ? OmittableItems<L.Tail<C>, L.Prepend<R, L.Head<C>>>
     : OmittableItems<L.Tail<C>, R>;
-}[C extends [any, ...L.List] ? "continue" : "stop"];
+}[C extends [any, ...any[]] ? "continue" : "stop"];
 
-type RequiredTupleValues<C extends L.List, R extends L.List = []> = {
+// TOIMPROVE: Type as crossed value
+type RequiredTupleValues<C extends any[], R extends any[] = []> = {
   stop: L.Reverse<R>;
   continue: IsOmittable<L.Head<C>> extends true
     ? L.Reverse<R>
     : RequiredTupleValues<L.Tail<C>, L.Prepend<R, SourceValue<L.Head<C>>>>;
-}[C extends [any, ...L.List] ? "continue" : "stop"];
+}[C extends [any, ...any[]] ? "continue" : "stop"];
 
 // CONST
 
-type ExcludeConst<S, E extends ConstType, V = ConstValue<E>> = V extends L.List
-  ? $Exclude<S, Tuple<ExtractConstValues<V>, false, Never>>
-  : S;
+type ExcludeConst<
+  A extends TupleType,
+  B extends ConstType,
+  V = ConstValue<B>
+> = V extends any[]
+  ? _Exclude<A, $Tuple<ExtractConstValues<V>, false, Never>>
+  : A;
 
-type ExtractConstValues<V extends L.List, R extends L.List = []> = {
+type ExtractConstValues<V extends any[], R extends any[] = []> = {
   stop: L.Reverse<R>;
   continue: ExtractConstValues<L.Tail<V>, L.Prepend<R, Const<L.Head<V>>>>;
-}[V extends [any, ...L.List] ? "continue" : "stop"];
+}[V extends [any, ...any[]] ? "continue" : "stop"];

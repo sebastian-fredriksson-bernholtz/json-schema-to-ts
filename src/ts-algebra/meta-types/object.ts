@@ -1,14 +1,27 @@
 import { A, B } from "ts-toolbelt";
 
-import { DoesExtend, Or, Not, Get, DeepMergeUnsafe } from "../../utils";
+import { DoesExtend, Or, Not, DeepMergeUnsafe } from "../../utils";
 
-import { Resolve, Any, Never } from ".";
+import { $Resolve, Any, Never } from ".";
 import { Type } from "./type";
-import { IsRepresentable } from "./isRepresentable";
+import { $IsRepresentable } from "./isRepresentable";
 
 export type ObjectTypeId = "object";
 
-export type Object<V = {}, R = never, O = true, P = Any> = {
+export type Object<
+  V extends Record<A.Key, Type> = {},
+  R extends A.Key = never,
+  O extends boolean = true,
+  P extends Type = Any
+> = {
+  type: ObjectTypeId;
+  values: V;
+  required: R;
+  isOpen: O;
+  openProps: P;
+};
+
+export type $Object<V = {}, R = never, O = true, P = Any> = {
   type: ObjectTypeId;
   values: V;
   required: R;
@@ -59,19 +72,19 @@ type IsObjectValid<O extends ObjectType> = IsObjectOpen<O> extends false
 type ResolveValidObject<O extends ObjectType> = DeepMergeUnsafe<
   IsObjectOpen<O> extends true
     ? IsObjectEmpty<O> extends true
-      ? { [key: string]: Resolve<Get<O, "openProps">> }
-      : { [key: string]: Resolve<Any> }
+      ? { [key: string]: $Resolve<ObjectOpenProps<O>> }
+      : { [key: string]: $Resolve<Any> }
     : {},
   DeepMergeUnsafe<
     {
-      [key in Exclude<keyof ObjectValues<O>, ObjectRequiredKeys<O>>]?: Resolve<
+      [key in Exclude<keyof ObjectValues<O>, ObjectRequiredKeys<O>>]?: $Resolve<
         ObjectValues<O>[key]
       >;
     },
     {
       [key in ObjectRequiredKeys<O>]: key extends keyof ObjectValues<O>
-        ? Resolve<ObjectValues<O>[key]>
-        : Resolve<Any>;
+        ? $Resolve<ObjectValues<O>[key]>
+        : $Resolve<Any>;
     }
   >
 >;
@@ -80,9 +93,9 @@ type IsObjectValueRepresentable<
   O extends ObjectType,
   K extends A.Key
 > = K extends keyof ObjectValues<O>
-  ? IsRepresentable<ObjectValues<O>[K]>
+  ? $IsRepresentable<ObjectValues<O>[K]>
   : IsObjectOpen<O> extends true
-  ? IsRepresentable<ObjectOpenProps<O>>
+  ? $IsRepresentable<ObjectOpenProps<O>>
   : false;
 
 export type IsObjectRepresentable<O extends ObjectType> = Or<

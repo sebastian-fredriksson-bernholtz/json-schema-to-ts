@@ -54,7 +54,7 @@ anyToTuple;
 
 // --- OBJECT ---
 
-const anyToObject: A.Equals<M.Intersect<M.Any, Object>, Object> = 1;
+const anyToObject: A.Equals<M.Intersect<M.Any, M.Object>, M.Object> = 1;
 anyToObject;
 
 // --- UNION ---

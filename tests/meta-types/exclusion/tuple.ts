@@ -97,7 +97,7 @@ const excludingArray2: A.Equals<
     M.Tuple<[M.Enum<"A" | 42>], true, M.Primitive<string>>,
     M.Array<M.Primitive<string>>
   >,
-  M.Tuple<[M.Enum<42>], false, M.Never>
+  M.Tuple<[M.Enum<42>], true, M.Primitive<string>>
 > = 1;
 excludingArray2;
 
@@ -106,7 +106,7 @@ const excludingArray3: A.Equals<
     M.Tuple<[M.Enum<"A" | 42>, M.Const<"A">], true, M.Primitive<string>>,
     M.Array<M.Primitive<string>>
   >,
-  M.Tuple<[M.Enum<42>, M.Const<"A">], false, M.Never>
+  M.Tuple<[M.Enum<42>, M.Const<"A">], true, M.Primitive<string>>
 > = 1;
 excludingArray3;
 
@@ -128,7 +128,11 @@ const nonExcludingArray2: A.Equals<
     >,
     M.Array<M.Primitive<string>>
   >,
-  M.Tuple<[M.Primitive<string>, M.Primitive<boolean>], false, M.Never>
+  M.Tuple<
+    [M.Primitive<string>, M.Primitive<boolean>],
+    true,
+    M.Primitive<string>
+  >
 > = 1;
 nonExcludingArray2;
 
@@ -140,7 +144,7 @@ const bothClosed1Item: A.Equals<
     M.Tuple<[M.Enum<"A" | "B">], false>,
     M.Tuple<[M.Const<"B">], false>
   >,
-  M.Tuple<[M.Enum<"A">], false, M.Never>
+  M.Tuple<[M.Enum<"A">], false>
 > = 1;
 bothClosed1Item;
 
@@ -149,7 +153,7 @@ const bothClosed2Items: A.Equals<
     M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">], false>,
     M.Tuple<[M.Const<"A">, M.Const<"B">], false>
   >,
-  M.Tuple<[M.Enum<"B">, M.Const<"B">], false, M.Never>
+  M.Tuple<[M.Enum<"B">, M.Const<"B">], false>
 > = 1;
 bothClosed2Items;
 
@@ -158,7 +162,7 @@ const bothClosed3Keys: A.Equals<
     M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">, M.Const<"C">], false>,
     M.Tuple<[M.Const<"B">, M.Const<"B">, M.Const<"C">], false>
   >,
-  M.Tuple<[M.Enum<"A">, M.Const<"B">, M.Const<"C">], false, M.Never>
+  M.Tuple<[M.Enum<"A">, M.Const<"B">, M.Const<"C">], false>
 > = 1;
 bothClosed3Keys;
 
@@ -263,7 +267,7 @@ const bothOpenItemAdded: A.Equals<
     M.Tuple<[M.Enum<"A" | "B">], true, M.Enum<"A" | "B">>,
     M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">], true, M.Primitive<string>>
   >,
-  M.Tuple<[M.Enum<"A" | "B">, M.Enum<"A">], false, M.Enum<never>>
+  M.Tuple<[M.Enum<"A" | "B">, M.Enum<"A">], true, M.Enum<"A" | "B">>
 > = 1;
 bothOpenItemAdded;
 
@@ -282,7 +286,7 @@ const excludingUnion: A.Equals<
     M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
     M.Union<M.Const<["C"]> | M.Tuple<[M.Const<"B">], false>>
   >,
-  M.Tuple<[M.Enum<"A">], false, M.Never>
+  M.Tuple<[M.Enum<"A">], false>
 > = 1;
 excludingUnion;
 
@@ -291,7 +295,7 @@ const nonExcludingUnion: A.Equals<
     M.Tuple<[M.Enum<"A" | "B">], false>,
     M.Union<M.Const<["C"]> | M.Tuple<[M.Const<"D">], false>>
   >,
-  M.Tuple<[M.Enum<"A" | "B">], false, M.Never>
+  M.Tuple<[M.Enum<"A" | "B">], false>
 > = 1;
 nonExcludingUnion;
 
@@ -322,7 +326,7 @@ const excludingExclusion: A.Equals<
     M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
     M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">], false>, M.Const<["C"]>>
   >,
-  M.Tuple<[M.Enum<"C">], false, M.Never>
+  M.Tuple<[M.Enum<"C">], false>
 > = 1;
 excludingExclusion;
 

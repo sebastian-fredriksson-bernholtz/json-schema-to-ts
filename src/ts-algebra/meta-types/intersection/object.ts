@@ -1,12 +1,12 @@
 import { A } from "ts-toolbelt";
 
-import { Get, And } from "../../../utils";
+import { And } from "../../../utils";
 
 import { Type, TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import {
-  Object,
+  $Object,
   ObjectType,
   ObjectValues,
   ObjectRequiredKeys,
@@ -20,15 +20,15 @@ import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
 import { DistributeIntersection } from "./union";
 import { IntersectExclusion } from "./exclusion";
-import { ClearIntersections, Intersect } from "./index";
+import { $ClearIntersections, $Intersect } from "./index";
 
 export type ClearObjectIntersections<
   A extends ObjectType,
   V = ClearObjectValuesIntersections<ObjectValues<A>>,
   N = NeverKeys<V>,
-  O = ClearIntersections<ObjectOpenProps<A>>
+  O = $ClearIntersections<ObjectOpenProps<A>>
 > = ObjectRequiredKeys<A> extends Exclude<ObjectRequiredKeys<A>, N>
-  ? Object<
+  ? $Object<
       {
         [key in Exclude<keyof V, N>]: V[key];
       },
@@ -39,7 +39,7 @@ export type ClearObjectIntersections<
   : Never;
 
 type ClearObjectValuesIntersections<V extends Record<A.Key, Type>> = {
-  [key in keyof V]: ClearIntersections<V[key]>;
+  [key in keyof V]: $ClearIntersections<V[key]>;
 };
 
 export type IntersectObject<A extends ObjectType, B> = {
@@ -56,7 +56,7 @@ export type IntersectObject<A extends ObjectType, B> = {
   exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
 
 type IntersectObjects<
   A extends ObjectType,
@@ -68,7 +68,7 @@ type IntersectObjects<
   ObjectRequiredKeys<A> | ObjectRequiredKeys<B>,
   N
 >
-  ? Object<
+  ? $Object<
       {
         [key in Exclude<keyof V, N>]: V[key];
       },
@@ -83,13 +83,13 @@ type IntersectValues<A extends ObjectType, B extends ObjectType> = {
     | keyof ObjectValues<A>
     | keyof ObjectValues<B>]: key extends keyof ObjectValues<A>
     ? key extends keyof ObjectValues<B>
-      ? Intersect<ObjectValues<A>[key], ObjectValues<B>[key]>
+      ? $Intersect<ObjectValues<A>[key], ObjectValues<B>[key]>
       : IsObjectOpen<B> extends true
-      ? Intersect<ObjectValues<A>[key], ObjectOpenProps<B>>
+      ? $Intersect<ObjectValues<A>[key], ObjectOpenProps<B>>
       : Never
     : key extends keyof ObjectValues<B>
     ? IsObjectOpen<A> extends true
-      ? Intersect<ObjectOpenProps<A>, ObjectValues<B>[key]>
+      ? $Intersect<ObjectOpenProps<A>, ObjectValues<B>[key]>
       : Never
     : Never;
 };
@@ -98,7 +98,7 @@ type NeverKeys<O> = {
   [key in keyof O]: O[key] extends Never ? key : never;
 }[keyof O];
 
-type IntersectOpenProps<A extends ObjectType, B extends ObjectType> = Intersect<
-  ObjectOpenProps<A>,
-  ObjectOpenProps<B>
->;
+type IntersectOpenProps<
+  A extends ObjectType,
+  B extends ObjectType
+> = $Intersect<ObjectOpenProps<A>, ObjectOpenProps<B>>;

@@ -1,6 +1,6 @@
-import { Get, IsObject } from "../../../utils";
+import { IsObject } from "../../../utils";
 
-import { Resolve, TypeId, Never, Error } from "..";
+import { $Resolve, TypeId, Never, Error } from "..";
 import { Const, ConstType, ConstValue } from "../const";
 import {
   ObjectType,
@@ -10,61 +10,56 @@ import {
   ObjectOpenProps,
 } from "../object";
 import { UnionType } from "../union";
-import { IsRepresentable } from "../isRepresentable";
+import { $IsRepresentable } from "../isRepresentable";
 
-import { $Exclude, ExclusionType } from ".";
+import { _Exclude, ExclusionType } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 
-export type ExcludeFromConst<Source extends ConstType, Excluded> = {
+export type ExcludeFromConst<A extends ConstType, B> = {
   any: Never;
-  never: Source;
-  const: CheckNotExtendsResolved<Source, Excluded>;
-  enum: CheckNotExtendsResolved<Source, Excluded>;
-  primitive: CheckNotExtendsResolved<Source, Excluded>;
-  array: CheckNotExtendsResolved<Source, Excluded>;
-  tuple: CheckNotExtendsResolved<Source, Excluded>;
-  object: Excluded extends ObjectType ? ExcludeObject<Source, Excluded> : never;
-  union: Excluded extends UnionType ? ExcludeUnion<Source, Excluded> : never;
-  intersection: ExcludeIntersection<Source, Excluded>;
-  exclusion: Excluded extends ExclusionType
-    ? ExcludeExclusion<Source, Excluded>
-    : never;
-  error: Excluded;
+  never: A;
+  const: CheckNotExtendsResolved<A, B>;
+  enum: CheckNotExtendsResolved<A, B>;
+  primitive: CheckNotExtendsResolved<A, B>;
+  array: CheckNotExtendsResolved<A, B>;
+  tuple: CheckNotExtendsResolved<A, B>;
+  object: B extends ObjectType ? ExcludeObject<A, B> : never;
+  union: B extends UnionType ? ExcludeUnion<A, B> : never;
+  intersection: ExcludeIntersection<A, B>;
+  exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
+  error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends TypeId
-  ? Get<Excluded, "type">
-  : "errorTypeProperty"];
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
 
 type CheckNotExtendsResolved<
-  Source extends ConstType,
-  Excluded
-> = ConstValue<Source> extends Resolve<Excluded> ? Never : Source;
+  A extends ConstType,
+  B
+> = ConstValue<A> extends $Resolve<B> ? Never : A;
 
-type ExcludeObject<
-  Source extends ConstType,
-  Excluded extends ObjectType
-> = IsObject<ConstValue<Source>> extends true
-  ? ObjectRequiredKeys<Excluded> extends keyof ConstValue<Source>
-    ? ExcludeObjectFromConst<Source, Excluded>
-    : Source
-  : Source;
+type ExcludeObject<A extends ConstType, B extends ObjectType> = IsObject<
+  ConstValue<A>
+> extends true
+  ? ObjectRequiredKeys<B> extends keyof ConstValue<A>
+    ? ExcludeObjectFromConst<A, B>
+    : A
+  : A;
 
 type ExcludeObjectFromConst<
-  Source extends ConstType,
-  Excluded extends ObjectType,
-  ExcludedValues = ExcludeConstValues<ConstValue<Source>, Excluded>
-> = RepresentableKeys<ExcludedValues> extends never ? Never : Source;
+  A extends ConstType,
+  B extends ObjectType,
+  X = ExcludeConstValues<ConstValue<A>, B>
+> = RepresentableKeys<X> extends never ? Never : A;
 
-type ExcludeConstValues<SourceValue, Excluded extends ObjectType> = {
-  [key in keyof SourceValue]: key extends keyof ObjectValues<Excluded>
-    ? $Exclude<Const<SourceValue[key]>, ObjectValues<Excluded>[key]>
-    : IsObjectOpen<Excluded> extends true
-    ? $Exclude<Const<SourceValue[key]>, ObjectOpenProps<Excluded>>
-    : SourceValue[key];
+type ExcludeConstValues<V, B extends ObjectType> = {
+  [key in keyof V]: key extends keyof ObjectValues<B>
+    ? _Exclude<Const<V[key]>, ObjectValues<B>[key]>
+    : IsObjectOpen<B> extends true
+    ? _Exclude<Const<V[key]>, ObjectOpenProps<B>>
+    : Const<V[key]>;
 };
 
 type RepresentableKeys<O> = {
-  [key in keyof O]: IsRepresentable<O[key]> extends true ? key : never;
+  [key in keyof O]: $IsRepresentable<O[key]> extends true ? key : never;
 }[keyof O];

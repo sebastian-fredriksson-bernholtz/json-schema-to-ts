@@ -1,16 +1,14 @@
-import { Get } from "../../../utils";
-
 import { Type, TypeId, Never, Error } from "..";
-import { Union, UnionType, UnionValues } from "../union";
+import { $Union, UnionType, UnionValues } from "../union";
 
-import { ClearIntersections, Intersect } from "./index";
+import { $ClearIntersections, $Intersect } from "./index";
 
-export type ClearUnionIntersections<A extends UnionType> = Union<
+export type ClearUnionIntersections<A extends UnionType> = $Union<
   ClearUnionValuesIntersections<UnionValues<A>>
 >;
 
 type ClearUnionValuesIntersections<V extends Type> = V extends infer T
-  ? ClearIntersections<T>
+  ? $ClearIntersections<T>
   : never;
 
 export type IntersectUnion<A extends UnionType, B> = {
@@ -27,12 +25,12 @@ export type IntersectUnion<A extends UnionType, B> = {
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
 
-export type DistributeIntersection<A extends UnionType, B> = Union<
+export type DistributeIntersection<A extends UnionType, B> = $Union<
   RecurseOnUnionValues<UnionValues<A>, B>
 >;
 
 type RecurseOnUnionValues<V extends Type, B> = V extends infer T
-  ? Intersect<T, B>
+  ? $Intersect<T, B>
   : never;

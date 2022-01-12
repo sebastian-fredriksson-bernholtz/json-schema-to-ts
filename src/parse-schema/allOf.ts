@@ -16,14 +16,14 @@ export type ParseAllOfSchema<S> = RecurseOnAllOfSchema<
 
 type RecurseOnAllOfSchema<V, S, R> = {
   stop: R;
-  continue: V extends L.List
+  continue: V extends any[]
     ? RecurseOnAllOfSchema<
         L.Tail<V>,
         S,
-        M.Intersection<
+        M.$Intersection<
           ParseSchema<MergeSubSchema<Omit<S, "allOf">, L.Head<V>>>,
           R
         >
       >
     : never;
-}[V extends [any, ...L.List] ? "continue" : "stop"];
+}[V extends [any, ...any[]] ? "continue" : "stop"];

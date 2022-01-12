@@ -1,17 +1,17 @@
 import { Get, And, Not } from "../../../utils";
 
-import { IsRepresentable } from "../isRepresentable";
+import { $IsRepresentable } from "../isRepresentable";
 
-import { $Exclude } from ".";
+import { _$Exclude } from ".";
 
-export type CrossValue<V1, P1, R1, V2, P2, R2, X = $Exclude<V1, V2>> = {
+export type CrossValue<V1, P1, R1, V2, P2, R2, X = _$Exclude<V1, V2>> = {
   sourceValue: V1;
   isPossibleInSource: P1;
   isRequiredInSource: R1;
   isPossibleInExcluded: P2;
   isRequiredInExcluded: R2;
   exclusionValue: X;
-  isExclusionValueRepresentable: IsRepresentable<X>;
+  isExclusionValueRepresentable: $IsRepresentable<X>;
 };
 
 export type SourceValue<C> = Get<C, "sourceValue">;

@@ -1,5 +1,3 @@
-import { Get } from "../../../utils";
-
 import { TypeId, Never, Error } from "..";
 import { PrimitiveType, PrimitiveValue } from "../primitive";
 import { UnionType } from "../union";
@@ -27,4 +25,4 @@ export type ExcludeFromPrimitive<A extends PrimitiveType, B> = {
   exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];

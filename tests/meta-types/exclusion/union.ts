@@ -102,7 +102,7 @@ const excludingTuple: A.Equals<
     >,
     M.Tuple<[M.Primitive<number>], false>
   >,
-  M.Union<M.Tuple<[M.Primitive<string>], false, M.Never> | M.Never>
+  M.Union<M.Tuple<[M.Primitive<string>], false> | M.Never>
 > = 1;
 excludingTuple;
 
@@ -115,8 +115,8 @@ const nonExcludingTuple: A.Equals<
     M.Tuple<[M.Primitive<boolean>], false>
   >,
   M.Union<
-    | M.Tuple<[M.Primitive<string>], false, M.Never>
-    | M.Tuple<[M.Primitive<number>], false, M.Never>
+    | M.Tuple<[M.Primitive<string>], false>
+    | M.Tuple<[M.Primitive<number>], false>
   >
 > = 1;
 nonExcludingTuple;

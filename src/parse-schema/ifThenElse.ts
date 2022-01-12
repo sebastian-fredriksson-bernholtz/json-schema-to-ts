@@ -12,21 +12,21 @@ export type ParseIfThenElseSchema<
   S,
   "enum" | "const" | "type" | "anyOf" | "oneOf" | "allOf" | "not"
 > extends true
-  ? M.Intersection<ApplyIfThenElse<S, R>, ParseSchema<R>>
+  ? M.$Intersection<ApplyIfThenElse<S, R>, ParseSchema<R>>
   : ApplyIfThenElse<S, R>;
 
 type ApplyIfThenElse<
   S,
   R,
   I = "if" extends keyof S ? MergeSubSchema<R, S["if"]> : never
-> = M.Union<
+> = M.$Union<
   | ("then" extends keyof S
-      ? M.Intersection<
+      ? M.$Intersection<
           ParseSchema<I>,
           ParseSchema<MergeSubSchema<R, S["then"]>>
         >
       : ParseSchema<I>)
-  | M.Exclusion<
+  | M.$Exclusion<
       "else" extends keyof S
         ? ParseSchema<MergeSubSchema<R, S["else"]>>
         : ParseSchema<R>,

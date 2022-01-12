@@ -1,6 +1,6 @@
-import { Get, IsObject } from "../../../utils";
+import { IsObject } from "../../../utils";
 
-import { Resolve, TypeId, Never, Error } from "..";
+import { $Resolve, TypeId, Never, Error } from "..";
 import { Const, ConstType, ConstValue } from "../const";
 import {
   ObjectType,
@@ -30,12 +30,12 @@ export type IntersectConst<A extends ConstType, B> = {
   intersection: Error<"Cannot intersect intersection">;
   error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
 
 type CheckExtendsResolved<
   A extends ConstType,
   B
-> = ConstValue<A> extends Resolve<B> ? A : Never;
+> = ConstValue<A> extends $Resolve<B> ? A : Never;
 
 type ToObject<A extends ConstType, B extends ObjectType> = IsObject<
   ConstValue<A>

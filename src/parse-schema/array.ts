@@ -7,19 +7,18 @@ import { ParseSchema } from ".";
 
 export type ParseArrSchema<S> = "items" extends keyof S
   ? IsObject<S["items"]> extends true
-    ? M.Array<ParseSchema<S["items"]>>
-    : S["items"] extends L.List
-    ? // 🔧 TOIMPROVE: Not cast here
-      M.Union<FromTreeTuple<ParseTuple<A.Cast<S["items"], L.List>>, S>>
+    ? M.$Array<ParseSchema<S["items"]>>
+    : S extends { items: any[] }
+    ? M.$Union<FromTreeTuple<ParseTuple<S["items"]>, S>>
     : M.Error<'Invalid value in "items" property'>
-  : M.Array;
+  : M.$Array;
 
-export type ParseTuple<S extends L.List, R extends L.List = []> = {
+export type ParseTuple<S extends any[], R extends any[] = []> = {
   stop: R;
   continue: ParseTuple<L.Tail<S>, L.Prepend<R, ParseSchema<L.Head<S>>>>;
-}[S extends [any, ...L.List] ? "continue" : "stop"];
+}[S extends [any, ...any[]] ? "continue" : "stop"];
 
-type FromTreeTuple<T extends L.List, S> = ApplyAdditionalItems<
+type FromTreeTuple<T extends any[], S> = ApplyAdditionalItems<
   ApplyBoundaries<
     T,
     "minItems" extends keyof S ? S["minItems"] : 0,
@@ -29,7 +28,7 @@ type FromTreeTuple<T extends L.List, S> = ApplyAdditionalItems<
 >;
 
 type ApplyBoundaries<
-  T extends L.List,
+  T extends any[],
   Min,
   Max,
   R = never,
@@ -39,14 +38,14 @@ type ApplyBoundaries<
 > = {
   stop: {
     result: Max extends undefined
-      ? R | M.Tuple<L.Reverse<T>, false>
+      ? R | M.$Tuple<L.Reverse<T>, false>
       : HasMax extends true
-      ? R | M.Tuple<L.Reverse<T>, false>
+      ? R | M.$Tuple<L.Reverse<T>, false>
       : Max extends T["length"]
-      ? M.Tuple<L.Reverse<T>, false>
+      ? M.$Tuple<L.Reverse<T>, false>
       : IsLongerThan<L.Tail<T>, Max> extends true
       ? never
-      : R | M.Tuple<L.Reverse<T>, false>;
+      : R | M.$Tuple<L.Reverse<T>, false>;
     hasEncounteredMin: DoesExtend<Min, T["length"]>;
     hasEncounteredMax: HasMax extends true
       ? true
@@ -60,22 +59,22 @@ type ApplyBoundaries<
     Min,
     Max,
     T["length"] extends Max
-      ? M.Tuple<L.Reverse<T>, false>
-      : R | M.Tuple<L.Reverse<T>, false>,
+      ? M.$Tuple<L.Reverse<T>, false>
+      : R | M.$Tuple<L.Reverse<T>, false>,
     HasMin extends true ? true : DoesExtend<Min, T["length"]>,
     HasMax extends true ? true : DoesExtend<Max, T["length"]>,
     C
   >;
 }[Min extends T["length"]
   ? "stop"
-  : T extends [any, ...L.List]
+  : T extends [any, ...any[]]
   ? "continue"
   : "stop"];
 
-type IsLongerThan<T extends L.List, N, R = false> = {
+type IsLongerThan<T extends any[], N, R = false> = {
   continue: T["length"] extends N ? true : IsLongerThan<L.Tail<T>, N>;
   stop: T["length"] extends N ? true : R;
-}[T extends [any, ...L.List] ? "continue" : "stop"];
+}[T extends [any, ...any[]] ? "continue" : "stop"];
 
 type ApplyAdditionalItems<R, A> = Get<R, "hasEncounteredMax"> extends true
   ? Get<R, "hasEncounteredMin"> extends true
@@ -89,22 +88,22 @@ type ApplyAdditionalItems<R, A> = Get<R, "hasEncounteredMax"> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ?
         | Get<R, "result">
-        | M.Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>>
+        | M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>>
     : // 🔧 TOIMPROVE: Not cast here
-      M.Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>>
+      M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>>
   : IsObject<A> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ?
         | Get<R, "result">
-        | M.Tuple<
+        | M.$Tuple<
             // 🔧 TOIMPROVE: Not cast here
-            L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>,
+            L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>,
             true,
             ParseSchema<A>
           >
-    : M.Tuple<
+    : M.$Tuple<
         // 🔧 TOIMPROVE: Not cast here
-        L.Reverse<A.Cast<Get<R, "completeTuple">, L.List>>,
+        L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>,
         true,
         ParseSchema<A>
       >

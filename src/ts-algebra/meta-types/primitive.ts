@@ -5,6 +5,11 @@ export type Primitive<T extends null | boolean | number | string> = {
   value: T;
 };
 
+export type $Primitive<T> = {
+  type: PrimitiveTypeId;
+  value: T;
+};
+
 export type PrimitiveType = {
   type: PrimitiveTypeId;
   value: null | boolean | number | string;

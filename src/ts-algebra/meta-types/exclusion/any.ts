@@ -1,6 +1,5 @@
-import { Get } from "../../../utils";
-
 import { TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
 import { UnionType } from "../union";
 
 import { ExclusionType } from ".";
@@ -8,22 +7,18 @@ import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 
-export type ExcludeFromAny<Source, Excluded> = {
+export type ExcludeFromAny<A extends AnyType, B> = {
   any: Never;
-  never: Source;
-  const: Source;
-  enum: Source;
-  primitive: Source;
-  array: Source;
-  tuple: Source;
-  object: Source;
-  union: Excluded extends UnionType ? ExcludeUnion<Source, Excluded> : never;
-  intersection: ExcludeIntersection<Source, Excluded>;
-  exclusion: Excluded extends ExclusionType
-    ? ExcludeExclusion<Source, Excluded>
-    : never;
-  error: Excluded;
+  never: A;
+  const: A;
+  enum: A;
+  primitive: A;
+  array: A;
+  tuple: A;
+  object: A;
+  union: B extends UnionType ? ExcludeUnion<A, B> : never;
+  intersection: ExcludeIntersection<A, B>;
+  exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
+  error: B;
   errorTypeProperty: Error<"Missing type property">;
-}[Get<Excluded, "type"> extends TypeId
-  ? Get<Excluded, "type">
-  : "errorTypeProperty"];
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];

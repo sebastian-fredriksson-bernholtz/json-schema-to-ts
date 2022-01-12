@@ -22,6 +22,6 @@ export type JSONSchema =
  *
  * @param S JSON schema
  */
-export type FromSchema<S extends JSONSchema> = M.Resolve<
+export type FromSchema<S extends JSONSchema> = M.$Resolve<
   ParseSchema<S extends object ? O.Writable<S, A.Key, "deep"> : S>
 >;

@@ -1,9 +1,7 @@
-import { Get } from "../../../utils";
-
-import { TypeId, Never, Error } from "..";
+import { TypeId, Never, $Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
-import { $Array, ArrayType, ArrayValues } from "../array";
+import { _$Array, ArrayType, ArrayValues } from "../array";
 import { TupleType } from "../tuple";
 import { UnionType } from "../union";
 import { ExclusionType } from "../exclusion";
@@ -13,10 +11,10 @@ import { IntersectEnum } from "./enum";
 import { IntersectTuple } from "./tuple";
 import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
-import { ClearIntersections, Intersect } from "./index";
+import { $ClearIntersections, Intersect } from "./index";
 
-export type ClearArrIntersections<A extends ArrayType> = $Array<
-  ClearIntersections<ArrayValues<A>>
+export type ClearArrIntersections<A extends ArrayType> = _$Array<
+  $ClearIntersections<ArrayValues<A>>
 >;
 
 export type IntersectArray<A extends ArrayType, B> = {
@@ -30,13 +28,13 @@ export type IntersectArray<A extends ArrayType, B> = {
   object: Never;
   union: B extends UnionType ? IntersectUnion<B, A> : never;
   exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
-  intersection: Error<"Cannot intersect intersection">;
+  intersection: $Error<"Cannot intersect intersection">;
   error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[Get<B, "type"> extends TypeId ? Get<B, "type"> : "errorTypeProperty"];
+  errorTypeProperty: $Error<"Missing type property">;
+}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
 
 type IntersectArrs<
   A extends ArrayType,
   B extends ArrayType,
   I = Intersect<ArrayValues<A>, ArrayValues<B>>
-> = I extends Never ? Never : $Array<I>;
+> = I extends Never ? Never : _$Array<I>;

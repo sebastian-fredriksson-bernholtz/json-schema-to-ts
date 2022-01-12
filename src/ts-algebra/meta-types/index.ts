@@ -2,20 +2,37 @@ import { Any, AnyType, AnyTypeId } from "./any";
 import { Never, NeverType, NeverTypeId } from "./never";
 import { Const, ConstType, ConstTypeId } from "./const";
 import { Enum, EnumType, EnumTypeId } from "./enum";
-import { Primitive, PrimitiveType, PrimitiveTypeId } from "./primitive";
-import { $Array, ArrayTypeId } from "./array";
-import { Tuple, TupleTypeId } from "./tuple";
-import { Object, ObjectTypeId } from "./object";
-import { Union, UnionTypeId } from "./union";
-import { Intersection, Intersect, IntersectionTypeId } from "./intersection";
-import { Exclusion, $Exclude, ExclusionTypeId } from "./exclusion";
-import { Error, ErrorTypeId } from "./error";
+import {
+  Primitive,
+  $Primitive,
+  PrimitiveType,
+  PrimitiveTypeId,
+} from "./primitive";
+import { _Array, _$Array, ArrayTypeId } from "./array";
+import { Tuple, $Tuple, TupleTypeId } from "./tuple";
+import { Object, $Object, ObjectTypeId } from "./object";
+import { Union, $Union, UnionTypeId } from "./union";
+import {
+  Intersection,
+  $Intersection,
+  Intersect,
+  $Intersect,
+  IntersectionTypeId,
+} from "./intersection";
+import {
+  Exclusion,
+  $Exclusion,
+  _Exclude,
+  _$Exclude,
+  ExclusionTypeId,
+} from "./exclusion";
+import { $Error, Error, ErrorTypeId } from "./error";
 
 import { Type } from "./type";
 import { TypeId } from "./typeId";
 
-import { IsRepresentable } from "./isRepresentable";
-import { Resolve } from "./resolve";
+import { IsRepresentable, $IsRepresentable } from "./isRepresentable";
+import { Resolve, $Resolve } from "./resolve";
 
 export {
   // Meta-Types
@@ -23,13 +40,21 @@ export {
   Never,
   Const,
   Enum,
+  $Primitive,
   Primitive,
-  $Array as Array,
+  _$Array as $Array,
+  _Array as Array,
+  $Tuple,
   Tuple,
+  $Object,
   Object,
+  $Union,
   Union,
+  $Intersection,
   Intersection,
+  $Exclusion,
   Exclusion,
+  $Error,
   Error,
   // Definitions
   AnyType,
@@ -53,8 +78,12 @@ export {
   ErrorTypeId,
   TypeId,
   // Methods
+  $Resolve,
   Resolve,
+  $Intersect,
   Intersect,
-  $Exclude as Exclude,
+  _$Exclude as $Exclude,
+  _Exclude as Exclude,
+  $IsRepresentable,
   IsRepresentable,
 };

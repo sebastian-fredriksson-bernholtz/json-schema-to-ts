@@ -54,7 +54,7 @@ tuplesNeverExclude;
 
 // --- OBJECT ---
 
-const objectsNeverExclude: A.Equals<M.Exclude<M.Never, Object>, M.Never> = 1;
+const objectsNeverExclude: A.Equals<M.Exclude<M.Never, M.Object>, M.Never> = 1;
 objectsNeverExclude;
 
 // --- UNION ---
