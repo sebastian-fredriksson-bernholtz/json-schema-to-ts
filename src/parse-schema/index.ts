@@ -1,5 +1,9 @@
 import { M } from "ts-algebra";
 
+import { And, DoesExtend } from "../utils";
+
+import { FromSchemaOptions, FromSchemaDefaultOptions } from "../definitions";
+
 import { ParseMixedSchema } from "./mixed";
 import { ParseConstSchema } from "./const";
 import { ParseEnumSchema } from "./enum";
@@ -11,7 +15,10 @@ import { ParseAllOfSchema } from "./allOf";
 import { ParseNotSchema } from "./not";
 import { ParseIfThenElseSchema } from "./ifThenElse";
 
-export type ParseSchema<S> = {
+export type ParseSchema<
+  S,
+  O extends FromSchemaOptions = FromSchemaDefaultOptions
+> = {
   any: M.Any;
   never: M.Never;
   null: M.Primitive<null>;
@@ -29,15 +36,24 @@ export type ParseSchema<S> = {
   // @ts-expect-error "Type instanciation is too deep and potentially infinite" error
   not: ParseNotSchema<S>;
   ifThenElse: ParseIfThenElseSchema<S>;
-}[InferSchemaType<S>];
+}[InferSchemaType<S, O>];
 
-type InferSchemaType<S> = S extends true | string
+type InferSchemaType<
+  S,
+  O extends FromSchemaOptions = FromSchemaDefaultOptions
+> = S extends true | string
   ? "any"
   : S extends false
   ? "never"
-  : "if" extends keyof S
+  : And<
+      DoesExtend<O["parseIfThenElseKeywords"], true>,
+      DoesExtend<"if", keyof S>
+    > extends true
   ? "ifThenElse"
-  : "not" extends keyof S
+  : And<
+      DoesExtend<O["parseNotKeyword"], true>,
+      DoesExtend<"not", keyof S>
+    > extends true
   ? "not"
   : "allOf" extends keyof S
   ? "allOf"

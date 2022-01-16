@@ -23,6 +23,7 @@ import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 import {
   CrossValue,
+  CrossValueType,
   SourceValue,
   IsExclusionValueRepresentable,
   IsOutsideOfSourceScope,
@@ -55,8 +56,7 @@ type ExcludeArray<A extends TupleType, B extends ArrayType> = ExcludeTuples<
 type ExcludeTuples<
   A extends TupleType,
   B extends TupleType,
-  // TOIMPROVE: Type as crossed value
-  C extends any[] = CrossTupleValues<
+  C extends CrossValueType[] = CrossTupleValues<
     TupleValues<A>,
     TupleValues<B>,
     IsTupleOpen<A>,
@@ -64,7 +64,7 @@ type ExcludeTuples<
     TupleOpenProps<A>,
     TupleOpenProps<B>
   >,
-  R extends any[] = RepresentableItems<C>,
+  R extends CrossValueType[] = RepresentableItems<C>,
   P = _Exclude<TupleOpenProps<A>, TupleOpenProps<B>>,
   I = $IsRepresentable<P>
 > = DoesTupleSizesMatch<A, B, C> extends true
@@ -82,8 +82,7 @@ type CrossTupleValues<
   O2 extends boolean,
   P1 extends Type,
   P2 extends Type,
-  // TOIMPROVE: Type as crossed value
-  C extends any[] = []
+  C extends CrossValueType[] = []
 > = {
   stop: L.Reverse<C>;
   continue1: CrossTupleValues<
@@ -137,22 +136,19 @@ type GetTupleLength<T extends any[], R extends any[] = L.Tail<T>> = A.Equals<
 type DoesTupleSizesMatch<
   S extends TupleType,
   E extends TupleType,
-  // TOIMPROVE: Type as crossed value
-  C extends any[]
+  C extends CrossValueType[]
 > = And<IsTupleOpen<S>, Not<IsTupleOpen<E>>> extends true
   ? false
   : And<IsExcludedSmallEnough<C>, IsExcludedBigEnough<C>>;
 
-// TOIMPROVE: Type as crossed value
-type IsExcludedSmallEnough<C extends any[]> = {
+type IsExcludedSmallEnough<C extends CrossValueType[]> = {
   stop: true;
   continue: IsOutsideOfSourceScope<L.Head<C>> extends true
     ? false
     : IsExcludedSmallEnough<L.Tail<C>>;
 }[C extends [any, ...any[]] ? "continue" : "stop"];
 
-// TOIMPROVE: Type as crossed value
-type IsExcludedBigEnough<C extends any[]> = {
+type IsExcludedBigEnough<C extends CrossValueType[]> = {
   stop: true;
   continue: IsOutsideOfExcludedScope<L.Head<C>> extends true
     ? false
@@ -161,16 +157,17 @@ type IsExcludedBigEnough<C extends any[]> = {
 
 // PROPAGATION
 
-// TOIMPROVE: Type as crossed value
-type RepresentableItems<C extends any[], R extends any[] = []> = {
+type RepresentableItems<
+  C extends CrossValueType[],
+  R extends CrossValueType[] = []
+> = {
   stop: R;
   continue: IsExclusionValueRepresentable<L.Head<C>> extends true
     ? RepresentableItems<L.Tail<C>, L.Prepend<R, L.Head<C>>>
     : RepresentableItems<L.Tail<C>, R>;
 }[C extends [any, ...any[]] ? "continue" : "stop"];
 
-// TOIMPROVE: Type as crossed value
-type PropagateExclusion<C extends any[], R extends any[] = []> = {
+type PropagateExclusion<C extends CrossValueType[], R extends any[] = []> = {
   stop: L.Reverse<R>;
   continue: PropagateExclusion<L.Tail<C>, L.Prepend<R, Propagate<L.Head<C>>>>;
 }[C extends [any, ...any[]] ? "continue" : "stop"];
@@ -179,25 +176,25 @@ type PropagateExclusion<C extends any[], R extends any[] = []> = {
 
 type OmitOmittableItems<
   S extends TupleType,
-  // TOIMPROVE: Type as crossed value
-  C extends any[],
-  I extends any[] = OmittableItems<C>
+  C extends CrossValueType[],
+  I extends CrossValueType[] = OmittableItems<C>
 > = {
   moreThanTwo: S;
   onlyOne: $Tuple<RequiredTupleValues<C>, false, TupleOpenProps<S>>;
   none: Never;
 }[GetTupleLength<I>];
 
-// TOIMPROVE: Type as crossed value
-type OmittableItems<C extends any[], R extends any[] = []> = {
+type OmittableItems<
+  C extends CrossValueType[],
+  R extends CrossValueType[] = []
+> = {
   stop: R;
   continue: IsOmittable<L.Head<C>> extends true
     ? OmittableItems<L.Tail<C>, L.Prepend<R, L.Head<C>>>
     : OmittableItems<L.Tail<C>, R>;
 }[C extends [any, ...any[]] ? "continue" : "stop"];
 
-// TOIMPROVE: Type as crossed value
-type RequiredTupleValues<C extends any[], R extends any[] = []> = {
+type RequiredTupleValues<C extends CrossValueType[], R extends Type[] = []> = {
   stop: L.Reverse<R>;
   continue: IsOmittable<L.Head<C>> extends true
     ? L.Reverse<R>

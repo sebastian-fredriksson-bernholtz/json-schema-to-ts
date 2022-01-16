@@ -415,8 +415,6 @@ type Cat = FromSchema<typeof catSchema>;
 const invalidCat: Cat = { name: "Garfield" };
 ```
 
-> This may be revised soon now that `not` exclusions are now possible
-
 ### AllOf
 
 ```typescript
@@ -451,6 +449,8 @@ type Address = FromSchema<typeof addressSchema>;
 
 ### Not
 
+Exclusions require heavy computations, that can sometimes be aborted by Typescript (especially since v4) and end up in `any` inferred types. For this reason, they are not activated by default: You can opt-in with the `parseNotKeyword` option.
+
 ```typescript
 const tupleSchema = {
   type: "array",
@@ -461,7 +461,7 @@ const tupleSchema = {
   },
 } as const;
 
-type Tuple = FromSchema<typeof tupleSchema>;
+type Tuple = FromSchema<typeof tupleSchema, { parseNotKeyword: true }>;
 // => [] | [1, 2]
 ```
 
@@ -472,7 +472,10 @@ const primitiveTypeSchema = {
   },
 } as const;
 
-type PrimitiveType = FromSchema<typeof primitiveTypeSchema>;
+type PrimitiveType = FromSchema<
+  typeof primitiveTypeSchema,
+  { parseNotKeyword: true }
+>;
 // => null | boolean | number | string
 ```
 
@@ -492,7 +495,7 @@ const petSchema = {
   additionalProperties: false,
 } as const;
 
-type Pet = FromSchema<typeof petSchema>;
+type Pet = FromSchema<typeof petSchema, { parseNotKeyword: true }>;
 // => { animal: "cat" | "dog" }
 ```
 
@@ -511,7 +514,7 @@ const petSchema = {
   additionalProperties: false,
 } as const;
 
-type Pet = FromSchema<typeof petSchema>;
+type Pet = FromSchema<typeof petSchema, { parseNotKeyword: true }>;
 // => { animal: "cat" | "dog", color: "black" | "brown" | "white" }
 ```
 
@@ -523,7 +526,7 @@ const oddNumberSchema = {
   not: { multipleOf: 2 },
 } as const;
 
-type OddNumber = FromSchema<typeof oddNumberSchema>;
+type OddNumber = FromSchema<typeof oddNumberSchema, { parseNotKeyword: true }>;
 // => should and will resolve to "number"
 
 const incorrectSchema = {
@@ -531,7 +534,7 @@ const incorrectSchema = {
   not: { bogus: "option" },
 } as const;
 
-type Incorrect = FromSchema<typeof incorrectSchema>;
+type Incorrect = FromSchema<typeof incorrectSchema, { parseNotKeyword: true }>;
 // => should resolve to "never" but will still resolve to "number"
 ```
 
@@ -545,11 +548,16 @@ const goodLanguageSchema = {
   },
 } as const;
 
-type GoodLanguage = FromSchema<typeof goodLanguageSchema>;
+type GoodLanguage = FromSchema<
+  typeof goodLanguageSchema,
+  { parseNotKeyword: true }
+>;
 // => string
 ```
 
 ### If/Then/Else
+
+For the same reason as the `Not` keyword, conditions parsing is not activated by default: You can opt-in with the `parseIfThenElseKeywords` option.
 
 ```typescript
 const petSchema = {
@@ -576,7 +584,7 @@ const petSchema = {
   },
 } as const;
 
-type Pet = FromSchema<typeof petSchema>;
+type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: true }>;
 // => { animal: "dog"; dogBreed: DogBreed }
 // | { animal: "cat"; catBreed: CatBreed }
 ```
@@ -688,10 +696,10 @@ The same holds true for compilation. As far as I know (please, feel free to open
 
 ### I get a `type instantiation is excessively deep and potentially infinite` error, what should I do ?
 
-Since Typescript 4.0 (which was unfortunately released after `json-schema-to-ts` 😅), the TS compiler raises this error when detecting long type computations, and potential infinite loops.
+Though it is rare, the TS compiler can sometimes raises this error when detecting long type computations, and potential infinite loops.
 
 `FromSchema` goes through some pretty wild type recursions, so this is can be an issue on large schemas, particularly when using intersections (`allOf`) and exclusions (`not`, `else`).
 
-I am working on simplifying the type computations. But for the moment, I don't have any better solution to give you other than ignoring the error with a `@ts-ignore` comment. This should not block the type computation, so the inferred type should still be valid.
+I am working on simplifying the type computations. But for the moment, I don't have any better solution to give you other than ignoring the error with a `@ts-ignore` comment. If the type computation is not aborted (i.e. you do not get an `any` type), the inferred type should still be valid. Otherwise, try opting out of exclusions first (`not`, `ifThenElse` keywords).
 
-If you find that it's not the case, please, feel free to open an issue.
+If you're still having troubles, feel free to open an issue.

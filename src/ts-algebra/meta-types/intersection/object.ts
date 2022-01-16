@@ -1,12 +1,10 @@
-import { A } from "ts-toolbelt";
-
 import { And } from "../../../utils";
 
 import { Type, TypeId, Never, Error } from "..";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import {
-  $Object,
+  _$Object,
   ObjectType,
   ObjectValues,
   ObjectRequiredKeys,
@@ -28,7 +26,7 @@ export type ClearObjectIntersections<
   N = NeverKeys<V>,
   O = $ClearIntersections<ObjectOpenProps<A>>
 > = ObjectRequiredKeys<A> extends Exclude<ObjectRequiredKeys<A>, N>
-  ? $Object<
+  ? _$Object<
       {
         [key in Exclude<keyof V, N>]: V[key];
       },
@@ -38,7 +36,7 @@ export type ClearObjectIntersections<
     >
   : Never;
 
-type ClearObjectValuesIntersections<V extends Record<A.Key, Type>> = {
+type ClearObjectValuesIntersections<V extends Record<string, Type>> = {
   [key in keyof V]: $ClearIntersections<V[key]>;
 };
 
@@ -68,7 +66,7 @@ type IntersectObjects<
   ObjectRequiredKeys<A> | ObjectRequiredKeys<B>,
   N
 >
-  ? $Object<
+  ? _$Object<
       {
         [key in Exclude<keyof V, N>]: V[key];
       },

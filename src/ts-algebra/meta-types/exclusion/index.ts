@@ -65,7 +65,6 @@ export type _Exclude<A extends Type, B extends Type> = {
   error: A;
 }[A["type"]];
 
-// Prefixed with _ to not confuse with native TS Exclude
 export type _$Exclude<A, B> = {
   any: A extends AnyType ? ExcludeFromAny<A, B> : never;
   never: Never;

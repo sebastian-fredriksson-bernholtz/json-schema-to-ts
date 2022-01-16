@@ -1,10 +1,20 @@
-import { Get, And, Not } from "../../../utils";
+import { And, Not } from "../../../utils";
+
+import { Type } from "..";
 
 import { $IsRepresentable } from "../isRepresentable";
 
 import { _$Exclude } from ".";
 
-export type CrossValue<V1, P1, R1, V2, P2, R2, X = _$Exclude<V1, V2>> = {
+export type CrossValue<
+  V1 extends Type,
+  P1 extends boolean,
+  R1 extends boolean,
+  V2 extends Type,
+  P2 extends boolean,
+  R2 extends boolean,
+  X = _$Exclude<V1, V2>
+> = {
   sourceValue: V1;
   isPossibleInSource: P1;
   isRequiredInSource: R1;
@@ -14,38 +24,47 @@ export type CrossValue<V1, P1, R1, V2, P2, R2, X = _$Exclude<V1, V2>> = {
   isExclusionValueRepresentable: $IsRepresentable<X>;
 };
 
-export type SourceValue<C> = Get<C, "sourceValue">;
+export type CrossValueType = {
+  sourceValue: Type;
+  isPossibleInSource: boolean;
+  isRequiredInSource: boolean;
+  isPossibleInExcluded: boolean;
+  isRequiredInExcluded: boolean;
+  exclusionValue: any;
+  isExclusionValueRepresentable: any;
+};
 
-type IsPossibleInSource<C> = Get<C, "isPossibleInSource">;
+export type SourceValue<C extends CrossValueType> = C["sourceValue"];
 
-type IsRequiredInSource<C> = Get<C, "isRequiredInSource">;
+type IsPossibleInSource<C extends CrossValueType> = C["isPossibleInSource"];
 
-type IsPossibleInExcluded<C> = Get<C, "isPossibleInExcluded">;
+type IsRequiredInSource<C extends CrossValueType> = C["isRequiredInSource"];
 
-type IsRequiredInExcluded<C> = Get<C, "isRequiredInExcluded">;
+type IsPossibleInExcluded<C extends CrossValueType> = C["isPossibleInExcluded"];
 
-export type ExclusionValue<C> = Get<C, "exclusionValue">;
+type IsRequiredInExcluded<C extends CrossValueType> = C["isRequiredInExcluded"];
 
-export type IsExclusionValueRepresentable<C> = Get<
-  C,
-  "isExclusionValueRepresentable"
->;
+export type ExclusionValue<C extends CrossValueType> = C["exclusionValue"];
 
-export type IsOutsideOfSourceScope<C> = And<
+export type IsExclusionValueRepresentable<C extends CrossValueType> =
+  C["isExclusionValueRepresentable"];
+
+export type IsOutsideOfSourceScope<C extends CrossValueType> = And<
   IsRequiredInExcluded<C>,
   Not<IsPossibleInSource<C>>
 >;
 
-export type IsOutsideOfExcludedScope<C> = And<
+export type IsOutsideOfExcludedScope<C extends CrossValueType> = And<
   IsRequiredInSource<C>,
   Not<IsPossibleInExcluded<C>>
 >;
 
-export type Propagate<C> = IsExclusionValueRepresentable<C> extends true
-  ? ExclusionValue<C>
-  : SourceValue<C>;
+export type Propagate<C extends CrossValueType> =
+  IsExclusionValueRepresentable<C> extends true
+    ? ExclusionValue<C>
+    : SourceValue<C>;
 
-export type IsOmittable<C> = And<
+export type IsOmittable<C extends CrossValueType> = And<
   Not<IsRequiredInSource<C>>,
   IsRequiredInExcluded<C>
 >;

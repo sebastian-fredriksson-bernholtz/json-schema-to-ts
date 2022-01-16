@@ -10,7 +10,7 @@ import {
 } from "./primitive";
 import { _Array, _$Array, ArrayTypeId } from "./array";
 import { Tuple, $Tuple, TupleTypeId } from "./tuple";
-import { Object, $Object, ObjectTypeId } from "./object";
+import { _Object, _$Object, ObjectTypeId } from "./object";
 import { Union, $Union, UnionTypeId } from "./union";
 import {
   Intersection,
@@ -40,22 +40,22 @@ export {
   Never,
   Const,
   Enum,
-  $Primitive,
   Primitive,
-  _$Array as $Array,
+  $Primitive,
   _Array as Array,
-  $Tuple,
+  _$Array as $Array,
   Tuple,
-  $Object,
-  Object,
-  $Union,
+  $Tuple,
+  _Object as Object,
+  _$Object as $Object,
   Union,
-  $Intersection,
+  $Union,
   Intersection,
-  $Exclusion,
+  $Intersection,
   Exclusion,
-  $Error,
+  $Exclusion,
   Error,
+  $Error,
   // Definitions
   AnyType,
   NeverType,

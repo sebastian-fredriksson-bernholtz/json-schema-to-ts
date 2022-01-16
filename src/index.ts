@@ -2,8 +2,14 @@ import { M } from "ts-algebra";
 import { A, O } from "ts-toolbelt";
 import { JSONSchema6Definition } from "json-schema";
 
-import { JSONSchema6DefinitionWithoutInterface } from "./definitions";
+import {
+  JSONSchema6DefinitionWithoutInterface,
+  FromSchemaOptions,
+  FromSchemaDefaultOptions,
+} from "./definitions";
 import { ParseSchema } from "./parse-schema";
+
+export { FromSchemaOptions, FromSchemaDefaultOptions } from "./definitions";
 
 /**
  * Unwided JSON schema (e.g. defined with the `as const` statement)
@@ -22,6 +28,9 @@ export type JSONSchema =
  *
  * @param S JSON schema
  */
-export type FromSchema<S extends JSONSchema> = M.$Resolve<
-  ParseSchema<S extends object ? O.Writable<S, A.Key, "deep"> : S>
+export type FromSchema<
+  S extends JSONSchema,
+  O extends FromSchemaOptions = FromSchemaDefaultOptions
+> = M.$Resolve<
+  ParseSchema<S extends object ? O.Writable<S, string, "deep"> : S, O>
 >;

@@ -6,7 +6,7 @@ import { TypeId, Never, Error } from "..";
 import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
 import {
-  $Object,
+  _Object,
   ObjectType,
   ObjectValues,
   ObjectValue,
@@ -30,6 +30,7 @@ import {
   IsOutsideOfExcludedScope,
   Propagate,
   IsOmittable,
+  CrossValueType,
 } from "./utils";
 
 export type ExcludeFromObject<A extends ObjectType, B> = {
@@ -51,7 +52,7 @@ export type ExcludeFromObject<A extends ObjectType, B> = {
 type ExcludeObjects<
   A extends ObjectType,
   B extends ObjectType,
-  C = CrossObjectValues<A, B>,
+  C extends Record<string, CrossValueType> = CrossObjectValues<A, B>,
   R = RepresentableKeys<C>,
   P = _Exclude<ObjectOpenProps<A>, ObjectOpenProps<B>>
 > = DoesObjectSizesMatch<A, B, C> extends true
@@ -65,11 +66,13 @@ type ExcludeObjects<
   : A;
 
 type CrossObjectValues<A extends ObjectType, B extends ObjectType> = {
-  [key in
+  [key in Extract<
     | keyof ObjectValues<A>
     | keyof ObjectValues<B>
     | ObjectRequiredKeys<A>
-    | ObjectRequiredKeys<B>]: CrossValue<
+    | ObjectRequiredKeys<B>,
+    string
+  >]: CrossValue<
     ObjectValue<A, key>,
     IsPossibleIn<A, key>,
     IsRequiredIn<A, key>,
@@ -87,26 +90,27 @@ type GetUnionLength<U> = A.Equals<U, never> extends B.True
   ? "onlyOne"
   : "moreThanTwo";
 
-type IsPossibleIn<O extends ObjectType, K extends A.Key> = Or<
+type IsPossibleIn<O extends ObjectType, K extends string> = Or<
   DoesExtend<K, keyof ObjectValues<O>>,
   IsObjectOpen<O>
 >;
 
-type IsRequiredIn<O extends ObjectType, K extends A.Key> = DoesExtend<
+type IsRequiredIn<O extends ObjectType, K extends string> = DoesExtend<
   K,
   ObjectRequiredKeys<O>
 >;
 
 // SIZE CHECK
 
-type DoesObjectSizesMatch<A extends ObjectType, B extends ObjectType, C> = And<
-  IsObjectOpen<A>,
-  Not<IsObjectOpen<B>>
-> extends true
+type DoesObjectSizesMatch<
+  A extends ObjectType,
+  B extends ObjectType,
+  C extends Record<string, CrossValueType>
+> = And<IsObjectOpen<A>, Not<IsObjectOpen<B>>> extends true
   ? false
   : And<IsExcludedSmallEnough<C>, IsExcludedBigEnough<C>>;
 
-type IsExcludedSmallEnough<C> = Not<
+type IsExcludedSmallEnough<C extends Record<string, CrossValueType>> = Not<
   DoesExtend<
     true,
     {
@@ -115,7 +119,7 @@ type IsExcludedSmallEnough<C> = Not<
   >
 >;
 
-type IsExcludedBigEnough<C> = Not<
+type IsExcludedBigEnough<C extends Record<string, CrossValueType>> = Not<
   DoesExtend<
     true,
     {
@@ -126,13 +130,16 @@ type IsExcludedBigEnough<C> = Not<
 
 // PROPAGATION
 
-type RepresentableKeys<C> = {
+type RepresentableKeys<C extends Record<string, CrossValueType>> = {
   [key in keyof C]: IsExclusionValueRepresentable<C[key]> extends true
     ? key
     : never;
 }[keyof C];
 
-type PropagateExclusion<A extends ObjectType, C> = $Object<
+type PropagateExclusion<
+  A extends ObjectType,
+  C extends Record<string, CrossValueType>
+> = _Object<
   {
     [key in keyof C]: Propagate<C[key]>;
   },
@@ -143,9 +150,13 @@ type PropagateExclusion<A extends ObjectType, C> = $Object<
 
 // OMITTABLE KEYS
 
-type OmitOmittableKeys<A extends ObjectType, C, K = OmittableKeys<C>> = {
+type OmitOmittableKeys<
+  A extends ObjectType,
+  C extends Record<string, CrossValueType>,
+  K extends string = OmittableKeys<C>
+> = {
   moreThanTwo: A;
-  onlyOne: $Object<
+  onlyOne: _Object<
     {
       [key in keyof C]: key extends K ? Never : SourceValue<C[key]>;
     },
@@ -156,19 +167,26 @@ type OmitOmittableKeys<A extends ObjectType, C, K = OmittableKeys<C>> = {
   none: Never;
 }[GetUnionLength<K>];
 
-type OmittableKeys<C> = {
-  [key in keyof C]: IsOmittable<C[key]> extends true ? key : never;
-}[keyof C];
+type OmittableKeys<C extends Record<string, CrossValueType>> = {
+  [key in Extract<keyof C, string>]: IsOmittable<C[key]> extends true
+    ? key
+    : never;
+}[Extract<keyof C, string>];
 
 // CONST
 
 type ExcludeConst<
   A extends ObjectType,
   B extends ConstType,
-  V = ConstValue<B>
+  V extends any = ConstValue<B>
 > = IsObject<V> extends true
   ? _$Exclude<
       A,
-      $Object<{ [key in keyof V]: Const<V[key]> }, keyof V, false, Never>
+      _Object<
+        { [key in Extract<keyof V, string>]: Const<V[key]> },
+        Extract<keyof V, string>,
+        false,
+        Never
+      >
     >
   : A;

@@ -10,7 +10,8 @@ describe("Not schemas", () => {
       not: { type: "boolean" },
     } as const;
 
-    type NotBool = FromSchema<typeof notBoolSchema>;
+    // @ts-ignore This type can raise an error (in VS Code only)
+    type NotBool = FromSchema<typeof notBoolSchema, { parseNotKeyword: true }>;
     let notBoolInstance: NotBool;
 
     it("rejects boolean", () => {
@@ -49,7 +50,7 @@ describe("Not schemas", () => {
       not: { const: [1, 2] },
     } as const;
 
-    type Tuple = FromSchema<typeof tupleSchema>;
+    type Tuple = FromSchema<typeof tupleSchema, { parseNotKeyword: true }>;
     let tuple: Tuple;
 
     it("rejects tuple of incorrect length", () => {
@@ -78,7 +79,7 @@ describe("Not schemas", () => {
       not: { maxItems: 2 },
     } as const;
 
-    type Tuple = FromSchema<typeof tupleSchema>;
+    type Tuple = FromSchema<typeof tupleSchema, { parseNotKeyword: true }>;
     let tuple: Tuple;
 
     it("rejects tuple of incorrect length", () => {
@@ -108,7 +109,10 @@ describe("Not schemas", () => {
       not: { const: "idiot" },
     } as const;
 
-    type CorrectLanguage = FromSchema<typeof correctLanguageSchema>;
+    type CorrectLanguage = FromSchema<
+      typeof correctLanguageSchema,
+      { parseNotKeyword: true }
+    >;
     let correctLanguage: CorrectLanguage;
 
     it("rejects incorrect language", () => {
@@ -133,7 +137,10 @@ describe("Not schemas", () => {
       not: { const: [0, 0], additionalItems: false },
     } as const;
 
-    type OpenArray1 = FromSchema<typeof openArraySchema1>;
+    type OpenArray1 = FromSchema<
+      typeof openArraySchema1,
+      { parseNotKeyword: true }
+    >;
     let openArray1: OpenArray1;
 
     it("accepts correct item", () => {
@@ -148,7 +155,10 @@ describe("Not schemas", () => {
       not: { items: [{ const: 0 }, { const: 1 }], additionalItems: false },
     } as const;
 
-    type OpenArray2 = FromSchema<typeof openArraySchema2>;
+    type OpenArray2 = FromSchema<
+      typeof openArraySchema2,
+      { parseNotKeyword: true }
+    >;
     let openArray2: OpenArray2;
 
     it("accepts correct item", () => {

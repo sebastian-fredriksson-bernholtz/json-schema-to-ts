@@ -8,9 +8,10 @@ import { $IsRepresentable } from "./isRepresentable";
 
 export type ObjectTypeId = "object";
 
-export type Object<
-  V extends Record<A.Key, Type> = {},
-  R extends A.Key = never,
+// Prefixed with _ to not confuse with native TS Object
+export type _Object<
+  V extends Record<string, Type> = {},
+  R extends string = never,
   O extends boolean = true,
   P extends Type = Any
 > = {
@@ -21,7 +22,7 @@ export type Object<
   openProps: P;
 };
 
-export type $Object<V = {}, R = never, O = true, P = Any> = {
+export type _$Object<V = {}, R = never, O = true, P = Any> = {
   type: ObjectTypeId;
   values: V;
   required: R;
@@ -31,8 +32,8 @@ export type $Object<V = {}, R = never, O = true, P = Any> = {
 
 export type ObjectType = {
   type: ObjectTypeId;
-  values: Record<A.Key, Type>;
-  required: A.Key;
+  values: Record<string, Type>;
+  required: string;
   isOpen: boolean;
   openProps: Type;
 };
@@ -41,7 +42,7 @@ export type ObjectValues<O extends ObjectType> = O["values"];
 
 export type ObjectValue<
   O extends ObjectType,
-  K extends A.Key
+  K extends string
 > = K extends keyof ObjectValues<O>
   ? ObjectValues<O>[K]
   : IsObjectOpen<O> extends true
@@ -91,7 +92,7 @@ type ResolveValidObject<O extends ObjectType> = DeepMergeUnsafe<
 
 type IsObjectValueRepresentable<
   O extends ObjectType,
-  K extends A.Key
+  K extends string
 > = K extends keyof ObjectValues<O>
   ? $IsRepresentable<ObjectValues<O>[K]>
   : IsObjectOpen<O> extends true

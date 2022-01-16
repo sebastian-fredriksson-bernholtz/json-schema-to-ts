@@ -23,7 +23,7 @@ describe("If/Then/Else schemas", () => {
       },
     } as const;
 
-    type Pet = FromSchema<typeof petSchema>;
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: true }>;
     let petInstance: Pet;
 
     it("accepts valid dogs", () => {
@@ -74,7 +74,7 @@ describe("If/Then/Else schemas", () => {
       },
     } as const;
 
-    type Pet = FromSchema<typeof petSchema>;
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: true }>;
     let petInstance: Pet;
 
     it("accepts valid dogs", () => {
@@ -123,7 +123,7 @@ describe("If/Then/Else schemas", () => {
       },
     } as const;
 
-    type Pet = FromSchema<typeof petSchema>;
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: true }>;
     let petInstance: Pet;
 
     it("accepts valid dogs", () => {
@@ -171,11 +171,12 @@ describe("If/Then/Else schemas", () => {
       else: { maxItems: 1 },
     } as const;
 
-    type Pet = FromSchema<typeof petSchema>;
+    // Sadly, in TS > 4, the computation is aborted for being too deep 😢
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: false }>;
     let petInstance: Pet;
 
     it("rejects invalid dog instances", () => {
-      // @ts-expect-error
+      // @ts-NOT-expect-error 😢
       petInstance = ["dog"];
       expect(ajv.validate(petSchema, petInstance)).toBe(false);
 
@@ -198,14 +199,15 @@ describe("If/Then/Else schemas", () => {
       then: { items: [{ const: "dog" }], additionalItems: false },
     } as const;
 
-    type Pet = FromSchema<typeof petSchema>;
+    // Sadly, in TS > 4, the computation is aborted for being too deep 😢
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: false }>;
     let petInstance: Pet;
 
     it("rejects invalid dog instances", () => {
       petInstance = ["dog"];
       expect(ajv.validate(petSchema, petInstance)).toBe(true);
 
-      // @ts-expect-error
+      // @ts-NOT-expect-error 😢
       petInstance = ["dog", "poodle", "other"];
       expect(ajv.validate(petSchema, petInstance)).toBe(false);
     });

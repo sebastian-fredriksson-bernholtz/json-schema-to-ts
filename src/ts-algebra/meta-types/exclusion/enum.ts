@@ -1,12 +1,12 @@
 import { A, B, U } from "ts-toolbelt";
 
-import { TypeId, Never, Const, Error } from "..";
+import { Type, TypeId, Never, Const, Error } from "..";
 import { Enum, EnumType, EnumValues } from "../enum";
 import { $Intersect } from "../intersection";
 import { UnionType } from "../union";
 import { $IsRepresentable } from "../isRepresentable";
 
-import { _$Exclude, ExclusionType } from ".";
+import { _Exclude, _$Exclude, ExclusionType } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
@@ -37,14 +37,14 @@ type RecurseOnEnumValues<V, B> = V extends infer EnumValue
     : EnumValue
   : never;
 
-export type ExcludeEnum<A, B extends EnumType, V = EnumValues<B>> = A.Equals<
-  V,
-  never
-> extends B.True
-  ? A
-  : ExcludeEnumValue<A, U.Last<V>, V>;
+export type ExcludeEnum<
+  A extends Type,
+  B extends EnumType,
+  V = EnumValues<B>
+> = A.Equals<V, never> extends B.True ? A : ExcludeEnumValue<A, U.Last<V>, V>;
 
-type ExcludeEnumValue<A, L, V> = $Intersect<
-  _$Exclude<A, Const<L>>,
-  _$Exclude<A, Enum<U.Exclude<V, L>>>
->;
+type ExcludeEnumValue<
+  A extends Type,
+  L extends any,
+  V extends any
+> = $Intersect<_Exclude<A, Const<L>>, _Exclude<A, Enum<U.Exclude<V, L>>>>;

@@ -143,6 +143,8 @@ const intersectingUnion2: A.Equals<
 > = 1;
 intersectingUnion2;
 
+// Strange error in TS > 4: intersection is computed as M.Union<M.Enum<never> | M.Enum<never>> (M.Enum<never> is not deduplicated)
+// @ts-expect-error
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Enum<"foo" | "bar" | 42>,
