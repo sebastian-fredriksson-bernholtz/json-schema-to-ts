@@ -78,10 +78,10 @@ excludingArray2;
 
 const excludingTuple: A.Equals<
   M.Exclude<
-    M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">], false>, M.Const<["A"]>>,
+    M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">]>, M.Const<["A"]>>,
     M.Const<["B"]>
   >,
-  M.Tuple<[M.Enum<"C">], false>
+  M.Tuple<[M.Enum<"C">]>
 > = 1;
 excludingTuple;
 
@@ -89,10 +89,10 @@ excludingTuple;
 
 const excludingObject: A.Equals<
   M.Exclude<
-    M.Exclusion<M.Object<{ a: M.Enum<"A" | "B"> }, "a", false>, M.Never>,
-    M.Object<{ a: M.Const<"B"> }, "a", false>
+    M.Exclusion<M.Object<{ a: M.Enum<"A" | "B"> }, "a">, M.Never>,
+    M.Object<{ a: M.Const<"B"> }, "a">
   >,
-  M.Object<{ a: M.Enum<"A"> }, "a", false>
+  M.Object<{ a: M.Enum<"A"> }, "a">
 > = 1;
 excludingObject;
 

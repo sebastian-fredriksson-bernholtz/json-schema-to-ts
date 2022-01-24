@@ -77,19 +77,19 @@ nonExcludingArray;
 // --- TUPLE ---
 
 const excludingTuple1: A.Equals<
-  M.Exclude<M.Enum<["A"] | [42]>, M.Tuple<[M.Primitive<string>]>>,
+  M.Exclude<M.Enum<["A"] | [42]>, M.Tuple<[M.Primitive<string>], true>>,
   M.Enum<[42]>
 > = 1;
 excludingTuple1;
 
 const excludingTuple2: A.Equals<
-  M.Exclude<M.Enum<["A", "B"] | [42]>, M.Tuple<[M.Const<"A">]>>,
+  M.Exclude<M.Enum<["A", "B"] | [42]>, M.Tuple<[M.Const<"A">], true>>,
   M.Enum<[42]>
 > = 1;
 excludingTuple2;
 
 const nonExcludingTuple: A.Equals<
-  M.Exclude<M.Enum<["A", "B"]>, M.Tuple<[M.Primitive<number>]>>,
+  M.Exclude<M.Enum<["A", "B"]>, M.Tuple<[M.Primitive<number>], true>>,
   M.Enum<["A", "B"]>
 > = 1;
 nonExcludingTuple;
@@ -108,7 +108,7 @@ nonObjectEnum;
 const excludingClosedObject1: A.Equals<
   M.Exclude<
     M.Enum<{ a: "A" } | { a: "B" }>,
-    M.Object<{ a: M.Primitive<string> }, "a", false>
+    M.Object<{ a: M.Primitive<string> }, "a">
   >,
   M.Enum<never>
 > = 1;
@@ -117,7 +117,7 @@ excludingClosedObject1;
 const excludingClosedObject2: A.Equals<
   M.Exclude<
     M.Enum<{ a: "A" } | { a: "B" }>,
-    M.Object<{ a: M.Const<"A"> }, "a", false>
+    M.Object<{ a: M.Const<"A"> }, "a">
   >,
   M.Enum<{ a: "B" }>
 > = 1;
@@ -126,7 +126,7 @@ excludingClosedObject2;
 const nonExcludingClosedObject: A.Equals<
   M.Exclude<
     M.Enum<{ a: "A" } | { a: "B" }>,
-    M.Object<{ a: M.Const<"C"> }, "a", false>
+    M.Object<{ a: M.Const<"C"> }, "a">
   >,
   M.Enum<{ a: "A" } | { a: "B" }>
 > = 1;
@@ -135,7 +135,7 @@ nonExcludingClosedObject;
 const closedObjectSizesDontMatch1: A.Equals<
   M.Exclude<
     M.Enum<{ a: "A" } | { a: "A"; b: "B" }>,
-    M.Object<{ a: M.Const<"A"> }, "a", false>
+    M.Object<{ a: M.Const<"A"> }, "a">
   >,
   M.Enum<{ a: "A"; b: "B" }>
 > = 1;
@@ -144,7 +144,7 @@ closedObjectSizesDontMatch1;
 const closedObjectSizesDontMatch2: A.Equals<
   M.Exclude<
     M.Enum<{ a: "A"; b: "B" } | { a: "A"; c: "C" }>,
-    M.Object<{ a: M.Const<"A">; c: M.Const<"C"> }, "a" | "c", false>
+    M.Object<{ a: M.Const<"A">; c: M.Const<"C"> }, "a" | "c">
   >,
   M.Enum<{ a: "A"; b: "B" }>
 > = 1;

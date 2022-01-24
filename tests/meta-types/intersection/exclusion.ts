@@ -72,7 +72,7 @@ intersectingArray;
 
 const intersectingTuple: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Tuple<[M.Primitive<string>]>, M.Const<[]>>,
+    M.Exclusion<M.Tuple<[M.Primitive<string>], true>, M.Const<[]>>,
     M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
   >,
   M.Exclusion<

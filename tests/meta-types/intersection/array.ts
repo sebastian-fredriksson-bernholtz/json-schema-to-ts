@@ -95,7 +95,10 @@ const intersectingTuple2: A.Equals<
 intersectingTuple2;
 
 const tupleOpenPropsBecomeString: A.Equals<
-  M.Intersect<M.Array<M.Primitive<string>>, M.Tuple<[M.Primitive<string>]>>,
+  M.Intersect<
+    M.Array<M.Primitive<string>>,
+    M.Tuple<[M.Primitive<string>], true>
+  >,
   M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
 > = 1;
 tupleOpenPropsBecomeString;
@@ -165,7 +168,7 @@ numberIsExcluded2;
 const tupleIsKept: A.Equals<
   M.Intersect<
     M.Array<M.Primitive<string>>,
-    M.Union<M.Array<M.Primitive<number>> | M.Tuple<[M.Primitive<string>]>>
+    M.Union<M.Array<M.Primitive<number>> | M.Tuple<[M.Primitive<string>], true>>
   >,
   M.Union<M.Never | M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>>
 > = 1;

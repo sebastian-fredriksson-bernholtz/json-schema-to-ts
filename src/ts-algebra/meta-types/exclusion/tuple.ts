@@ -7,6 +7,7 @@ import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
 import { ArrayValues, ArrayType } from "../array";
 import {
+  Tuple,
   $Tuple,
   TupleType,
   TupleValues,
@@ -50,7 +51,7 @@ export type ExcludeFromTuple<A extends TupleType, B> = {
 
 type ExcludeArray<A extends TupleType, B extends ArrayType> = ExcludeTuples<
   A,
-  $Tuple<[], true, ArrayValues<B>>
+  Tuple<[], true, ArrayValues<B>>
 >;
 
 type ExcludeTuples<
@@ -180,7 +181,7 @@ type OmitOmittableItems<
   I extends CrossValueType[] = OmittableItems<C>
 > = {
   moreThanTwo: S;
-  onlyOne: $Tuple<RequiredTupleValues<C>, false, TupleOpenProps<S>>;
+  onlyOne: $Tuple<RequiredTupleValues<C>>;
   none: Never;
 }[GetTupleLength<I>];
 
@@ -207,9 +208,7 @@ type ExcludeConst<
   A extends TupleType,
   B extends ConstType,
   V = ConstValue<B>
-> = V extends any[]
-  ? _Exclude<A, $Tuple<ExtractConstValues<V>, false, Never>>
-  : A;
+> = V extends any[] ? _Exclude<A, $Tuple<ExtractConstValues<V>>> : A;
 
 type ExtractConstValues<V extends any[], R extends any[] = []> = {
   stop: L.Reverse<R>;

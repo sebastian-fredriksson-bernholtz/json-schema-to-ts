@@ -77,7 +77,7 @@ const excludingTuple: A.Equals<
 excludingTuple;
 
 const nonExcludingTuple1: A.Equals<
-  M.Exclude<M.Array<M.Primitive<string>>, M.Tuple<[M.Primitive<string>]>>,
+  M.Exclude<M.Array<M.Primitive<string>>, M.Tuple<[M.Primitive<string>], true>>,
   M.Array<M.Primitive<string>>
 > = 1;
 nonExcludingTuple1;

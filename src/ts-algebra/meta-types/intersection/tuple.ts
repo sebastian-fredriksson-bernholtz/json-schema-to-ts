@@ -14,7 +14,7 @@ import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
 import { DistributeIntersection } from "./union";
 import { IntersectExclusion } from "./exclusion";
-import { $ClearIntersections, $Intersect } from ".";
+import { $ClearIntersections, Intersect, $Intersect } from ".";
 
 export type ClearTupleIntersections<
   T extends TupleType,
@@ -52,7 +52,10 @@ export type IntersectTuple<A extends TupleType, B> = {
 type IntersectTupleToArray<
   T extends TupleType,
   A extends ArrayType,
-  V extends L.List = IntersectTupleToArrValues<TupleValues<T>, ArrayValues<A>>,
+  V extends L.List = IntersectTupleToArrayValues<
+    TupleValues<T>,
+    ArrayValues<A>
+  >,
   N = HasNeverValue<V>,
   O = $Intersect<TupleOpenProps<T>, ArrayValues<A>>
 > = N extends true
@@ -63,16 +66,18 @@ type IntersectTupleToArray<
       O
     >;
 
-type IntersectTupleToArrValues<V extends L.List, T, R extends L.List = []> = {
+type IntersectTupleToArrayValues<
+  V extends Type[],
+  T extends Type,
+  R extends any[] = []
+> = {
   stop: L.Reverse<R>;
-  continue: R extends L.List
-    ? IntersectTupleToArrValues<
-        L.Tail<V>,
-        T,
-        L.Prepend<R, $Intersect<L.Head<V>, T>>
-      >
-    : never;
-}[V extends [any, ...L.List] ? "continue" : "stop"];
+  continue: IntersectTupleToArrayValues<
+    L.Tail<V>,
+    T,
+    L.Prepend<R, Intersect<L.Head<V>, T>>
+  >;
+}[V extends [any, ...any[]] ? "continue" : "stop"];
 
 type HasNeverValue<V extends L.List, R = false> = {
   stop: R;
@@ -116,7 +121,7 @@ type IntersectTupleValues<
     O2,
     P1,
     P2,
-    L.Prepend<R, O2 extends true ? $Intersect<L.Head<V1>, P2> : Never>
+    L.Prepend<R, O2 extends true ? Intersect<L.Head<V1>, P2> : Never>
   >;
   continue2: IntersectTupleValues<
     V1,
@@ -125,7 +130,7 @@ type IntersectTupleValues<
     O2,
     P1,
     P2,
-    L.Prepend<R, O1 extends true ? $Intersect<L.Head<V2>, P1> : Never>
+    L.Prepend<R, O1 extends true ? Intersect<L.Head<V2>, P1> : Never>
   >;
   continueBoth: IntersectTupleValues<
     L.Tail<V1>,
@@ -134,12 +139,12 @@ type IntersectTupleValues<
     O2,
     P1,
     P2,
-    L.Prepend<R, $Intersect<L.Head<V1>, L.Head<V2>>>
+    L.Prepend<R, Intersect<L.Head<V1>, L.Head<V2>>>
   >;
-}[V1 extends [any, ...L.List]
-  ? V2 extends [any, ...L.List]
+}[V1 extends [any, ...any[]]
+  ? V2 extends [any, ...any[]]
     ? "continueBoth"
     : "continue1"
-  : V2 extends [any, ...L.List]
+  : V2 extends [any, ...any[]]
   ? "continue2"
   : "stop"];

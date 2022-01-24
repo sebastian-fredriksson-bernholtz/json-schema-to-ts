@@ -47,7 +47,7 @@ arraysNeverExclude;
 // --- TUPLE ---
 
 const tuplesNeverExclude: A.Equals<
-  M.Exclude<M.Never, M.Tuple<[M.Primitive<string>]>>,
+  M.Exclude<M.Never, M.Tuple<[M.Primitive<string>], true>>,
   M.Never
 > = 1;
 tuplesNeverExclude;

@@ -132,20 +132,15 @@ const excludingTuple: A.Equals<
   M.Exclude<
     M.Intersection<
       M.Union<
-        | M.Tuple<[M.Primitive<string>], false>
-        | M.Tuple<[M.Primitive<number>], false>
-        | M.Tuple<[M.Primitive<boolean>], false>
+        | M.Tuple<[M.Primitive<string>]>
+        | M.Tuple<[M.Primitive<number>]>
+        | M.Tuple<[M.Primitive<boolean>]>
       >,
-      M.Union<
-        | M.Tuple<[M.Primitive<string>], false>
-        | M.Tuple<[M.Primitive<number>], false>
-      >
+      M.Union<M.Tuple<[M.Primitive<string>]> | M.Tuple<[M.Primitive<number>]>>
     >,
-    M.Tuple<[M.Primitive<number>], false>
+    M.Tuple<[M.Primitive<number>]>
   >,
-  M.Union<
-    M.Union<M.Never> | M.Union<M.Never | M.Tuple<[M.Primitive<string>], false>>
-  >
+  M.Union<M.Union<M.Never> | M.Union<M.Never | M.Tuple<[M.Primitive<string>]>>>
 > = 1;
 excludingTuple;
 
@@ -153,21 +148,18 @@ const nonExcludingTuple: A.Equals<
   M.Exclude<
     M.Intersection<
       M.Union<
-        | M.Tuple<[M.Primitive<string>], false>
-        | M.Tuple<[M.Primitive<number>], false>
-        | M.Tuple<[M.Primitive<boolean>], false>
+        | M.Tuple<[M.Primitive<string>]>
+        | M.Tuple<[M.Primitive<number>]>
+        | M.Tuple<[M.Primitive<boolean>]>
       >,
-      M.Union<
-        | M.Tuple<[M.Primitive<string>], false>
-        | M.Tuple<[M.Primitive<number>], false>
-      >
+      M.Union<M.Tuple<[M.Primitive<string>]> | M.Tuple<[M.Primitive<number>]>>
     >,
-    M.Tuple<[M.Primitive<boolean>], false>
+    M.Tuple<[M.Primitive<boolean>]>
   >,
   M.Union<
     | M.Union<M.Never>
-    | M.Union<M.Never | M.Tuple<[M.Primitive<string>], false>>
-    | M.Union<M.Never | M.Tuple<[M.Primitive<number>], false>>
+    | M.Union<M.Never | M.Tuple<[M.Primitive<string>]>>
+    | M.Union<M.Never | M.Tuple<[M.Primitive<number>]>>
   >
 > = 1;
 nonExcludingTuple;
@@ -178,20 +170,20 @@ const excludingObject: A.Equals<
   M.Exclude<
     M.Intersection<
       M.Union<
-        | M.Object<{ a: M.Primitive<string> }, "a", false>
-        | M.Object<{ a: M.Primitive<number> }, "a", false>
-        | M.Object<{ a: M.Primitive<boolean> }, "a", false>
+        | M.Object<{ a: M.Primitive<string> }, "a">
+        | M.Object<{ a: M.Primitive<number> }, "a">
+        | M.Object<{ a: M.Primitive<boolean> }, "a">
       >,
       M.Union<
-        | M.Object<{ a: M.Primitive<string> }, "a", false>
-        | M.Object<{ a: M.Primitive<number> }, "a", false>
+        | M.Object<{ a: M.Primitive<string> }, "a">
+        | M.Object<{ a: M.Primitive<number> }, "a">
       >
     >,
-    M.Object<{ a: M.Primitive<number> }, "a", false>
+    M.Object<{ a: M.Primitive<number> }, "a">
   >,
   M.Union<
     | M.Union<M.Never>
-    | M.Union<M.Never | M.Object<{ a: M.Primitive<string> }, "a", false>>
+    | M.Union<M.Never | M.Object<{ a: M.Primitive<string> }, "a">>
   >
 > = 1;
 excludingObject;
@@ -200,21 +192,21 @@ const nonExcludingObject: A.Equals<
   M.Exclude<
     M.Intersection<
       M.Union<
-        | M.Object<{ a: M.Primitive<string> }, "a", false>
-        | M.Object<{ a: M.Primitive<number> }, "a", false>
-        | M.Object<{ a: M.Primitive<boolean> }, "a", false>
+        | M.Object<{ a: M.Primitive<string> }, "a">
+        | M.Object<{ a: M.Primitive<number> }, "a">
+        | M.Object<{ a: M.Primitive<boolean> }, "a">
       >,
       M.Union<
-        | M.Object<{ a: M.Primitive<string> }, "a", false>
-        | M.Object<{ a: M.Primitive<number> }, "a", false>
+        | M.Object<{ a: M.Primitive<string> }, "a">
+        | M.Object<{ a: M.Primitive<number> }, "a">
       >
     >,
-    M.Object<{ a: M.Primitive<boolean> }, "a", false>
+    M.Object<{ a: M.Primitive<boolean> }, "a">
   >,
   M.Union<
     | M.Union<M.Never>
-    | M.Union<M.Never | M.Object<{ a: M.Primitive<string> }, "a", false>>
-    | M.Union<M.Never | M.Object<{ a: M.Primitive<number> }, "a", false>>
+    | M.Union<M.Never | M.Object<{ a: M.Primitive<string> }, "a">>
+    | M.Union<M.Never | M.Object<{ a: M.Primitive<number> }, "a">>
   >
 > = 1;
 nonExcludingObject;

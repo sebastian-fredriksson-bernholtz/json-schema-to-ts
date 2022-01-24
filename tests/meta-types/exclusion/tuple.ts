@@ -5,7 +5,7 @@ import { M } from "ts-algebra";
 // --- ANY ---
 
 const anysAlwaysExclude: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">, M.Const<"B">]>, M.Any>,
+  M.Exclude<M.Tuple<[M.Const<"A">, M.Const<"B">], true>, M.Any>,
   M.Never
 > = 1;
 anysAlwaysExclude;
@@ -13,27 +13,27 @@ anysAlwaysExclude;
 // --- NEVER ---
 
 const neversNeverExclude: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">, M.Const<"B">]>, M.Never>,
-  M.Tuple<[M.Const<"A">, M.Const<"B">]>
+  M.Exclude<M.Tuple<[M.Const<"A">, M.Const<"B">], true>, M.Never>,
+  M.Tuple<[M.Const<"A">, M.Const<"B">], true>
 > = 1;
 neversNeverExclude;
 
 // --- CONSTS ---
 
 const constTooSmall: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Const<["A"]>>,
-  M.Tuple<[M.Const<"A">]>
+  M.Exclude<M.Tuple<[M.Const<"A">], true>, M.Const<["A"]>>,
+  M.Tuple<[M.Const<"A">], true>
 > = 1;
 constTooSmall;
 
 const constTooLarge: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], false>, M.Const<["A", "B"]>>,
-  M.Tuple<[M.Const<"A">], false>
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Const<["A", "B"]>>,
+  M.Tuple<[M.Const<"A">]>
 > = 1;
 constTooLarge;
 
 const constSizeMatches: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], false>, M.Const<["A"]>>,
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Const<["A"]>>,
   M.Never
 > = 1;
 constSizeMatches;
@@ -41,19 +41,19 @@ constSizeMatches;
 // --- ENUM ---
 
 const enumTooSmall: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Enum<["A"] | ["B"]>>,
-  M.Tuple<[M.Const<"A">]>
+  M.Exclude<M.Tuple<[M.Const<"A">], true>, M.Enum<["A"] | ["B"]>>,
+  M.Tuple<[M.Const<"A">], true>
 > = 1;
 enumTooSmall;
 
 const enumTooLarge: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], false>, M.Enum<["A", "B"] | ["A", "C"]>>,
-  M.Tuple<[M.Const<"A">], false>
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Enum<["A", "B"] | ["A", "C"]>>,
+  M.Tuple<[M.Const<"A">]>
 > = 1;
 enumTooLarge;
 
 const enumSizesMatch: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], false>, M.Enum<["A"] | ["B"]>>,
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Enum<["A"] | ["B"]>>,
   M.Never
 > = 1;
 enumSizesMatch;
@@ -61,16 +61,16 @@ enumSizesMatch;
 // --- PRIMITIVES ---
 
 const primitivesNeverExclude: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Primitive<string>>,
-  M.Tuple<[M.Const<"A">]>
+  M.Exclude<M.Tuple<[M.Const<"A">], true>, M.Primitive<string>>,
+  M.Tuple<[M.Const<"A">], true>
 > = 1;
 primitivesNeverExclude;
 
 // --- ARRAY ---
 
 const arrayTooSmall1: A.Equals<
-  M.Exclude<M.Tuple<[M.Primitive<string>]>, M.Array<M.Primitive<string>>>,
-  M.Tuple<[M.Primitive<string>]>
+  M.Exclude<M.Tuple<[M.Primitive<string>], true>, M.Array<M.Primitive<string>>>,
+  M.Tuple<[M.Primitive<string>], true>
 > = 1;
 arrayTooSmall1;
 
@@ -140,69 +140,60 @@ nonExcludingArray2;
 
 // Both closed
 const bothClosed1Item: A.Equals<
-  M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">], false>,
-    M.Tuple<[M.Const<"B">], false>
-  >,
-  M.Tuple<[M.Enum<"A">], false>
+  M.Exclude<M.Tuple<[M.Enum<"A" | "B">]>, M.Tuple<[M.Const<"B">]>>,
+  M.Tuple<[M.Enum<"A">]>
 > = 1;
 bothClosed1Item;
 
 const bothClosed2Items: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">], false>,
-    M.Tuple<[M.Const<"A">, M.Const<"B">], false>
+    M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">]>,
+    M.Tuple<[M.Const<"A">, M.Const<"B">]>
   >,
-  M.Tuple<[M.Enum<"B">, M.Const<"B">], false>
+  M.Tuple<[M.Enum<"B">, M.Const<"B">]>
 > = 1;
 bothClosed2Items;
 
 const bothClosed3Keys: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">, M.Const<"C">], false>,
-    M.Tuple<[M.Const<"B">, M.Const<"B">, M.Const<"C">], false>
+    M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">, M.Const<"C">]>,
+    M.Tuple<[M.Const<"B">, M.Const<"B">, M.Const<"C">]>
   >,
-  M.Tuple<[M.Enum<"A">, M.Const<"B">, M.Const<"C">], false>
+  M.Tuple<[M.Enum<"A">, M.Const<"B">, M.Const<"C">]>
 > = 1;
 bothClosed3Keys;
 
 const bothClosedSizesDontMatch1: A.Equals<
-  M.Exclude<
-    M.Tuple<[M.Const<"A">, M.Const<"B">], false>,
-    M.Tuple<[M.Const<"A">], false>
-  >,
-  M.Tuple<[M.Const<"A">, M.Const<"B">], false>
+  M.Exclude<M.Tuple<[M.Const<"A">, M.Const<"B">]>, M.Tuple<[M.Const<"A">]>>,
+  M.Tuple<[M.Const<"A">, M.Const<"B">]>
 > = 1;
 bothClosedSizesDontMatch1;
 
 const bothClosedSizesDontMatch2: A.Equals<
-  M.Exclude<
-    M.Tuple<[M.Const<"A">], false>,
-    M.Tuple<[M.Const<"A">, M.Const<"B">], false>
-  >,
-  M.Tuple<[M.Const<"A">], false>
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Tuple<[M.Const<"A">, M.Const<"B">]>>,
+  M.Tuple<[M.Const<"A">]>
 > = 1;
 bothClosedSizesDontMatch2;
 
 const bothClosedMoreThan1FreeKey: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">, M.Enum<"A" | "B">], false>,
-    M.Tuple<[M.Const<"A">, M.Const<"B">], false>
+    M.Tuple<[M.Enum<"A" | "B">, M.Enum<"A" | "B">]>,
+    M.Tuple<[M.Const<"A">, M.Const<"B">]>
   >,
-  M.Tuple<[M.Enum<"A" | "B">, M.Enum<"A" | "B">], false>
+  M.Tuple<[M.Enum<"A" | "B">, M.Enum<"A" | "B">]>
 > = 1;
 bothClosedMoreThan1FreeKey;
 
 const bothClosedImpossible1: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], false>, M.Tuple<[M.Const<"A">], false>>,
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Tuple<[M.Const<"A">]>>,
   M.Never
 > = 1;
 bothClosedImpossible1;
 
 const bothClosedImpossible2: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Const<"A">, M.Const<"B">], false>,
-    M.Tuple<[M.Const<"A">, M.Const<"B">], false>
+    M.Tuple<[M.Const<"A">, M.Const<"B">]>,
+    M.Tuple<[M.Const<"A">, M.Const<"B">]>
   >,
   M.Never
 > = 1;
@@ -211,23 +202,23 @@ bothClosedImpossible2;
 // Closed value open excluded
 const closedValueOpenExcluded1: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">], false>,
+    M.Tuple<[M.Enum<"A" | "B">, M.Const<"B">]>,
     M.Tuple<[], true, M.Const<"B">>
   >,
-  M.Tuple<[M.Enum<"A">, M.Const<"B">], false>
+  M.Tuple<[M.Enum<"A">, M.Const<"B">]>
 > = 1;
 closedValueOpenExcluded1;
 
 const closedValueOpenExcluded2: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], false>, M.Tuple<[], true, M.Const<"C">>>,
-  M.Tuple<[M.Const<"A">], false>
+  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Tuple<[], true, M.Const<"C">>>,
+  M.Tuple<[M.Const<"A">]>
 > = 1;
 closedValueOpenExcluded2;
 
 // Open value closed excluded
 const openValueClosedExcluded: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">], true>, M.Tuple<[M.Const<"A">], false>>,
-  M.Tuple<[M.Const<"A">], true>
+  M.Exclude<M.Tuple<[M.Const<"A">], true>, M.Tuple<[M.Const<"A">]>>,
+  M.Tuple<[M.Const<"A">], true, M.Any>
 > = 1;
 openValueClosedExcluded;
 
@@ -274,8 +265,8 @@ bothOpenItemAdded;
 // --- OBJECT ---
 
 const objectsNeverExclude: A.Equals<
-  M.Exclude<M.Tuple<[M.Const<"A">]>, M.Object<{ a: M.Const<"A"> }, "a", false>>,
-  M.Tuple<[M.Const<"A">]>
+  M.Exclude<M.Tuple<[M.Const<"A">], true>, M.Object<{ a: M.Const<"A"> }, "a">>,
+  M.Tuple<[M.Const<"A">], true>
 > = 1;
 objectsNeverExclude;
 
@@ -283,19 +274,19 @@ objectsNeverExclude;
 
 const excludingUnion: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
-    M.Union<M.Const<["C"]> | M.Tuple<[M.Const<"B">], false>>
+    M.Tuple<[M.Enum<"A" | "B" | "C">]>,
+    M.Union<M.Const<["C"]> | M.Tuple<[M.Const<"B">]>>
   >,
-  M.Tuple<[M.Enum<"A">], false>
+  M.Tuple<[M.Enum<"A">]>
 > = 1;
 excludingUnion;
 
 const nonExcludingUnion: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">], false>,
-    M.Union<M.Const<["C"]> | M.Tuple<[M.Const<"D">], false>>
+    M.Tuple<[M.Enum<"A" | "B">]>,
+    M.Union<M.Const<["C"]> | M.Tuple<[M.Const<"D">]>>
   >,
-  M.Tuple<[M.Enum<"A" | "B">], false>
+  M.Tuple<[M.Enum<"A" | "B">]>
 > = 1;
 nonExcludingUnion;
 
@@ -303,19 +294,19 @@ nonExcludingUnion;
 
 const excludingIntersection: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
-    M.Intersection<M.Const<["C"]>, M.Tuple<[M.Primitive<string>], false>>
+    M.Tuple<[M.Enum<"A" | "B" | "C">]>,
+    M.Intersection<M.Const<["C"]>, M.Tuple<[M.Primitive<string>]>>
   >,
-  M.Tuple<[M.Enum<"A" | "B">], false>
+  M.Tuple<[M.Enum<"A" | "B">]>
 > = 1;
 excludingIntersection;
 
 const nonExcludingIntersection: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B">], false>,
-    M.Intersection<M.Const<["D"]>, M.Tuple<[M.Primitive<string>], false>>
+    M.Tuple<[M.Enum<"A" | "B">]>,
+    M.Intersection<M.Const<["D"]>, M.Tuple<[M.Primitive<string>]>>
   >,
-  M.Tuple<[M.Enum<"A" | "B">], false>
+  M.Tuple<[M.Enum<"A" | "B">]>
 > = 1;
 nonExcludingIntersection;
 
@@ -323,22 +314,22 @@ nonExcludingIntersection;
 
 const excludingExclusion: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
-    M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">], false>, M.Const<["C"]>>
+    M.Tuple<[M.Enum<"A" | "B" | "C">]>,
+    M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">]>, M.Const<["C"]>>
   >,
-  M.Tuple<[M.Enum<"C">], false>
+  M.Tuple<[M.Enum<"C">]>
 > = 1;
 excludingExclusion;
 
 const nonExcludingExclusion: A.Equals<
   M.Exclude<
-    M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
+    M.Tuple<[M.Enum<"A" | "B" | "C">]>,
     M.Exclusion<
-      M.Tuple<[M.Enum<"A" | "B" | "C">], false>,
-      M.Tuple<[M.Primitive<string>], false>
+      M.Tuple<[M.Enum<"A" | "B" | "C">]>,
+      M.Tuple<[M.Primitive<string>]>
     >
   >,
-  M.Tuple<[M.Enum<"A" | "B" | "C">], false>
+  M.Tuple<[M.Enum<"A" | "B" | "C">]>
 > = 1;
 nonExcludingExclusion;
 

@@ -27,18 +27,14 @@ test2;
 
 const test3: A.Equals<
   M.Resolve<
-    M.Object<
-      { str: M.Primitive<string>; num: M.Primitive<number> },
-      "str",
-      false
-    >
+    M.Object<{ str: M.Primitive<string>; num: M.Primitive<number> }, "str">
   >,
   { str: string; num?: number | undefined }
 > = 1;
 test3;
 
 const test4: A.Equals<
-  M.Resolve<M.Object<{ str: M.Primitive<string> }, "str" | "num", false>>,
+  M.Resolve<M.Object<{ str: M.Primitive<string> }, "str" | "num">>,
   never
 > = 1;
 test4;
@@ -52,7 +48,7 @@ const notRepresentable1: A.Equals<
 notRepresentable1;
 
 const notRepresentable2: A.Equals<
-  M.IsRepresentable<M.Object<{}, "b", false>>,
+  M.IsRepresentable<M.Object<{}, "b">>,
   false
 > = 1;
 notRepresentable2;
@@ -64,7 +60,7 @@ const notRepresentable3: A.Equals<
 notRepresentable3;
 
 const representable1: A.Equals<
-  M.IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "a">>,
+  M.IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "a", true>>,
   true
 > = 1;
 representable1;

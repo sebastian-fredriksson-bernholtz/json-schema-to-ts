@@ -41,7 +41,7 @@ test6;
 // --- TUPLE ---
 
 const test7: A.Equals<
-  M.Resolve<M.Array<M.Tuple<[M.Primitive<string>], false>>>,
+  M.Resolve<M.Array<M.Tuple<[M.Primitive<string>]>>>,
   [string][]
 > = 1;
 test7;
@@ -51,12 +51,7 @@ test7;
 const test8: A.Equals<
   M.Resolve<
     M.Array<
-      M.Object<
-        { foo: M.Primitive<string>; bar: M.Primitive<number> },
-        "bar",
-        false,
-        M.Primitive<string>
-      >
+      M.Object<{ foo: M.Primitive<string>; bar: M.Primitive<number> }, "bar">
     >
   >,
   { foo?: string | undefined; bar: number }[]

@@ -80,19 +80,19 @@ nonExcludingArray;
 // --- TUPLE ---
 
 const excludingTuple1: A.Equals<
-  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<string>]>>,
+  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<string>], true>>,
   M.Never
 > = 1;
 excludingTuple1;
 
 const excludingTuple2: A.Equals<
-  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Const<"A">]>>,
+  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Const<"A">], true>>,
   M.Never
 > = 1;
 excludingTuple2;
 
 const nonExcludingTuple: A.Equals<
-  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<number>]>>,
+  M.Exclude<M.Const<["A"]>, M.Tuple<[M.Primitive<number>], true>>,
   M.Const<["A"]>
 > = 1;
 nonExcludingTuple;
@@ -109,10 +109,7 @@ const nonObjectConst: A.Equals<
 nonObjectConst;
 
 const excludingClosedObject1: A.Equals<
-  M.Exclude<
-    M.Const<{ a: "A" }>,
-    M.Object<{ a: M.Primitive<string> }, "a", false>
-  >,
+  M.Exclude<M.Const<{ a: "A" }>, M.Object<{ a: M.Primitive<string> }, "a">>,
   M.Never
 > = 1;
 excludingClosedObject1;
@@ -120,23 +117,20 @@ excludingClosedObject1;
 const excludingClosedObject2: A.Equals<
   M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
-    M.Object<{ a: M.Enum<"A" | "B">; b: M.Enum<"A" | "B"> }, "a", false>
+    M.Object<{ a: M.Enum<"A" | "B">; b: M.Enum<"A" | "B"> }, "a">
   >,
   M.Never
 > = 1;
 excludingClosedObject2;
 
 const nonExcludingClosedObject: A.Equals<
-  M.Exclude<M.Const<{ a: "A" }>, M.Object<{ a: M.Const<"B"> }, "a", false>>,
+  M.Exclude<M.Const<{ a: "A" }>, M.Object<{ a: M.Const<"B"> }, "a">>,
   M.Const<{ a: "A" }>
 > = 1;
 nonExcludingClosedObject;
 
 const closedObjectSizesDontMatch1: A.Equals<
-  M.Exclude<
-    M.Const<{ a: "A"; b: "B" }>,
-    M.Object<{ a: M.Const<"A"> }, "a", false>
-  >,
+  M.Exclude<M.Const<{ a: "A"; b: "B" }>, M.Object<{ a: M.Const<"A"> }, "a">>,
   M.Const<{ a: "A"; b: "B" }>
 > = 1;
 closedObjectSizesDontMatch1;
@@ -144,7 +138,7 @@ closedObjectSizesDontMatch1;
 const closedObjectSizesDontMatch2: A.Equals<
   M.Exclude<
     M.Const<{ a: "A"; b: "B" }>,
-    M.Object<{ a: M.Const<"A">; c: M.Const<"C"> }, "a" | "c", false>
+    M.Object<{ a: M.Const<"A">; c: M.Const<"C"> }, "a" | "c">
   >,
   M.Const<{ a: "A"; b: "B" }>
 > = 1;

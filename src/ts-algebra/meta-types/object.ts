@@ -4,7 +4,7 @@ import { DoesExtend, Or, Not, DeepMergeUnsafe } from "../../utils";
 
 import { $Resolve, Any, Never } from ".";
 import { Type } from "./type";
-import { $IsRepresentable } from "./isRepresentable";
+import { IsRepresentable } from "./isRepresentable";
 
 export type ObjectTypeId = "object";
 
@@ -12,7 +12,7 @@ export type ObjectTypeId = "object";
 export type _Object<
   V extends Record<string, Type> = {},
   R extends string = never,
-  O extends boolean = true,
+  O extends boolean = false,
   P extends Type = Any
 > = {
   type: ObjectTypeId;
@@ -22,7 +22,7 @@ export type _Object<
   openProps: P;
 };
 
-export type _$Object<V = {}, R = never, O = true, P = Any> = {
+export type _$Object<V = {}, R = never, O = false, P = Any> = {
   type: ObjectTypeId;
   values: V;
   required: R;
@@ -94,9 +94,9 @@ type IsObjectValueRepresentable<
   O extends ObjectType,
   K extends string
 > = K extends keyof ObjectValues<O>
-  ? $IsRepresentable<ObjectValues<O>[K]>
+  ? IsRepresentable<ObjectValues<O>[K]>
   : IsObjectOpen<O> extends true
-  ? $IsRepresentable<ObjectOpenProps<O>>
+  ? IsRepresentable<ObjectOpenProps<O>>
   : false;
 
 export type IsObjectRepresentable<O extends ObjectType> = Or<

@@ -8,7 +8,7 @@ export type TupleTypeId = "tuple";
 
 export type Tuple<
   V extends Type[],
-  O extends boolean = true,
+  O extends boolean = false,
   P extends Type = Any
 > = {
   type: TupleTypeId;
@@ -17,7 +17,7 @@ export type Tuple<
   openProps: P;
 };
 
-export type $Tuple<V, O = true, P = Any> = {
+export type $Tuple<V, O = false, P = Any> = {
   type: TupleTypeId;
   values: V;
   isOpen: O;

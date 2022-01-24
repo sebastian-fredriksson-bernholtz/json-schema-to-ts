@@ -38,14 +38,14 @@ type ApplyBoundaries<
 > = {
   stop: {
     result: Max extends undefined
-      ? R | M.$Tuple<L.Reverse<T>, false>
+      ? R | M.$Tuple<L.Reverse<T>>
       : HasMax extends true
-      ? R | M.$Tuple<L.Reverse<T>, false>
+      ? R | M.$Tuple<L.Reverse<T>>
       : Max extends T["length"]
-      ? M.$Tuple<L.Reverse<T>, false>
+      ? M.$Tuple<L.Reverse<T>>
       : IsLongerThan<L.Tail<T>, Max> extends true
       ? never
-      : R | M.$Tuple<L.Reverse<T>, false>;
+      : R | M.$Tuple<L.Reverse<T>>;
     hasEncounteredMin: DoesExtend<Min, T["length"]>;
     hasEncounteredMax: HasMax extends true
       ? true
@@ -59,8 +59,8 @@ type ApplyBoundaries<
     Min,
     Max,
     T["length"] extends Max
-      ? M.$Tuple<L.Reverse<T>, false>
-      : R | M.$Tuple<L.Reverse<T>, false>,
+      ? M.$Tuple<L.Reverse<T>>
+      : R | M.$Tuple<L.Reverse<T>>,
     HasMin extends true ? true : DoesExtend<Min, T["length"]>,
     HasMax extends true ? true : DoesExtend<Max, T["length"]>,
     C
@@ -88,9 +88,9 @@ type ApplyAdditionalItems<R, A> = Get<R, "hasEncounteredMax"> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ?
         | Get<R, "result">
-        | M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>>
+        | M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>, true>
     : // 🔧 TOIMPROVE: Not cast here
-      M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>>
+      M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>, true>
   : IsObject<A> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ?

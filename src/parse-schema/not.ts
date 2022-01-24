@@ -11,7 +11,7 @@ type AllTypes = M.Union<
   | M.Primitive<number>
   | M.Primitive<string>
   | M.Array<M.Any>
-  | M.Object
+  | M.Object<{}, never, true, M.Any>
 >;
 
 export type ParseNotSchema<
