@@ -1,32 +1,50 @@
-import { TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import { PrimitiveValue, PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
+import { ObjectType } from "../object";
+import { UnionType } from "../union";
 import { ExclusionType } from "../exclusion";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 
+import { IntersectionType } from ".";
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
+import { DistributeIntersection } from "./union";
 import { IntersectExclusion } from "./exclusion";
-import { $Intersect } from ".";
 
-export type IntersectPrimitive<A extends PrimitiveType, B> = {
-  any: A;
-  never: Never;
-  const: B extends ConstType ? IntersectConst<B, A> : never;
-  enum: B extends EnumType ? IntersectEnum<B, A> : never;
-  primitive: B extends PrimitiveType
+export type IntersectPrimitive<A extends PrimitiveType, B> = B extends Type
+  ? B extends AnyType
+    ? A
+    : B extends NeverType
+    ? Never
+    : B extends ConstType
+    ? IntersectConst<B, A>
+    : B extends EnumType
+    ? IntersectEnum<B, A>
+    : B extends PrimitiveType
     ? PrimitiveValue<A> extends PrimitiveValue<B>
       ? A
       : PrimitiveValue<B> extends PrimitiveValue<A>
       ? B
       : Never
-    : never;
-  array: Never;
-  tuple: Never;
-  object: Never;
-  union: $Intersect<B, A>;
-  intersection: Error<"Cannot intersect intersection">;
-  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
-  error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
+    : B extends ArrayType
+    ? Never
+    : B extends TupleType
+    ? Never
+    : B extends ObjectType
+    ? Never
+    : B extends UnionType
+    ? DistributeIntersection<B, A>
+    : B extends IntersectionType
+    ? Error<"Cannot intersect intersection">
+    : B extends ExclusionType
+    ? IntersectExclusion<B, A>
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;

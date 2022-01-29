@@ -70,7 +70,7 @@ intersectingArray;
 
 const nonIntersectingArray: A.Equals<
   M.Intersect<M.Array<M.Primitive<string>>, M.Array<M.Primitive<number>>>,
-  M.Never
+  M.Const<[]>
 > = 1;
 nonIntersectingArray;
 
@@ -152,7 +152,7 @@ const numberIsExcluded1: A.Equals<
     M.Array<M.Primitive<string>>,
     M.Union<M.Array<M.Primitive<string>> | M.Array<M.Primitive<number>>>
   >,
-  M.Union<M.Array<M.Primitive<string>> | M.Never>
+  M.Union<M.Array<M.Primitive<string>> | M.Const<[]>>
 > = 1;
 numberIsExcluded1;
 
@@ -161,7 +161,7 @@ const numberIsExcluded2: A.Equals<
     M.Array<M.Primitive<string>>,
     M.Union<M.Const<["foo"]> | M.Array<M.Primitive<number>>>
   >,
-  M.Union<M.Const<["foo"]> | M.Never>
+  M.Union<M.Const<["foo"]> | M.Const<[]>>
 > = 1;
 numberIsExcluded2;
 
@@ -170,7 +170,9 @@ const tupleIsKept: A.Equals<
     M.Array<M.Primitive<string>>,
     M.Union<M.Array<M.Primitive<number>> | M.Tuple<[M.Primitive<string>], true>>
   >,
-  M.Union<M.Never | M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>>
+  M.Union<
+    M.Const<[]> | M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
+  >
 > = 1;
 tupleIsKept;
 

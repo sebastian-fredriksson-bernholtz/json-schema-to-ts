@@ -1,8 +1,12 @@
 import { And } from "../../../utils";
 
-import { Type, TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
+import { PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
 import {
   _$Object,
   ObjectType,
@@ -13,12 +17,19 @@ import {
 } from "../object";
 import { UnionType } from "../union";
 import { ExclusionType } from "../exclusion";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
 import { DistributeIntersection } from "./union";
 import { IntersectExclusion } from "./exclusion";
-import { $ClearIntersections, $Intersect } from "./index";
+import {
+  IntersectionType,
+  $ClearIntersections,
+  Intersect,
+  $Intersect,
+} from "./index";
 
 export type ClearObjectIntersections<
   A extends ObjectType,
@@ -40,21 +51,33 @@ type ClearObjectValuesIntersections<V extends Record<string, Type>> = {
   [key in keyof V]: $ClearIntersections<V[key]>;
 };
 
-export type IntersectObject<A extends ObjectType, B> = {
-  any: A;
-  never: Never;
-  const: B extends ConstType ? IntersectConst<B, A> : never;
-  enum: B extends EnumType ? IntersectEnum<B, A> : never;
-  primitive: Never;
-  array: Never;
-  tuple: Never;
-  object: B extends ObjectType ? IntersectObjects<A, B> : never;
-  union: B extends UnionType ? DistributeIntersection<B, A> : never;
-  intersection: Error<"Cannot intersect intersection">;
-  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
-  error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
+export type IntersectObject<A extends ObjectType, B> = B extends Type
+  ? B extends AnyType
+    ? A
+    : B extends NeverType
+    ? Never
+    : B extends ConstType
+    ? IntersectConst<B, A>
+    : B extends EnumType
+    ? IntersectEnum<B, A>
+    : B extends PrimitiveType
+    ? Never
+    : B extends ArrayType
+    ? Never
+    : B extends TupleType
+    ? Never
+    : B extends ObjectType
+    ? IntersectObjects<A, B>
+    : B extends UnionType
+    ? DistributeIntersection<B, A>
+    : B extends IntersectionType
+    ? Error<"Cannot intersect intersection">
+    : B extends ExclusionType
+    ? IntersectExclusion<B, A>
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;
 
 type IntersectObjects<
   A extends ObjectType,
@@ -96,7 +119,7 @@ type NeverKeys<O> = {
   [key in keyof O]: O[key] extends Never ? key : never;
 }[keyof O];
 
-type IntersectOpenProps<
-  A extends ObjectType,
-  B extends ObjectType
-> = $Intersect<ObjectOpenProps<A>, ObjectOpenProps<B>>;
+type IntersectOpenProps<A extends ObjectType, B extends ObjectType> = Intersect<
+  ObjectOpenProps<A>,
+  ObjectOpenProps<B>
+>;

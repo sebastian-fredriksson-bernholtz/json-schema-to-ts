@@ -1,4 +1,5 @@
-import { $Resolve, Type, TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { NeverType } from "../never";
 import { ConstType } from "../const";
 import { EnumType } from "../enum";
 import { PrimitiveType } from "../primitive";
@@ -7,12 +8,14 @@ import { TupleType } from "../tuple";
 import { ObjectType } from "../object";
 import { UnionType } from "../union";
 import { ExclusionType } from "../exclusion";
-import { ErrorTypeId } from "../error";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
+import { $Resolve } from "../resolve";
 
 import { IntersectConst } from "./const";
 import { IntersectEnum } from "./enum";
 import { IntersectPrimitive } from "./primitive";
-import { ClearArrIntersections, IntersectArray } from "./array";
+import { ClearArrayIntersections, IntersectArray } from "./array";
 import { ClearTupleIntersections, IntersectTuple } from "./tuple";
 import { ClearObjectIntersections, IntersectObject } from "./object";
 import { ClearUnionIntersections, IntersectUnion } from "./union";
@@ -44,60 +47,124 @@ export type IntersectionLeft<I extends IntersectionType> = I["left"];
 export type IntersectionRight<I extends IntersectionType> = I["right"];
 
 export type ResolveIntersection<T extends IntersectionType> = $Resolve<
-  $ClearIntersections<T>
+  ClearIntersections<T>
 >;
 
-export type $ClearIntersections<T> = {
-  any: T;
-  never: T;
-  const: T;
-  enum: T;
-  primitive: T;
-  array: T extends ArrayType ? ClearArrIntersections<T> : never;
-  tuple: T extends TupleType ? ClearTupleIntersections<T> : never;
-  object: T extends ObjectType ? ClearObjectIntersections<T> : never;
-  union: T extends UnionType ? ClearUnionIntersections<T> : never;
-  intersection: T extends IntersectionType
-    ? $Intersect<
-        $ClearIntersections<IntersectionLeft<T>>,
-        $ClearIntersections<IntersectionRight<T>>
-      >
-    : never;
-  exclusion: T extends ExclusionType ? ClearExclusionIntersections<T> : never;
-  error: T;
-  errorMissingType: Error<"Missing type property">;
-}[T extends { type: TypeId } ? T["type"] : "errorMissingType"];
+export type ClearIntersections<T extends Type> = T extends AnyType
+  ? T
+  : T extends NeverType
+  ? T
+  : T extends ConstType
+  ? T
+  : T extends EnumType
+  ? T
+  : T extends PrimitiveType
+  ? T
+  : T extends ArrayType
+  ? ClearArrayIntersections<T>
+  : T extends TupleType
+  ? ClearTupleIntersections<T>
+  : T extends ObjectType
+  ? ClearObjectIntersections<T>
+  : T extends UnionType
+  ? ClearUnionIntersections<T>
+  : T extends IntersectionType
+  ? $Intersect<
+      ClearIntersections<IntersectionLeft<T>>,
+      ClearIntersections<IntersectionRight<T>>
+    >
+  : T extends ExclusionType
+  ? ClearExclusionIntersections<T>
+  : T extends ErrorType
+  ? T
+  : Error<"TODO">;
 
-export type Intersect<A extends Type, B extends Type> = {
-  any: B;
-  never: B extends { type: ErrorTypeId } ? B : Never;
-  const: A extends ConstType ? IntersectConst<A, B> : never;
-  enum: A extends EnumType ? IntersectEnum<A, B> : never;
-  primitive: A extends PrimitiveType ? IntersectPrimitive<A, B> : never;
-  array: A extends ArrayType ? IntersectArray<A, B> : never;
-  tuple: A extends TupleType ? IntersectTuple<A, B> : never;
-  object: A extends ObjectType ? IntersectObject<A, B> : never;
-  union: A extends UnionType ? IntersectUnion<A, B> : never;
-  intersection: Error<"Cannot intersect intersection">;
-  exclusion: A extends ExclusionType ? IntersectExclusion<A, B> : never;
-  error: A;
-}[A["type"]];
+export type $ClearIntersections<T> = T extends AnyType
+  ? T
+  : T extends NeverType
+  ? T
+  : T extends ConstType
+  ? T
+  : T extends EnumType
+  ? T
+  : T extends PrimitiveType
+  ? T
+  : T extends ArrayType
+  ? ClearArrayIntersections<T>
+  : T extends TupleType
+  ? ClearTupleIntersections<T>
+  : T extends ObjectType
+  ? ClearObjectIntersections<T>
+  : T extends ObjectType
+  ? ClearObjectIntersections<T>
+  : T extends UnionType
+  ? ClearUnionIntersections<T>
+  : T extends IntersectionType
+  ? $Intersect<
+      $ClearIntersections<IntersectionLeft<T>>,
+      $ClearIntersections<IntersectionRight<T>>
+    >
+  : T extends ExclusionType
+  ? ClearExclusionIntersections<T>
+  : T extends ErrorType
+  ? T
+  : Error<"TODO">;
 
-export type $Intersect<A, B> = {
-  any: B;
-  never: B extends { type: ErrorTypeId } ? B : Never;
-  const: A extends ConstType ? IntersectConst<A, B> : never;
-  enum: A extends EnumType ? IntersectEnum<A, B> : never;
-  primitive: A extends PrimitiveType ? IntersectPrimitive<A, B> : never;
-  array: A extends ArrayType ? IntersectArray<A, B> : never;
-  tuple: A extends TupleType ? IntersectTuple<A, B> : never;
-  object: A extends ObjectType ? IntersectObject<A, B> : never;
-  union: A extends UnionType ? IntersectUnion<A, B> : never;
-  intersection: Error<"Cannot intersect intersection">;
-  exclusion: A extends ExclusionType ? IntersectExclusion<A, B> : never;
-  error: A;
-  errorMissingType: Error<"Missing type property">;
-}[A extends { type: TypeId } ? A["type"] : "errorMissingType"];
+export type Intersect<A extends Type, B extends Type> = A extends AnyType
+  ? B
+  : A extends NeverType
+  ? B extends ErrorType
+    ? B
+    : A
+  : A extends ConstType
+  ? IntersectConst<A, B>
+  : A extends EnumType
+  ? IntersectEnum<A, B>
+  : A extends PrimitiveType
+  ? IntersectPrimitive<A, B>
+  : A extends ArrayType
+  ? IntersectArray<A, B>
+  : A extends TupleType
+  ? IntersectTuple<A, B>
+  : A extends ObjectType
+  ? IntersectObject<A, B>
+  : A extends UnionType
+  ? IntersectUnion<A, B>
+  : A extends IntersectionType
+  ? Error<"Cannot intersect intersection">
+  : A extends ExclusionType
+  ? IntersectExclusion<A, B>
+  : A extends ErrorType
+  ? A
+  : Error<"TODO">;
+
+export type $Intersect<A, B> = A extends AnyType
+  ? B
+  : A extends NeverType
+  ? B extends ErrorType
+    ? B
+    : A
+  : A extends ConstType
+  ? IntersectConst<A, B>
+  : A extends EnumType
+  ? IntersectEnum<A, B>
+  : A extends PrimitiveType
+  ? IntersectPrimitive<A, B>
+  : A extends ArrayType
+  ? IntersectArray<A, B>
+  : A extends TupleType
+  ? IntersectTuple<A, B>
+  : A extends ObjectType
+  ? IntersectObject<A, B>
+  : A extends UnionType
+  ? IntersectUnion<A, B>
+  : A extends IntersectionType
+  ? Error<"Cannot intersect intersection">
+  : A extends ExclusionType
+  ? IntersectExclusion<A, B>
+  : A extends ErrorType
+  ? A
+  : Error<"TODO">;
 
 export type IsIntersectionRepresentable<A extends IntersectionType> =
   $IsRepresentable<$ClearIntersections<A>>;

@@ -1,29 +1,48 @@
-import { TypeId, Never, Const, Error } from "..";
-import { ConstType } from "../const";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
+import { Const, ConstType } from "../const";
 import { Enum, EnumType, EnumValues } from "../enum";
+import { PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
+import { ObjectType } from "../object";
 import { UnionType } from "../union";
 import { ExclusionType } from "../exclusion";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 
 import { IntersectConst } from "./const";
 import { IntersectUnion } from "./union";
 import { IntersectExclusion } from "./exclusion";
-import { $Intersect } from "./index";
+import { IntersectionType, $Intersect } from "./index";
 
-export type IntersectEnum<A extends EnumType, B> = {
-  any: A;
-  never: Never;
-  const: B extends ConstType ? IntersectConst<B, A> : never;
-  enum: FilterUnintersecting<A, B>;
-  primitive: FilterUnintersecting<A, B>;
-  array: FilterUnintersecting<A, B>;
-  tuple: FilterUnintersecting<A, B>;
-  object: FilterUnintersecting<A, B>;
-  union: B extends UnionType ? IntersectUnion<B, A> : never;
-  exclusion: B extends ExclusionType ? IntersectExclusion<B, A> : never;
-  intersection: Error<"Cannot intersect intersection">;
-  error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
+export type IntersectEnum<A extends EnumType, B> = B extends Type
+  ? B extends AnyType
+    ? A
+    : B extends NeverType
+    ? Never
+    : B extends ConstType
+    ? IntersectConst<B, A>
+    : B extends EnumType
+    ? FilterUnintersecting<A, B>
+    : B extends PrimitiveType
+    ? FilterUnintersecting<A, B>
+    : B extends ArrayType
+    ? FilterUnintersecting<A, B>
+    : B extends TupleType
+    ? FilterUnintersecting<A, B>
+    : B extends ObjectType
+    ? FilterUnintersecting<A, B>
+    : B extends UnionType
+    ? IntersectUnion<B, A>
+    : B extends ExclusionType
+    ? IntersectExclusion<B, A>
+    : B extends IntersectionType
+    ? Error<"Cannot intersect intersection">
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;
 
 type FilterUnintersecting<A extends EnumType, B> = Enum<
   RecurseOnEnumValues<EnumValues<A>, B>

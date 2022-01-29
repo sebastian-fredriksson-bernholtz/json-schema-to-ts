@@ -8,15 +8,16 @@ import {
   PrimitiveType,
   PrimitiveTypeId,
 } from "./primitive";
-import { _Array, _$Array, ArrayTypeId } from "./array";
-import { Tuple, $Tuple, TupleTypeId } from "./tuple";
-import { _Object, _$Object, ObjectTypeId } from "./object";
-import { Union, $Union, UnionTypeId } from "./union";
+import { _Array, _$Array, ArrayType, ArrayTypeId } from "./array";
+import { Tuple, $Tuple, TupleType, TupleTypeId } from "./tuple";
+import { _Object, _$Object, ObjectType, ObjectTypeId } from "./object";
+import { Union, $Union, UnionType, UnionTypeId } from "./union";
 import {
   Intersection,
   $Intersection,
   Intersect,
   $Intersect,
+  IntersectionType,
   IntersectionTypeId,
 } from "./intersection";
 import {
@@ -24,9 +25,10 @@ import {
   $Exclusion,
   _Exclude,
   _$Exclude,
+  ExclusionType,
   ExclusionTypeId,
 } from "./exclusion";
-import { $Error, Error, ErrorTypeId } from "./error";
+import { $Error, Error, ErrorType, ErrorTypeId } from "./error";
 
 import { Type } from "./type";
 import { TypeId } from "./typeId";
@@ -62,6 +64,13 @@ export {
   ConstType,
   EnumType,
   PrimitiveType,
+  ArrayType,
+  TupleType,
+  ObjectType,
+  UnionType,
+  IntersectionType,
+  ExclusionType,
+  ErrorType,
   Type,
   // Ids
   AnyTypeId,

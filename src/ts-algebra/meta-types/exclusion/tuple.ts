@@ -2,9 +2,11 @@ import { A, B, L } from "ts-toolbelt";
 
 import { And, Not } from "../../../utils";
 
-import { Type, TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
 import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
+import { PrimitiveType } from "../primitive";
 import { ArrayValues, ArrayType } from "../array";
 import {
   Tuple,
@@ -14,7 +16,11 @@ import {
   IsTupleOpen,
   TupleOpenProps,
 } from "../tuple";
+import { ObjectType } from "../object";
 import { UnionType } from "../union";
+import { IntersectionType } from "../intersection";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 import { $IsRepresentable } from "../isRepresentable";
 
 import { _Exclude, ExclusionType } from ".";
@@ -33,21 +39,33 @@ import {
   IsOmittable,
 } from "./utils";
 
-export type ExcludeFromTuple<A extends TupleType, B> = {
-  any: Never;
-  never: A;
-  const: B extends ConstType ? ExcludeConst<A, B> : never;
-  enum: B extends EnumType ? ExcludeEnum<A, B> : never;
-  primitive: A;
-  array: B extends ArrayType ? ExcludeArray<A, B> : never;
-  tuple: B extends TupleType ? ExcludeTuples<A, B> : never;
-  object: A;
-  union: B extends UnionType ? ExcludeUnion<A, B> : never;
-  intersection: ExcludeIntersection<A, B>;
-  exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
-  error: B;
-  errorMissingType: Error<"Missing type property in Exclusion excluded value">;
-}[B extends { type: TypeId } ? B["type"] : "errorMissingType"];
+export type ExcludeFromTuple<A extends TupleType, B> = B extends Type
+  ? B extends AnyType
+    ? Never
+    : B extends NeverType
+    ? A
+    : B extends ConstType
+    ? ExcludeConst<A, B>
+    : B extends EnumType
+    ? ExcludeEnum<A, B>
+    : B extends PrimitiveType
+    ? A
+    : B extends ArrayType
+    ? ExcludeArray<A, B>
+    : B extends TupleType
+    ? ExcludeTuples<A, B>
+    : B extends ObjectType
+    ? A
+    : B extends UnionType
+    ? ExcludeUnion<A, B>
+    : B extends IntersectionType
+    ? ExcludeIntersection<A, B>
+    : B extends ExclusionType
+    ? ExcludeExclusion<A, B>
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;
 
 type ExcludeArray<A extends TupleType, B extends ArrayType> = ExcludeTuples<
   A,

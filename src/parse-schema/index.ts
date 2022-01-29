@@ -18,67 +18,47 @@ import { ParseIfThenElseSchema } from "./ifThenElse";
 export type ParseSchema<
   S,
   O extends FromSchemaOptions = FromSchemaDefaultOptions
-> = {
-  any: M.Any;
-  never: M.Never;
-  null: M.Primitive<null>;
-  boolean: M.Primitive<boolean>;
-  number: M.Primitive<number>;
-  string: M.Primitive<string>;
-  mixed: ParseMixedSchema<S>;
-  object: ParseObjectSchema<S>;
-  array: ParseArrSchema<S>;
-  const: ParseConstSchema<S>;
-  enum: ParseEnumSchema<S>;
-  anyOf: ParseAnyOfSchema<S>;
-  oneOf: ParseOneOfSchema<S>;
-  allOf: ParseAllOfSchema<S>;
-  // @ts-expect-error "Type instanciation is too deep and potentially infinite" error
-  not: ParseNotSchema<S>;
-  ifThenElse: ParseIfThenElseSchema<S>;
-}[InferSchemaType<S, O>];
-
-type InferSchemaType<
-  S,
-  O extends FromSchemaOptions = FromSchemaDefaultOptions
 > = S extends true | string
-  ? "any"
+  ? M.Any
   : S extends false
-  ? "never"
+  ? M.Never
   : And<
       DoesExtend<O["parseIfThenElseKeywords"], true>,
       DoesExtend<"if", keyof S>
     > extends true
-  ? "ifThenElse"
+  ? ParseIfThenElseSchema<S>
   : And<
       DoesExtend<O["parseNotKeyword"], true>,
       DoesExtend<"not", keyof S>
     > extends true
-  ? "not"
+  ? // @ts-expect-error "Type instanciation is too deep and potentially infinite" error
+    ParseNotSchema<S>
   : "allOf" extends keyof S
-  ? "allOf"
+  ? ParseAllOfSchema<S>
   : "oneOf" extends keyof S
-  ? "oneOf"
+  ? ParseOneOfSchema<S>
   : "anyOf" extends keyof S
-  ? "anyOf"
+  ? ParseAnyOfSchema<S>
   : "enum" extends keyof S
-  ? "enum"
+  ? ParseEnumSchema<S>
   : "const" extends keyof S
-  ? "const"
+  ? ParseConstSchema<S>
   : "type" extends keyof S
   ? S["type"] extends any[]
-    ? "mixed"
+    ? ParseMixedSchema<S>
     : S["type"] extends "null"
-    ? "null"
+    ? M.Primitive<null>
     : S["type"] extends "boolean"
-    ? "boolean"
-    : S["type"] extends "integer" | "number"
-    ? "number"
+    ? M.Primitive<boolean>
+    : S["type"] extends "integer"
+    ? M.Primitive<number>
+    : S["type"] extends "number"
+    ? M.Primitive<number>
     : S["type"] extends "string"
-    ? "string"
+    ? M.Primitive<string>
     : S["type"] extends "object"
-    ? "object"
+    ? ParseObjectSchema<S>
     : S["type"] extends "array"
-    ? "array"
-    : "never"
-  : "any";
+    ? ParseArrSchema<S>
+    : M.Never
+  : M.Any;

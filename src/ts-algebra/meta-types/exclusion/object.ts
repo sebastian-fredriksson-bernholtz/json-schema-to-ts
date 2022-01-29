@@ -2,9 +2,13 @@ import { A, B, U } from "ts-toolbelt";
 
 import { And, Or, Not, DoesExtend, IsObject } from "../../../utils";
 
-import { TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
 import { Const, ConstType, ConstValue } from "../const";
 import { EnumType } from "../enum";
+import { PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
 import {
   _Object,
   ObjectType,
@@ -15,6 +19,9 @@ import {
   ObjectOpenProps,
 } from "../object";
 import { UnionType } from "../union";
+import { IntersectionType } from "../intersection";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 import { $IsRepresentable } from "../isRepresentable";
 
 import { _Exclude, _$Exclude, ExclusionType } from ".";
@@ -33,21 +40,29 @@ import {
   CrossValueType,
 } from "./utils";
 
-export type ExcludeFromObject<A extends ObjectType, B> = {
-  any: Never;
-  never: A;
-  const: B extends ConstType ? ExcludeConst<A, B> : never;
-  enum: B extends EnumType ? ExcludeEnum<A, B> : never;
-  primitive: A;
-  array: A;
-  tuple: A;
-  object: B extends ObjectType ? ExcludeObjects<A, B> : never;
-  union: B extends UnionType ? ExcludeUnion<A, B> : never;
-  intersection: ExcludeIntersection<A, B>;
-  exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
-  error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
+export type ExcludeFromObject<A extends ObjectType, B> = B extends Type
+  ? B extends AnyType
+    ? Never
+    : B extends NeverType
+    ? A
+    : B extends ConstType
+    ? ExcludeConst<A, B>
+    : B extends EnumType
+    ? ExcludeEnum<A, B>
+    : B extends PrimitiveType | ArrayType | TupleType
+    ? A
+    : B extends ObjectType
+    ? ExcludeObjects<A, B>
+    : B extends UnionType
+    ? ExcludeUnion<A, B>
+    : B extends IntersectionType
+    ? ExcludeIntersection<A, B>
+    : B extends ExclusionType
+    ? ExcludeExclusion<A, B>
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;
 
 type ExcludeObjects<
   A extends ObjectType,
@@ -183,7 +198,7 @@ type ExcludeConst<
   ? _$Exclude<
       A,
       _Object<
-        { [key in Extract<keyof V, string>]: Const<V[key]> },
+        { [key in keyof V]: Const<V[key]> },
         Extract<keyof V, string>,
         false,
         Never

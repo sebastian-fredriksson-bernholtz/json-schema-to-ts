@@ -1,7 +1,17 @@
-import { Type, TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
+import { ConstType } from "../const";
+import { EnumType } from "../enum";
+import { PrimitiveType } from "../primitive";
+import { ArrayType } from "../array";
+import { TupleType } from "../tuple";
+import { ObjectType } from "../object";
 import { $Union, UnionType, UnionValues } from "../union";
+import { ExclusionType } from "../exclusion";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 
-import { $ClearIntersections, $Intersect } from "./index";
+import { IntersectionType, $ClearIntersections, $Intersect } from "./index";
 
 export type ClearUnionIntersections<A extends UnionType> = $Union<
   ClearUnionValuesIntersections<UnionValues<A>>
@@ -11,21 +21,33 @@ type ClearUnionValuesIntersections<V extends Type> = V extends infer T
   ? $ClearIntersections<T>
   : never;
 
-export type IntersectUnion<A extends UnionType, B> = {
-  any: A;
-  never: Never;
-  const: DistributeIntersection<A, B>;
-  enum: DistributeIntersection<A, B>;
-  primitive: DistributeIntersection<A, B>;
-  array: DistributeIntersection<A, B>;
-  tuple: DistributeIntersection<A, B>;
-  object: DistributeIntersection<A, B>;
-  union: DistributeIntersection<A, B>;
-  exclusion: DistributeIntersection<A, B>;
-  intersection: Error<"Cannot intersect intersection">;
-  error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
+export type IntersectUnion<A extends UnionType, B> = B extends Type
+  ? B extends AnyType
+    ? A
+    : B extends NeverType
+    ? Never
+    : B extends ConstType
+    ? DistributeIntersection<A, B>
+    : B extends EnumType
+    ? DistributeIntersection<A, B>
+    : B extends PrimitiveType
+    ? DistributeIntersection<A, B>
+    : B extends ArrayType
+    ? DistributeIntersection<A, B>
+    : B extends TupleType
+    ? DistributeIntersection<A, B>
+    : B extends ObjectType
+    ? DistributeIntersection<A, B>
+    : B extends UnionType
+    ? DistributeIntersection<A, B>
+    : B extends IntersectionType
+    ? Error<"Cannot intersect intersection">
+    : B extends ExclusionType
+    ? DistributeIntersection<A, B>
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;
 
 export type DistributeIntersection<A extends UnionType, B> = $Union<
   RecurseOnUnionValues<UnionValues<A>, B>

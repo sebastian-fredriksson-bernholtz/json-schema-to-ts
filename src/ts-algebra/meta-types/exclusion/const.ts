@@ -1,7 +1,12 @@
 import { IsObject } from "../../../utils";
 
-import { $Resolve, TypeId, Never, Error } from "..";
+import { AnyType } from "../any";
+import { Never, NeverType } from "../never";
 import { Const, ConstType, ConstValue } from "../const";
+import { EnumType } from "../enum";
+import { PrimitiveType } from "../primitive";
+import { _Array, ArrayType } from "../array";
+import { TupleType } from "../tuple";
 import {
   ObjectType,
   ObjectValues,
@@ -10,33 +15,49 @@ import {
   ObjectOpenProps,
 } from "../object";
 import { UnionType } from "../union";
+import { IntersectionType } from "../intersection";
+import { Error, ErrorType } from "../error";
+import { Type } from "../type";
 import { $IsRepresentable } from "../isRepresentable";
+import { Resolve } from "../resolve";
 
 import { _Exclude, ExclusionType } from ".";
 import { ExcludeUnion } from "./union";
 import { ExcludeIntersection } from "./intersection";
 import { ExcludeExclusion } from "./exclusion";
 
-export type ExcludeFromConst<A extends ConstType, B> = {
-  any: Never;
-  never: A;
-  const: CheckNotExtendsResolved<A, B>;
-  enum: CheckNotExtendsResolved<A, B>;
-  primitive: CheckNotExtendsResolved<A, B>;
-  array: CheckNotExtendsResolved<A, B>;
-  tuple: CheckNotExtendsResolved<A, B>;
-  object: B extends ObjectType ? ExcludeObject<A, B> : never;
-  union: B extends UnionType ? ExcludeUnion<A, B> : never;
-  intersection: ExcludeIntersection<A, B>;
-  exclusion: B extends ExclusionType ? ExcludeExclusion<A, B> : never;
-  error: B;
-  errorTypeProperty: Error<"Missing type property">;
-}[B extends { type: TypeId } ? B["type"] : "errorTypeProperty"];
+export type ExcludeFromConst<A extends ConstType, B> = B extends Type
+  ? B extends AnyType
+    ? Never
+    : B extends NeverType
+    ? A
+    : B extends ConstType
+    ? CheckNotExtendsResolved<A, B>
+    : B extends EnumType
+    ? CheckNotExtendsResolved<A, B>
+    : B extends PrimitiveType
+    ? CheckNotExtendsResolved<A, B>
+    : B extends ArrayType
+    ? CheckNotExtendsResolved<A, B>
+    : B extends TupleType
+    ? CheckNotExtendsResolved<A, B>
+    : B extends ObjectType
+    ? ExcludeObject<A, B>
+    : B extends UnionType
+    ? ExcludeUnion<A, B>
+    : B extends IntersectionType
+    ? ExcludeIntersection<A, B>
+    : B extends ExclusionType
+    ? ExcludeExclusion<A, B>
+    : B extends ErrorType
+    ? B
+    : Error<"TODO">
+  : Error<"TODO">;
 
 type CheckNotExtendsResolved<
   A extends ConstType,
-  B
-> = ConstValue<A> extends $Resolve<B> ? Never : A;
+  B extends Type
+> = ConstValue<A> extends Resolve<B> ? Never : A;
 
 type ExcludeObject<A extends ConstType, B extends ObjectType> = IsObject<
   ConstValue<A>

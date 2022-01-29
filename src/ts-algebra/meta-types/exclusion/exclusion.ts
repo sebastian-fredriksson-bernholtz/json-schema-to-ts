@@ -1,3 +1,5 @@
+import { Type } from "../type";
+
 import {
   _Exclude,
   _$Exclude,
@@ -6,7 +8,7 @@ import {
   ExclusionExcluded,
 } from ".";
 
-export type ExcludeExclusion<A, B extends ExclusionType> = _$Exclude<
-  A,
-  _Exclude<ExclusionSource<B>, ExclusionExcluded<B>>
->;
+export type ExcludeExclusion<
+  A extends Type,
+  B extends ExclusionType
+> = _$Exclude<A, _Exclude<ExclusionSource<B>, ExclusionExcluded<B>>>;
