@@ -2,7 +2,7 @@ import { M } from "ts-algebra";
 
 import { Get, HasKeyIn } from "../utils";
 
-import { ParseSchema } from ".";
+import { $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
 
 type AllTypes = M.Union<
@@ -16,7 +16,8 @@ type AllTypes = M.Union<
 
 export type ParseNotSchema<
   S,
-  P = ParseSchema<Omit<S, "not">>,
+  O extends ParseSchemaOptions,
+  P = $ParseSchema<Omit<S, "not">, O>,
   E = M.$Exclude<
     HasKeyIn<
       S,
@@ -24,7 +25,7 @@ export type ParseNotSchema<
     > extends true
       ? P
       : AllTypes,
-    ParseSchema<MergeSubSchema<Omit<S, "not">, Get<S, "not">>>
+    $ParseSchema<MergeSubSchema<Omit<S, "not">, Get<S, "not">>, O>
   >
 > = E extends M.Never ? P : E;
 

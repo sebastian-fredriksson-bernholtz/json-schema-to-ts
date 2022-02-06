@@ -1,9 +1,8 @@
 import { M } from "ts-algebra";
 import { A, O } from "ts-toolbelt";
-import { JSONSchema6Definition } from "json-schema";
 
 import {
-  JSONSchema6DefinitionWithoutInterface,
+  JSONSchema7 as $JSONSchema7,
   FromSchemaOptions,
   FromSchemaDefaultOptions,
 } from "./definitions";
@@ -14,14 +13,9 @@ export { FromSchemaOptions, FromSchemaDefaultOptions } from "./definitions";
 /**
  * Unwided JSON schema (e.g. defined with the `as const` statement)
  */
-export type JSONSchema =
-  | JSONSchema6Definition
-  | boolean
-  | O.Readonly<
-      Exclude<JSONSchema6DefinitionWithoutInterface, boolean>,
-      A.Key,
-      "deep"
-    >;
+export type JSONSchema7 =
+  | $JSONSchema7
+  | O.Readonly<Extract<$JSONSchema7, O.Object>, A.Key, "deep">;
 
 /**
  * Given a JSON schema defined with the `as const` statement, infers the type of valid instances
@@ -29,8 +23,18 @@ export type JSONSchema =
  * @param S JSON schema
  */
 export type FromSchema<
-  S extends JSONSchema,
+  S extends JSONSchema7,
   O extends FromSchemaOptions = FromSchemaDefaultOptions
 > = M.$Resolve<
-  ParseSchema<S extends object ? O.Writable<S, string, "deep"> : S, O>
+  ParseSchema<
+    S extends O.Object ? O.Writable<S, A.Key, "deep"> : S,
+    {
+      parseNotKeyword: O["parseNotKeyword"] extends boolean
+        ? O["parseNotKeyword"]
+        : FromSchemaDefaultOptions["parseNotKeyword"];
+      parseIfThenElseKeywords: O["parseIfThenElseKeywords"] extends boolean
+        ? O["parseIfThenElseKeywords"]
+        : FromSchemaDefaultOptions["parseIfThenElseKeywords"];
+    }
+  >
 >;

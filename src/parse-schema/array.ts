@@ -3,28 +3,40 @@ import { M } from "ts-algebra";
 
 import { DoesExtend, Get, IsObject } from "../utils";
 
-import { ParseSchema } from ".";
+import { $ParseSchema, ParseSchemaOptions } from "./index";
 
-export type ParseArrSchema<S> = "items" extends keyof S
+export type ParseArraySchema<
+  S,
+  O extends ParseSchemaOptions
+> = "items" extends keyof S
   ? IsObject<S["items"]> extends true
-    ? M.$Array<ParseSchema<S["items"]>>
+    ? M.$Array<$ParseSchema<S["items"], O>>
     : S extends { items: any[] }
-    ? M.$Union<FromTreeTuple<ParseTuple<S["items"]>, S>>
+    ? M.$Union<FromTreeTuple<ParseTuple<S["items"], O>, S, O>>
     : M.Error<'Invalid value in "items" property'>
   : M.$Array;
 
-export type ParseTuple<S extends any[], R extends any[] = []> = {
+export type ParseTuple<
+  S extends any[],
+  O extends ParseSchemaOptions,
+  R extends any[] = []
+> = {
   stop: R;
-  continue: ParseTuple<L.Tail<S>, L.Prepend<R, ParseSchema<L.Head<S>>>>;
+  continue: ParseTuple<L.Tail<S>, O, L.Prepend<R, $ParseSchema<L.Head<S>, O>>>;
 }[S extends [any, ...any[]] ? "continue" : "stop"];
 
-type FromTreeTuple<T extends any[], S> = ApplyAdditionalItems<
+type FromTreeTuple<
+  T extends any[],
+  S,
+  O extends ParseSchemaOptions
+> = ApplyAdditionalItems<
   ApplyBoundaries<
     T,
     "minItems" extends keyof S ? S["minItems"] : 0,
     "maxItems" extends keyof S ? S["maxItems"] : undefined
   >,
-  "additionalItems" extends keyof S ? S["additionalItems"] : true
+  "additionalItems" extends keyof S ? S["additionalItems"] : true,
+  O
 >;
 
 type ApplyBoundaries<
@@ -76,7 +88,10 @@ type IsLongerThan<T extends any[], N, R = false> = {
   stop: T["length"] extends N ? true : R;
 }[T extends [any, ...any[]] ? "continue" : "stop"];
 
-type ApplyAdditionalItems<R, A> = Get<R, "hasEncounteredMax"> extends true
+type ApplyAdditionalItems<R, A, O extends ParseSchemaOptions> = Get<
+  R,
+  "hasEncounteredMax"
+> extends true
   ? Get<R, "hasEncounteredMin"> extends true
     ? Get<R, "result">
     : M.Error<'"minItems" property is lower than "maxItems"'>
@@ -99,12 +114,12 @@ type ApplyAdditionalItems<R, A> = Get<R, "hasEncounteredMax"> extends true
             // 🔧 TOIMPROVE: Not cast here
             L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>,
             true,
-            ParseSchema<A>
+            $ParseSchema<A, O>
           >
     : M.$Tuple<
         // 🔧 TOIMPROVE: Not cast here
         L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>,
         true,
-        ParseSchema<A>
+        $ParseSchema<A, O>
       >
   : M.Error<'Invalid value in "additionalItems" property'>;

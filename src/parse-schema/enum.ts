@@ -2,11 +2,14 @@ import { M } from "ts-algebra";
 
 import { DeepGet, HasKeyIn } from "../utils";
 
-import { ParseSchema } from ".";
+import { $ParseSchema, ParseSchemaOptions } from "./index";
 
-export type ParseEnumSchema<S> = HasKeyIn<S, "const" | "type"> extends true
+export type ParseEnumSchema<S, O extends ParseSchemaOptions> = HasKeyIn<
+  S,
+  "const" | "type"
+> extends true
   ? M.$Intersect<
       M.Enum<DeepGet<S, ["enum", number]>>,
-      ParseSchema<Omit<S, "enum">>
+      $ParseSchema<Omit<S, "enum">, O>
     >
   : M.Enum<DeepGet<S, ["enum", number]>>;
