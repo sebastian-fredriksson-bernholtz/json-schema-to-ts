@@ -1,12 +1,24 @@
 import { M } from "ts-algebra";
 
-import { Get, HasKeyIn } from "../utils";
+import { ParseSchema, ParseSchemaOptions } from "./index";
+import { SingleTypeSchema } from "./singleType";
+import { MultipleTypesSchema } from "./multipleTypes";
 
-import { $ParseSchema, ParseSchemaOptions } from "./index";
+export type ConstSchema = { const: unknown };
 
-export type ParseConstSchema<S, O extends ParseSchemaOptions> = HasKeyIn<
-  S,
-  "type"
-> extends true
-  ? M.$Intersect<M.Const<Get<S, "const">>, $ParseSchema<Omit<S, "const">, O>>
-  : M.Const<Get<S, "const">>;
+export type ParseConstSchema<
+  S extends ConstSchema,
+  O extends ParseSchemaOptions
+> = S extends SingleTypeSchema
+  ? IntersectConstAndTypeSchema<S, O>
+  : S extends MultipleTypesSchema
+  ? IntersectConstAndTypeSchema<S, O>
+  : ParseConst<S>;
+
+type IntersectConstAndTypeSchema<
+  S extends ConstSchema & (SingleTypeSchema | MultipleTypesSchema),
+  O extends ParseSchemaOptions
+  // TOIMPROVE: Directly use ParseMultipleTypeSchema and ParseSingleTypeSchema
+> = M.$Intersect<ParseConst<S>, ParseSchema<Omit<S, "const">, O>>;
+
+type ParseConst<S extends ConstSchema> = M.Const<S["const"]>;

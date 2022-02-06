@@ -4,14 +4,14 @@ import { And, DoesExtend } from "../utils";
 
 import { JSONSchema7 } from "../definitions";
 
-import { ParseMixedSchema } from "./mixed";
-import { ParseConstSchema } from "./const";
-import { ParseEnumSchema } from "./enum";
+import { MultipleTypesSchema, ParseMultipleTypesSchema } from "./multipleTypes";
+import { ConstSchema, ParseConstSchema } from "./const";
+import { EnumSchema, ParseEnumSchema } from "./enum";
 import { ParseArraySchema } from "./array";
 import { ParseObjectSchema } from "./object";
-import { ParseAnyOfSchema } from "./anyOf";
-import { ParseOneOfSchema } from "./oneOf";
-import { ParseAllOfSchema } from "./allOf";
+import { AnyOfSchema, ParseAnyOfSchema } from "./anyOf";
+import { OneOfSchema, ParseOneOfSchema } from "./oneOf";
+import { AllOfSchema, ParseAllOfSchema } from "./allOf";
 import { ParseNotSchema } from "./not";
 import { ParseIfThenElseSchema } from "./ifThenElse";
 
@@ -25,6 +25,7 @@ export type ParseSchema<
   O extends ParseSchemaOptions
 > = $ParseSchema<S, O>;
 
+// TOIMPROVE: Use only ParseSchema
 export type $ParseSchema<S, O extends ParseSchemaOptions> = S extends
   | true
   | string
@@ -41,19 +42,19 @@ export type $ParseSchema<S, O extends ParseSchemaOptions> = S extends
       DoesExtend<"not", keyof S>
     > extends true
   ? ParseNotSchema<S, O>
-  : "allOf" extends keyof S
+  : S extends AllOfSchema
   ? ParseAllOfSchema<S, O>
-  : "oneOf" extends keyof S
+  : S extends OneOfSchema
   ? ParseOneOfSchema<S, O>
-  : "anyOf" extends keyof S
+  : S extends AnyOfSchema
   ? ParseAnyOfSchema<S, O>
-  : "enum" extends keyof S
+  : S extends EnumSchema
   ? ParseEnumSchema<S, O>
-  : "const" extends keyof S
+  : S extends ConstSchema
   ? ParseConstSchema<S, O>
   : "type" extends keyof S
-  ? S["type"] extends any[]
-    ? ParseMixedSchema<S, O>
+  ? S extends MultipleTypesSchema
+    ? ParseMultipleTypesSchema<S, O>
     : S["type"] extends "null"
     ? M.Primitive<null>
     : S["type"] extends "boolean"

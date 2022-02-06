@@ -1,24 +1,24 @@
 import { M } from "ts-algebra";
 import { L } from "ts-toolbelt";
 
-import { Get, HasKeyIn, Merge } from "../utils";
+import { JSONSchema7 } from "../definitions";
+import { HasKeyIn, Merge } from "../utils";
 
-import { $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema, RemoveInvalidAdditionalItems } from "./utils";
 
+export type OneOfSchema = { oneOf: JSONSchema7[] };
+
 export type ParseOneOfSchema<
-  P,
-  O extends ParseSchemaOptions,
-  S = Get<P, "oneOf">
-> = S extends any[]
-  ? M.$Union<RecurseOnOneOfSchema<S, P, O>>
-  : M.Error<"'oneOf' property should be an array">;
+  P extends OneOfSchema,
+  O extends ParseSchemaOptions
+> = M.$Union<RecurseOnOneOfSchema<P["oneOf"], P, O>>;
 
 type RecurseOnOneOfSchema<
-  S extends any[],
-  P,
+  S extends JSONSchema7[],
+  P extends OneOfSchema,
   O extends ParseSchemaOptions,
-  R = never
+  R extends any = never
 > = {
   stop: R;
   continue: RecurseOnOneOfSchema<
@@ -26,12 +26,14 @@ type RecurseOnOneOfSchema<
     P,
     O,
     | R
+    // TOIMPROVE: Directly use ParseAnyOfSchema, ParseEnumSchema etc...
     | (HasKeyIn<P, "enum" | "const" | "type" | "anyOf"> extends true
         ? M.$Intersect<
-            $ParseSchema<Omit<P, "oneOf">, O>,
+            ParseSchema<Omit<P, "oneOf">, O>,
+            // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
             $ParseSchema<MergeSubSchema<Omit<P, "oneOf">, L.Head<S>>, O>
           >
-        : $ParseSchema<
+        : ParseSchema<
             Merge<Omit<P, "oneOf">, RemoveInvalidAdditionalItems<L.Head<S>>>,
             O
           >)

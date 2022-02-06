@@ -1,34 +1,42 @@
 import { L } from "ts-toolbelt";
 import { M } from "ts-algebra";
 
-import { Get, HasKeyIn } from "../utils";
+import { JSONSchema7 } from "../definitions";
+import { HasKeyIn } from "../utils";
 
-import { $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
 
+export type AllOfSchema = { allOf: JSONSchema7[] };
+
 export type ParseAllOfSchema<
-  S,
+  P extends AllOfSchema,
   O extends ParseSchemaOptions
 > = RecurseOnAllOfSchema<
-  Get<S, "allOf">,
-  S,
+  P["allOf"],
+  P,
   O,
-  HasKeyIn<S, "enum" | "const" | "type" | "anyOf" | "oneOf"> extends true
-    ? $ParseSchema<Omit<S, "allOf">, O>
+  // TOIMPROVE: Directly use ParseOneOfSchema, ParseAnyOfSchema etc...
+  HasKeyIn<P, "enum" | "const" | "type" | "anyOf" | "oneOf"> extends true
+    ? ParseSchema<Omit<P, "allOf">, O>
     : M.Any
 >;
 
-type RecurseOnAllOfSchema<V, S, O extends ParseSchemaOptions, R> = {
+type RecurseOnAllOfSchema<
+  S extends JSONSchema7[],
+  P extends AllOfSchema,
+  O extends ParseSchemaOptions,
+  R extends any
+> = {
   stop: R;
-  continue: V extends any[]
-    ? RecurseOnAllOfSchema<
-        L.Tail<V>,
-        S,
-        O,
-        M.$Intersect<
-          $ParseSchema<MergeSubSchema<Omit<S, "allOf">, L.Head<V>>, O>,
-          R
-        >
-      >
-    : never;
-}[V extends [any, ...any[]] ? "continue" : "stop"];
+  continue: RecurseOnAllOfSchema<
+    L.Tail<S>,
+    P,
+    O,
+    M.$Intersect<
+      // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
+      $ParseSchema<MergeSubSchema<Omit<P, "allOf">, L.Head<S>>, O>,
+      R
+    >
+  >;
+}[S extends [any, ...any[]] ? "continue" : "stop"];
