@@ -19,20 +19,16 @@ import {
   ObjectOpenProps,
 } from "../object";
 import { UnionType } from "../union";
-import { IntersectionType } from "../intersection";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
-import { $IsRepresentable } from "../isRepresentable";
 
-import { _Exclude, _$Exclude, ExclusionType } from ".";
+import { _Exclude, _$Exclude } from "./index";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
-import { ExcludeIntersection } from "./intersection";
-import { ExcludeExclusion } from "./exclusion";
 import {
   CrossValue,
   SourceValue,
-  IsExclusionValueRepresentable,
+  ExclusionValue,
   IsOutsideOfSourceScope,
   IsOutsideOfExcludedScope,
   Propagate,
@@ -46,7 +42,7 @@ export type ExcludeFromObject<A extends ObjectType, B> = B extends Type
     : B extends NeverType
     ? A
     : B extends ConstType
-    ? ExcludeConst<A, B>
+    ? ExcludeConstFromObject<A, B>
     : B extends EnumType
     ? ExcludeEnum<A, B>
     : B extends PrimitiveType | ArrayType | TupleType
@@ -55,10 +51,6 @@ export type ExcludeFromObject<A extends ObjectType, B> = B extends Type
     ? ExcludeObjects<A, B>
     : B extends UnionType
     ? ExcludeUnion<A, B>
-    : B extends IntersectionType
-    ? ExcludeIntersection<A, B>
-    : B extends ExclusionType
-    ? ExcludeExclusion<A, B>
     : B extends ErrorType
     ? B
     : Error<"TODO">
@@ -67,20 +59,20 @@ export type ExcludeFromObject<A extends ObjectType, B> = B extends Type
 type ExcludeObjects<
   A extends ObjectType,
   B extends ObjectType,
-  C extends Record<string, CrossValueType> = CrossObjectValues<A, B>,
-  R = RepresentableKeys<C>,
+  C extends Record<string, CrossValueType> = ExcludeObjectValues<A, B>,
+  R extends string = NonNeverKeys<C>,
   P = _Exclude<ObjectOpenProps<A>, ObjectOpenProps<B>>
 > = DoesObjectSizesMatch<A, B, C> extends true
   ? {
       moreThanTwo: A;
       onlyOne: PropagateExclusion<A, C>;
       none: OmitOmittableKeys<A, C>;
-    }[And<IsObjectOpen<A>, $IsRepresentable<P>> extends true
+    }[And<IsObjectOpen<A>, Not<DoesExtend<P, NeverType>>> extends true
       ? "moreThanTwo"
       : GetUnionLength<R>]
   : A;
 
-type CrossObjectValues<A extends ObjectType, B extends ObjectType> = {
+type ExcludeObjectValues<A extends ObjectType, B extends ObjectType> = {
   [key in Extract<
     | keyof ObjectValues<A>
     | keyof ObjectValues<B>
@@ -145,11 +137,11 @@ type IsExcludedBigEnough<C extends Record<string, CrossValueType>> = Not<
 
 // PROPAGATION
 
-type RepresentableKeys<C extends Record<string, CrossValueType>> = {
-  [key in keyof C]: IsExclusionValueRepresentable<C[key]> extends true
-    ? key
-    : never;
-}[keyof C];
+type NonNeverKeys<C extends Record<string, CrossValueType>> = {
+  [key in Extract<keyof C, string>]: ExclusionValue<C[key]> extends NeverType
+    ? never
+    : key;
+}[Extract<keyof C, string>];
 
 type PropagateExclusion<
   A extends ObjectType,
@@ -190,7 +182,7 @@ type OmittableKeys<C extends Record<string, CrossValueType>> = {
 
 // CONST
 
-type ExcludeConst<
+type ExcludeConstFromObject<
   A extends ObjectType,
   B extends ConstType,
   V extends any = ConstValue<B>
@@ -198,7 +190,7 @@ type ExcludeConst<
   ? _$Exclude<
       A,
       _Object<
-        { [key in keyof V]: Const<V[key]> },
+        { [key in Extract<keyof V, string>]: Const<V[key]> },
         Extract<keyof V, string>,
         false,
         Never

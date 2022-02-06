@@ -1,3 +1,5 @@
+import { A, B } from "ts-toolbelt";
+
 import { AnyType } from "../any";
 import { Never, NeverType } from "../never";
 import { ConstType } from "../const";
@@ -7,15 +9,12 @@ import { ArrayType } from "../array";
 import { TupleType } from "../tuple";
 import { ObjectType } from "../object";
 import { UnionType } from "../union";
-import { ExclusionType } from "../exclusion";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
 
-import { IntersectionType } from ".";
-import { IntersectConst } from "./const";
-import { IntersectEnum } from "./enum";
+import { IntersectConstToPrimitive } from "./const";
+import { IntersectEnumToPrimitive } from "./enum";
 import { DistributeIntersection } from "./union";
-import { IntersectExclusion } from "./exclusion";
 
 export type IntersectPrimitive<A extends PrimitiveType, B> = B extends Type
   ? B extends AnyType
@@ -23,14 +22,12 @@ export type IntersectPrimitive<A extends PrimitiveType, B> = B extends Type
     : B extends NeverType
     ? Never
     : B extends ConstType
-    ? IntersectConst<B, A>
+    ? IntersectConstToPrimitive<B, A>
     : B extends EnumType
-    ? IntersectEnum<B, A>
+    ? IntersectEnumToPrimitive<B, A>
     : B extends PrimitiveType
-    ? PrimitiveValue<A> extends PrimitiveValue<B>
+    ? A.Equals<PrimitiveValue<A>, PrimitiveValue<B>> extends B.True
       ? A
-      : PrimitiveValue<B> extends PrimitiveValue<A>
-      ? B
       : Never
     : B extends ArrayType
     ? Never
@@ -40,10 +37,6 @@ export type IntersectPrimitive<A extends PrimitiveType, B> = B extends Type
     ? Never
     : B extends UnionType
     ? DistributeIntersection<B, A>
-    : B extends IntersectionType
-    ? Error<"Cannot intersect intersection">
-    : B extends ExclusionType
-    ? IntersectExclusion<B, A>
     : B extends ErrorType
     ? B
     : Error<"TODO">

@@ -19,7 +19,7 @@ type RecurseOnAnyOfSchema<S, P, R = never> = {
         P,
         | R
         | (HasKeyIn<P, "enum" | "const" | "type"> extends true
-            ? M.$Intersection<
+            ? M.$Intersect<
                 ParseSchema<Omit<P, "anyOf">>,
                 ParseSchema<MergeSubSchema<Omit<P, "anyOf">, L.Head<S>>>
               >

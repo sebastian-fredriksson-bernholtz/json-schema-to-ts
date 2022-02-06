@@ -71,13 +71,13 @@ nonExcludingUnion;
 // --- INTERSECTION ---
 
 const excludingIntersection: A.Equals<
-  M.Exclude<M.Any, M.Intersection<M.Any, M.Any>>,
+  M.Exclude<M.Any, M.Intersect<M.Any, M.Any>>,
   M.Never
 > = 1;
 excludingIntersection;
 
 const nonExcludingIntersection: A.Equals<
-  M.Exclude<M.Any, M.Intersection<M.Any, M.Const<"A">>>,
+  M.Exclude<M.Any, M.Intersect<M.Any, M.Const<"A">>>,
   M.Any
 > = 1;
 nonExcludingIntersection;
@@ -85,7 +85,7 @@ nonExcludingIntersection;
 // --- EXCLUSION ---
 
 const excludingExclusion: A.Equals<
-  M.Exclude<M.Any, M.Exclusion<M.Any, M.Const<"A">>>,
+  M.Exclude<M.Any, M.Exclude<M.Any, M.Const<"A">>>,
   M.Never
 > = 1;
 excludingExclusion;
@@ -93,7 +93,7 @@ excludingExclusion;
 const nonExcludingExclusion: A.Equals<
   M.Exclude<
     M.Any,
-    M.Exclusion<
+    M.Exclude<
       M.Union<M.Primitive<number> | M.Primitive<string>>,
       M.Primitive<string>
     >

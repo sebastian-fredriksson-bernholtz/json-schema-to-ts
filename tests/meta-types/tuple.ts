@@ -2,6 +2,14 @@ import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
 
+// --- INSTANCIATION ---
+
+const requiredNeverItem: A.Equals<
+  M.Tuple<[M.Const<"A">, M.Never]>,
+  M.Never
+> = 1;
+requiredNeverItem;
+
 // --- OPEN ---
 
 const test1: A.Equals<
@@ -24,22 +32,14 @@ test2;
 
 // --- CLOSED ---
 
+const test3: A.Equals<
+  M.Resolve<M.Tuple<[M.Primitive<string>, M.Primitive<number>]>>,
+  [string, number]
+> = 1;
+test3;
+
 const neverItem: A.Equals<
   M.Resolve<M.Tuple<[M.Primitive<string>, M.Never]>>,
-  [string, never]
+  never
 > = 1;
 neverItem;
-
-// --- ISREPRESENTABLE ---
-
-const notRepresentable: A.Equals<
-  M.IsRepresentable<M.Tuple<[M.Const<"A">, M.Never], true>>,
-  false
-> = 1;
-notRepresentable;
-
-const representable: A.Equals<
-  M.IsRepresentable<M.Tuple<[M.Const<"A">], true>>,
-  true
-> = 1;
-representable;

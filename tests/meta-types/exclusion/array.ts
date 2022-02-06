@@ -127,7 +127,7 @@ nonExcludingUnion;
 const excludingIntersection: A.Equals<
   M.Exclude<
     M.Array<M.Primitive<string>>,
-    M.Intersection<
+    M.Intersect<
       M.Array<M.Primitive<string>>,
       M.Array<M.Union<M.Primitive<string> | M.Primitive<number>>>
     >
@@ -139,7 +139,7 @@ excludingIntersection;
 const nonExcludingIntersection: A.Equals<
   M.Exclude<
     M.Array<M.Primitive<string>>,
-    M.Intersection<M.Array<M.Primitive<string>>, M.Array<M.Const<"A">>>
+    M.Intersect<M.Array<M.Primitive<string>>, M.Array<M.Const<"A">>>
   >,
   M.Array<M.Primitive<string>>
 > = 1;
@@ -150,7 +150,7 @@ nonExcludingIntersection;
 const excludingExclusion: A.Equals<
   M.Exclude<
     M.Array<M.Const<"foo">>,
-    M.Exclusion<M.Array<M.Primitive<string>>, M.Const<[]>>
+    M.Exclude<M.Array<M.Primitive<string>>, M.Const<[]>>
   >,
   M.Const<[]>
 > = 1;
@@ -159,7 +159,7 @@ excludingExclusion;
 const nonExcludingExclusion: A.Equals<
   M.Exclude<
     M.Array<M.Primitive<string>>,
-    M.Exclusion<M.Array<M.Primitive<number>>, M.Array<M.Const<42>>>
+    M.Exclude<M.Array<M.Primitive<number>>, M.Array<M.Const<42>>>
   >,
   M.Array<M.Primitive<string>>
 > = 1;

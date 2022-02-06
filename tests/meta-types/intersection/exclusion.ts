@@ -5,15 +5,15 @@ import { M } from "ts-algebra";
 // --- ANY ---
 
 const anyAlwaysIntersect: A.Equals<
-  M.Intersect<M.Exclusion<M.Primitive<string>, M.Const<"bar">>, M.Any>,
-  M.Exclusion<M.Primitive<string>, M.Const<"bar">>
+  M.Intersect<M.Exclude<M.Primitive<string>, M.Const<"bar">>, M.Any>,
+  M.Primitive<string>
 > = 1;
 anyAlwaysIntersect;
 
 // --- NEVER ---
 
 const neverNeverIntersect: A.Equals<
-  M.Intersect<M.Exclusion<M.Primitive<string>, M.Const<"bar">>, M.Never>,
+  M.Intersect<M.Exclude<M.Primitive<string>, M.Const<"bar">>, M.Never>,
   M.Never
 > = 1;
 neverNeverIntersect;
@@ -21,8 +21,8 @@ neverNeverIntersect;
 // --- CONSTS ---
 
 const intersectingConst: A.Equals<
-  M.Intersect<M.Exclusion<M.Primitive<string>, M.Const<"bar">>, M.Const<"foo">>,
-  M.Exclusion<M.Const<"foo">, M.Const<"bar">>
+  M.Intersect<M.Exclude<M.Primitive<string>, M.Const<"bar">>, M.Const<"foo">>,
+  M.Const<"foo">
 > = 1;
 intersectingConst;
 
@@ -30,10 +30,11 @@ intersectingConst;
 
 const intersectingEnum: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Primitive<string>, M.Enum<"foo" | "bar">>,
+    M.Exclude<M.Primitive<string>, M.Enum<"foo" | "bar">>,
     M.Enum<"foo" | "bar" | "baz" | 42>
   >,
-  M.Exclusion<M.Enum<"foo" | "bar" | "baz">, M.Enum<"bar" | "foo">>
+  // Cannot do better, now that we resolve exclusions right away
+  M.Enum<"foo" | "bar" | "baz">
 > = 1;
 intersectingEnum;
 
@@ -41,19 +42,16 @@ intersectingEnum;
 
 const intersectingPrimitive: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Enum<"foo" | 42 | true>, M.Primitive<number>>,
+    M.Exclude<M.Enum<"foo" | 42 | true>, M.Primitive<number>>,
     M.Primitive<string>
   >,
-  M.Exclusion<M.Enum<"foo">, M.Primitive<number>>
+  M.Enum<"foo">
 > = 1;
 intersectingPrimitive;
 
 const nonIntersectingPrimitive: A.Equals<
-  M.Intersect<
-    M.Exclusion<M.Primitive<number>, M.Const<42>>,
-    M.Primitive<number>
-  >,
-  M.Exclusion<M.Primitive<number>, M.Const<42>>
+  M.Intersect<M.Exclude<M.Primitive<number>, M.Const<42>>, M.Primitive<number>>,
+  M.Primitive<number>
 > = 1;
 nonIntersectingPrimitive;
 
@@ -61,10 +59,10 @@ nonIntersectingPrimitive;
 
 const intersectingArray: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Array<M.Primitive<string>>, M.Const<[]>>,
+    M.Exclude<M.Array<M.Primitive<string>>, M.Const<[]>>,
     M.Array<M.Const<"foo">>
   >,
-  M.Exclusion<M.Array<M.Const<"foo">>, M.Const<[]>>
+  M.Array<M.Const<"foo">>
 > = 1;
 intersectingArray;
 
@@ -72,13 +70,10 @@ intersectingArray;
 
 const intersectingTuple: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Tuple<[M.Primitive<string>], true>, M.Const<[]>>,
+    M.Exclude<M.Tuple<[M.Primitive<string>], true>, M.Const<[]>>,
     M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
   >,
-  M.Exclusion<
-    M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>,
-    M.Const<[]>
-  >
+  M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
 > = 1;
 intersectingTuple;
 
@@ -86,20 +81,17 @@ intersectingTuple;
 
 const intersectingObject: A.Equals<
   M.Intersect<
-    M.Exclusion<
+    M.Exclude<
       M.Object<{ foo: M.Primitive<string> }, "foo", true, M.Primitive<string>>,
       M.Const<{ foo: "bar" }>
     >,
     M.Object<{ baz: M.Primitive<string> }, "baz", true>
   >,
-  M.Exclusion<
-    M.Object<
-      { foo: M.Primitive<string>; baz: M.Primitive<string> },
-      "foo" | "baz",
-      true,
-      M.Primitive<string>
-    >,
-    M.Const<{ foo: "bar" }>
+  M.Object<
+    { foo: M.Primitive<string>; baz: M.Primitive<string> },
+    "foo" | "baz",
+    true,
+    M.Primitive<string>
   >
 > = 1;
 intersectingObject;
@@ -108,48 +100,43 @@ intersectingObject;
 
 const intersectingUnion: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Enum<42 | true | "foo" | "bar">, M.Primitive<number>>,
+    M.Exclude<M.Enum<42 | true | "foo" | "bar">, M.Primitive<number>>,
     M.Union<M.Const<"foo"> | M.Primitive<boolean>>
   >,
-  M.Union<
-    | M.Exclusion<M.Const<"foo">, M.Primitive<number>>
-    | M.Exclusion<M.Enum<true>, M.Primitive<number>>
-  >
+  M.Union<M.Const<"foo"> | M.Enum<true>>
 > = 1;
 intersectingUnion;
 
 // --- INTERSECTION ---
 
-const cannotIntersectIntersection: A.Equals<
+const intersectingIntersection: A.Equals<
   M.Intersect<
-    M.Exclusion<M.Primitive<string>, M.Const<"foo">>,
-    M.Intersection<M.Primitive<string>, M.Enum<"foo" | "bar">>
+    M.Exclude<M.Primitive<string>, M.Const<"foo">>,
+    M.Intersect<M.Primitive<string>, M.Enum<"foo" | "bar">>
   >,
-  M.Error<"Cannot intersect intersection">
+  // Cannot do better, now that we resolve exclusions right away
+  M.Enum<"foo" | "bar">
 > = 1;
-cannotIntersectIntersection;
+intersectingIntersection;
 
 // --- EXCLUSION ---
 
 const intersectingExclusion: A.Equals<
   M.Intersect<
-    M.Exclusion<
+    M.Exclude<
       M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
       M.Const<"A">
     >,
-    M.Exclusion<M.Enum<"B" | "C">, M.Const<"B">>
+    M.Exclude<M.Enum<"B" | "C">, M.Const<"B">>
   >,
-  M.Exclusion<
-    M.Union<M.Never | M.Const<"B"> | M.Const<"C">>,
-    M.Union<M.Const<"A"> | M.Const<"B">>
-  >
+  M.Union<M.Never | M.Const<"C">>
 > = 1;
 intersectingExclusion;
 
 // --- ERROR ---
 
 const error: A.Equals<
-  M.Intersect<M.Exclusion<M.Primitive<string>, M.Const<"foo">>, M.Error<"Any">>,
+  M.Intersect<M.Exclude<M.Primitive<string>, M.Const<"foo">>, M.Error<"Any">>,
   M.Error<"Any">
 > = 1;
 error;

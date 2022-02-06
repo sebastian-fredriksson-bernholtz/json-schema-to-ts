@@ -20,7 +20,7 @@ type RecurseOnAllOfSchema<V, S, R> = {
     ? RecurseOnAllOfSchema<
         L.Tail<V>,
         S,
-        M.$Intersection<
+        M.$Intersect<
           ParseSchema<MergeSubSchema<Omit<S, "allOf">, L.Head<V>>>,
           R
         >

@@ -2,6 +2,11 @@ import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
 
+// --- INSTANCIATION ---
+
+const neverValue: A.Equals<M.Array<M.Never>, M.Array<M.Never>> = 1;
+neverValue;
+
 // --- ANY ---
 
 const test1: A.Equals<M.Resolve<M.Array<M.Any>>, unknown[]> = 1;
@@ -9,7 +14,7 @@ test1;
 
 //  --- NEVER ---
 
-const test2: A.Equals<M.Resolve<M.Array<M.Never>>, never[]> = 1;
+const test2: A.Equals<M.Resolve<M.Array<M.Never>>, []> = 1;
 test2;
 
 // --- CONST ---
@@ -69,7 +74,7 @@ test9;
 // --- INTERSECTION ---
 
 const test10: A.Equals<
-  M.Resolve<M.Array<M.Intersection<M.Primitive<string>, M.Const<"foo">>>>,
+  M.Resolve<M.Array<M.Intersect<M.Primitive<string>, M.Const<"foo">>>>,
   "foo"[]
 > = 1;
 test10;
@@ -78,8 +83,3 @@ test10;
 
 const test11: A.Equals<M.Resolve<M.Array<M.Error<"Any">>>, never[]> = 1;
 test11;
-
-// --- ISREPRESENTABLE ---
-
-const representable: A.Equals<M.IsRepresentable<M.Array<M.Never>>, true> = 1;
-representable;

@@ -7,9 +7,7 @@ import { ArrayTypeId } from "./array";
 import { TupleTypeId } from "./tuple";
 import { ObjectTypeId } from "./object";
 import { UnionTypeId } from "./union";
-import { IntersectionTypeId } from "./intersection";
 import { ErrorTypeId } from "./error";
-import { ExclusionTypeId } from "./exclusion";
 
 export type TypeId =
   | AnyTypeId
@@ -21,6 +19,4 @@ export type TypeId =
   | TupleTypeId
   | ObjectTypeId
   | UnionTypeId
-  | IntersectionTypeId
-  | ExclusionTypeId
   | ErrorTypeId;

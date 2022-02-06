@@ -7,19 +7,10 @@ import { ArrayType } from "../array";
 import { TupleType } from "../tuple";
 import { ObjectType } from "../object";
 import { $Union, UnionType, UnionValues } from "../union";
-import { ExclusionType } from "../exclusion";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
 
-import { IntersectionType, $ClearIntersections, $Intersect } from "./index";
-
-export type ClearUnionIntersections<A extends UnionType> = $Union<
-  ClearUnionValuesIntersections<UnionValues<A>>
->;
-
-type ClearUnionValuesIntersections<V extends Type> = V extends infer T
-  ? $ClearIntersections<T>
-  : never;
+import { $Intersect } from "./index";
 
 export type IntersectUnion<A extends UnionType, B> = B extends Type
   ? B extends AnyType
@@ -39,10 +30,6 @@ export type IntersectUnion<A extends UnionType, B> = B extends Type
     : B extends ObjectType
     ? DistributeIntersection<A, B>
     : B extends UnionType
-    ? DistributeIntersection<A, B>
-    : B extends IntersectionType
-    ? Error<"Cannot intersect intersection">
-    : B extends ExclusionType
     ? DistributeIntersection<A, B>
     : B extends ErrorType
     ? B

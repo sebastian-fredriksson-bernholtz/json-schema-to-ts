@@ -305,32 +305,29 @@ const nonIntersectingUnion: A.Equals<
       M.Array<M.Primitive<number>> | M.Tuple<[M.Primitive<boolean>], true>
     >
   >,
-  M.Union<M.Never>
+  M.Never
 > = 1;
 nonIntersectingUnion;
 
 // --- INTERSECTION ---
 
-const cannotIntersectIntersection: A.Equals<
+const intersectingIntersection: A.Equals<
   M.Intersect<
-    M.Tuple<[M.Primitive<string>], true>,
-    M.Intersection<M.Primitive<string>, M.Primitive<string>>
+    M.Enum<"foo" | 42>,
+    M.Intersect<M.Primitive<string>, M.Const<"foo">>
   >,
-  M.Error<"Cannot intersect intersection">
+  M.Const<"foo">
 > = 1;
-cannotIntersectIntersection;
+intersectingIntersection;
 
 // --- EXCLUSION ---
 
 const intersectingExclusion: A.Equals<
   M.Intersect<
     M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>,
-    M.Exclusion<M.Tuple<[M.Primitive<string>], true>, M.Const<[]>>
+    M.Exclude<M.Tuple<[M.Primitive<string>], true>, M.Const<[]>>
   >,
-  M.Exclusion<
-    M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>,
-    M.Const<[]>
-  >
+  M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
 > = 1;
 intersectingExclusion;
 

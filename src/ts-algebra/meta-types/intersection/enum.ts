@@ -7,14 +7,12 @@ import { ArrayType } from "../array";
 import { TupleType } from "../tuple";
 import { ObjectType } from "../object";
 import { UnionType } from "../union";
-import { ExclusionType } from "../exclusion";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
 
-import { IntersectConst } from "./const";
-import { IntersectUnion } from "./union";
-import { IntersectExclusion } from "./exclusion";
-import { IntersectionType, $Intersect } from "./index";
+import { $Intersect } from "./index";
+import { IntersectConstToEnum } from "./const";
+import { DistributeIntersection } from "./union";
 
 export type IntersectEnum<A extends EnumType, B> = B extends Type
   ? B extends AnyType
@@ -22,11 +20,11 @@ export type IntersectEnum<A extends EnumType, B> = B extends Type
     : B extends NeverType
     ? Never
     : B extends ConstType
-    ? IntersectConst<B, A>
+    ? IntersectConstToEnum<B, A>
     : B extends EnumType
     ? FilterUnintersecting<A, B>
     : B extends PrimitiveType
-    ? FilterUnintersecting<A, B>
+    ? IntersectEnumToPrimitive<A, B>
     : B extends ArrayType
     ? FilterUnintersecting<A, B>
     : B extends TupleType
@@ -34,11 +32,7 @@ export type IntersectEnum<A extends EnumType, B> = B extends Type
     : B extends ObjectType
     ? FilterUnintersecting<A, B>
     : B extends UnionType
-    ? IntersectUnion<B, A>
-    : B extends ExclusionType
-    ? IntersectExclusion<B, A>
-    : B extends IntersectionType
-    ? Error<"Cannot intersect intersection">
+    ? DistributeIntersection<B, A>
     : B extends ErrorType
     ? B
     : Error<"TODO">
@@ -47,6 +41,26 @@ export type IntersectEnum<A extends EnumType, B> = B extends Type
 type FilterUnintersecting<A extends EnumType, B> = Enum<
   RecurseOnEnumValues<EnumValues<A>, B>
 >;
+
+export type IntersectEnumToPrimitive<
+  A extends EnumType,
+  B extends PrimitiveType
+> = FilterUnintersecting<A, B>;
+
+export type IntersectEnumToArray<
+  A extends EnumType,
+  B extends ArrayType
+> = FilterUnintersecting<A, B>;
+
+export type IntersectEnumToTuple<
+  A extends EnumType,
+  B extends TupleType
+> = FilterUnintersecting<A, B>;
+
+export type IntersectEnumToObject<
+  A extends EnumType,
+  B extends ObjectType
+> = FilterUnintersecting<A, B>;
 
 type RecurseOnEnumValues<V, B> = V extends infer T
   ? $Intersect<Const<T>, B> extends Never

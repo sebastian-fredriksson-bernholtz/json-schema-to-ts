@@ -31,8 +31,7 @@ export type ParseSchema<
       DoesExtend<O["parseNotKeyword"], true>,
       DoesExtend<"not", keyof S>
     > extends true
-  ? // @ts-expect-error "Type instanciation is too deep and potentially infinite" error
-    ParseNotSchema<S>
+  ? ParseNotSchema<S>
   : "allOf" extends keyof S
   ? ParseAllOfSchema<S>
   : "oneOf" extends keyof S

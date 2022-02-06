@@ -2,6 +2,23 @@ import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
 
+// --- INSTANCIATION ---
+
+const requiredNeverKey: A.Equals<
+  M.Object<{ a: M.Const<"A">; b: M.Never }, "b">,
+  M.Never
+> = 1;
+requiredNeverKey;
+
+const requiredMissingKeyClosed: A.Equals<M.Object<{}, "b">, M.Never> = 1;
+requiredMissingKeyClosed;
+
+const requiredNeverKeyOpen: A.Equals<
+  M.Object<{}, "b", true, M.Never>,
+  M.Never
+> = 1;
+requiredNeverKeyOpen;
+
 // --- OPEN ---
 
 const test1: A.Equals<
@@ -38,41 +55,3 @@ const test4: A.Equals<
   never
 > = 1;
 test4;
-
-// --- ISREPRESENTABLE ---
-
-const notRepresentable1: A.Equals<
-  M.IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "b">>,
-  false
-> = 1;
-notRepresentable1;
-
-const notRepresentable2: A.Equals<
-  M.IsRepresentable<M.Object<{}, "b">>,
-  false
-> = 1;
-notRepresentable2;
-
-const notRepresentable3: A.Equals<
-  M.IsRepresentable<M.Object<{}, "b", true, M.Never>>,
-  false
-> = 1;
-notRepresentable3;
-
-const representable1: A.Equals<
-  M.IsRepresentable<M.Object<{ a: M.Const<"A">; b: M.Never }, "a", true>>,
-  true
-> = 1;
-representable1;
-
-const representable2: A.Equals<
-  M.IsRepresentable<M.Object<{}, "b", true>>,
-  true
-> = 1;
-representable2;
-
-const representable3: A.Equals<
-  M.IsRepresentable<M.Object<{}, "b", true, M.Const<"A">>>,
-  true
-> = 1;
-representable3;

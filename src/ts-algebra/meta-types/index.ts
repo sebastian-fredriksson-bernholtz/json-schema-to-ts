@@ -12,32 +12,17 @@ import { _Array, _$Array, ArrayType, ArrayTypeId } from "./array";
 import { Tuple, $Tuple, TupleType, TupleTypeId } from "./tuple";
 import { _Object, _$Object, ObjectType, ObjectTypeId } from "./object";
 import { Union, $Union, UnionType, UnionTypeId } from "./union";
-import {
-  Intersection,
-  $Intersection,
-  Intersect,
-  $Intersect,
-  IntersectionType,
-  IntersectionTypeId,
-} from "./intersection";
-import {
-  Exclusion,
-  $Exclusion,
-  _Exclude,
-  _$Exclude,
-  ExclusionType,
-  ExclusionTypeId,
-} from "./exclusion";
+import { Intersect, $Intersect } from "./intersection";
+import { _Exclude, _$Exclude } from "./exclusion";
 import { $Error, Error, ErrorType, ErrorTypeId } from "./error";
 
 import { Type } from "./type";
 import { TypeId } from "./typeId";
 
-import { IsRepresentable, $IsRepresentable } from "./isRepresentable";
 import { Resolve, $Resolve } from "./resolve";
 
 export {
-  // Meta-Types
+  // --- META-TYPES ---
   Any,
   Never,
   Const,
@@ -52,13 +37,9 @@ export {
   _$Object as $Object,
   Union,
   $Union,
-  Intersection,
-  $Intersection,
-  Exclusion,
-  $Exclusion,
   Error,
   $Error,
-  // Definitions
+  // --- DEFINITIONS ---
   AnyType,
   NeverType,
   ConstType,
@@ -68,11 +49,9 @@ export {
   TupleType,
   ObjectType,
   UnionType,
-  IntersectionType,
-  ExclusionType,
   ErrorType,
   Type,
-  // Ids
+  // --- IDS ---
   AnyTypeId,
   NeverTypeId,
   ConstTypeId,
@@ -82,17 +61,13 @@ export {
   TupleTypeId,
   ObjectTypeId,
   UnionTypeId,
-  IntersectionTypeId,
-  ExclusionTypeId,
   ErrorTypeId,
   TypeId,
-  // Methods
+  // --- METHODS ---
   $Resolve,
   Resolve,
   $Intersect,
   Intersect,
   _$Exclude as $Exclude,
   _Exclude as Exclude,
-  $IsRepresentable,
-  IsRepresentable,
 };

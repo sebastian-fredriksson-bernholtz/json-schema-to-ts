@@ -7,13 +7,23 @@ import { MergeSubSchema } from "./utils";
 
 export type ParseIfThenElseSchema<
   S,
-  R = Omit<S, "if" | "then" | "else">
+  R = Omit<S, "if" | "then" | "else">,
+  I = "if" extends keyof S ? MergeSubSchema<R, S["if"]> : never,
+  T = "then" extends keyof S
+    ? M.$Intersect<ParseSchema<I>, ParseSchema<MergeSubSchema<R, S["then"]>>>
+    : ParseSchema<I>,
+  E = M.$Exclude<
+    "else" extends keyof S
+      ? ParseSchema<MergeSubSchema<R, S["else"]>>
+      : ParseSchema<R>,
+    ParseSchema<I>
+  >
 > = HasKeyIn<
   S,
   "enum" | "const" | "type" | "anyOf" | "oneOf" | "allOf" | "not"
 > extends true
-  ? M.$Intersection<ApplyIfThenElse<S, R>, ParseSchema<R>>
-  : ApplyIfThenElse<S, R>;
+  ? M.$Intersect<M.$Union<T | E>, ParseSchema<R>>
+  : M.$Union<T | E>;
 
 type ApplyIfThenElse<
   S,

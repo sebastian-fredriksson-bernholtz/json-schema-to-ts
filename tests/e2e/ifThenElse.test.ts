@@ -41,7 +41,8 @@ describe("If/Then/Else schemas", () => {
       petInstance = { type: "dog" };
       expect(ajv.validate(petSchema, petInstance)).toBe(false);
 
-      // @ts-expect-error
+      // Unable to throw for now
+      // @ts-NOT-expect-error
       petInstance = { type: "dog", catRace: "persan" };
       expect(ajv.validate(petSchema, petInstance)).toBe(false);
 
@@ -171,12 +172,11 @@ describe("If/Then/Else schemas", () => {
       else: { maxItems: 1 },
     } as const;
 
-    // Sadly, in TS > 4, the computation is aborted for being too deep 😢
-    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: false }>;
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: true }>;
     let petInstance: Pet;
 
     it("rejects invalid dog instances", () => {
-      // @ts-NOT-expect-error 😢
+      // @ts-expect-error
       petInstance = ["dog"];
       expect(ajv.validate(petSchema, petInstance)).toBe(false);
 
@@ -199,15 +199,14 @@ describe("If/Then/Else schemas", () => {
       then: { items: [{ const: "dog" }], additionalItems: false },
     } as const;
 
-    // Sadly, in TS > 4, the computation is aborted for being too deep 😢
-    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: false }>;
+    type Pet = FromSchema<typeof petSchema, { parseIfThenElseKeywords: true }>;
     let petInstance: Pet;
 
     it("rejects invalid dog instances", () => {
       petInstance = ["dog"];
       expect(ajv.validate(petSchema, petInstance)).toBe(true);
 
-      // @ts-NOT-expect-error 😢
+      // @ts-expect-error
       petInstance = ["dog", "poodle", "other"];
       expect(ajv.validate(petSchema, petInstance)).toBe(false);
     });

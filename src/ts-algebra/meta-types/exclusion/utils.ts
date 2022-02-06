@@ -1,10 +1,9 @@
 import { And, Not } from "../../../utils";
 
-import { Type } from "..";
+import { NeverType } from "../never";
+import { Type } from "../type";
 
-import { $IsRepresentable } from "../isRepresentable";
-
-import { _$Exclude } from ".";
+import { _$Exclude } from "./index";
 
 export type CrossValue<
   V1 extends Type,
@@ -12,16 +11,14 @@ export type CrossValue<
   R1 extends boolean,
   V2 extends Type,
   P2 extends boolean,
-  R2 extends boolean,
-  X = _$Exclude<V1, V2>
+  R2 extends boolean
 > = {
   sourceValue: V1;
   isPossibleInSource: P1;
   isRequiredInSource: R1;
   isPossibleInExcluded: P2;
   isRequiredInExcluded: R2;
-  exclusionValue: X;
-  isExclusionValueRepresentable: $IsRepresentable<X>;
+  exclusionValue: _$Exclude<V1, V2>;
 };
 
 export type CrossValueType = {
@@ -31,7 +28,6 @@ export type CrossValueType = {
   isPossibleInExcluded: boolean;
   isRequiredInExcluded: boolean;
   exclusionValue: any;
-  isExclusionValueRepresentable: any;
 };
 
 export type SourceValue<C extends CrossValueType> = C["sourceValue"];
@@ -46,9 +42,6 @@ type IsRequiredInExcluded<C extends CrossValueType> = C["isRequiredInExcluded"];
 
 export type ExclusionValue<C extends CrossValueType> = C["exclusionValue"];
 
-export type IsExclusionValueRepresentable<C extends CrossValueType> =
-  C["isExclusionValueRepresentable"];
-
 export type IsOutsideOfSourceScope<C extends CrossValueType> = And<
   IsRequiredInExcluded<C>,
   Not<IsPossibleInSource<C>>
@@ -60,9 +53,7 @@ export type IsOutsideOfExcludedScope<C extends CrossValueType> = And<
 >;
 
 export type Propagate<C extends CrossValueType> =
-  IsExclusionValueRepresentable<C> extends true
-    ? ExclusionValue<C>
-    : SourceValue<C>;
+  ExclusionValue<C> extends NeverType ? SourceValue<C> : ExclusionValue<C>;
 
 export type IsOmittable<C extends CrossValueType> = And<
   Not<IsRequiredInSource<C>>,

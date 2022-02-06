@@ -68,16 +68,16 @@ anyToUnion;
 // --- INTERSECTION ---
 
 const anyToIntersection: A.Equals<
-  M.Intersect<M.Any, M.Intersection<M.Enum<"A" | "B">, M.Const<"A">>>,
-  M.Intersection<M.Enum<"A" | "B">, M.Const<"A">>
+  M.Intersect<M.Any, M.Intersect<M.Enum<"A" | "B">, M.Const<"A">>>,
+  M.Const<"A">
 > = 1;
 anyToIntersection;
 
 // --- EXCLUSION ---
 
 const anyToExclusion: A.Equals<
-  M.Intersect<M.Any, M.Exclusion<M.Any, M.Const<"A">>>,
-  M.Exclusion<M.Any, M.Const<"A">>
+  M.Intersect<M.Any, M.Exclude<M.Enum<"A" | "B">, M.Const<"A">>>,
+  M.Enum<"B">
 > = 1;
 anyToExclusion;
 

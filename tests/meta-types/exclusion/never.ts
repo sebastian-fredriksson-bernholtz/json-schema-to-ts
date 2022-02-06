@@ -68,7 +68,7 @@ unionsNeverExclude;
 // --- INTERSECTION ---
 
 const intersectionsNeverExclude: A.Equals<
-  M.Exclude<M.Never, M.Intersection<M.Any, M.Any>>,
+  M.Exclude<M.Never, M.Intersect<M.Any, M.Any>>,
   M.Never
 > = 1;
 intersectionsNeverExclude;
@@ -76,7 +76,7 @@ intersectionsNeverExclude;
 // --- EXCLUSION ---
 
 const exclusionsNeverExclude: A.Equals<
-  M.Exclude<M.Never, M.Exclusion<M.Any, M.Const<"A">>>,
+  M.Exclude<M.Never, M.Exclude<M.Any, M.Const<"A">>>,
   M.Never
 > = 1;
 exclusionsNeverExclude;

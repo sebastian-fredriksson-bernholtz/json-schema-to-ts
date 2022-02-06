@@ -1,6 +1,6 @@
 import { A, B, L } from "ts-toolbelt";
 
-import { And, Not } from "../../../utils";
+import { And, DoesExtend, Not } from "../../../utils";
 
 import { AnyType } from "../any";
 import { Never, NeverType } from "../never";
@@ -18,25 +18,21 @@ import {
 } from "../tuple";
 import { ObjectType } from "../object";
 import { UnionType } from "../union";
-import { IntersectionType } from "../intersection";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
-import { $IsRepresentable } from "../isRepresentable";
 
-import { _Exclude, ExclusionType } from ".";
+import { _Exclude } from "./index";
 import { ExcludeEnum } from "./enum";
 import { ExcludeUnion } from "./union";
-import { ExcludeIntersection } from "./intersection";
-import { ExcludeExclusion } from "./exclusion";
 import {
   CrossValue,
   CrossValueType,
   SourceValue,
-  IsExclusionValueRepresentable,
   IsOutsideOfSourceScope,
   IsOutsideOfExcludedScope,
   Propagate,
   IsOmittable,
+  ExclusionValue,
 } from "./utils";
 
 export type ExcludeFromTuple<A extends TupleType, B> = B extends Type
@@ -58,10 +54,6 @@ export type ExcludeFromTuple<A extends TupleType, B> = B extends Type
     ? A
     : B extends UnionType
     ? ExcludeUnion<A, B>
-    : B extends IntersectionType
-    ? ExcludeIntersection<A, B>
-    : B extends ExclusionType
-    ? ExcludeExclusion<A, B>
     : B extends ErrorType
     ? B
     : Error<"TODO">
@@ -83,15 +75,15 @@ type ExcludeTuples<
     TupleOpenProps<A>,
     TupleOpenProps<B>
   >,
-  R extends CrossValueType[] = RepresentableItems<C>,
+  N extends CrossValueType[] = NonNeverItems<C>,
   P = _Exclude<TupleOpenProps<A>, TupleOpenProps<B>>,
-  I = $IsRepresentable<P>
+  I = Not<DoesExtend<P, NeverType>>
 > = DoesTupleSizesMatch<A, B, C> extends true
   ? {
       moreThanTwo: A;
       onlyOne: $Tuple<PropagateExclusion<C>, IsTupleOpen<A>, TupleOpenProps<A>>;
       none: OmitOmittableItems<A, C>;
-    }[And<IsTupleOpen<A>, I> extends true ? "moreThanTwo" : GetTupleLength<R>]
+    }[And<IsTupleOpen<A>, I> extends true ? "moreThanTwo" : GetTupleLength<N>]
   : A;
 
 type CrossTupleValues<
@@ -176,14 +168,14 @@ type IsExcludedBigEnough<C extends CrossValueType[]> = {
 
 // PROPAGATION
 
-type RepresentableItems<
+type NonNeverItems<
   C extends CrossValueType[],
   R extends CrossValueType[] = []
 > = {
   stop: R;
-  continue: IsExclusionValueRepresentable<L.Head<C>> extends true
-    ? RepresentableItems<L.Tail<C>, L.Prepend<R, L.Head<C>>>
-    : RepresentableItems<L.Tail<C>, R>;
+  continue: ExclusionValue<L.Head<C>> extends NeverType
+    ? NonNeverItems<L.Tail<C>, R>
+    : NonNeverItems<L.Tail<C>, L.Prepend<R, L.Head<C>>>;
 }[C extends [any, ...any[]] ? "continue" : "stop"];
 
 type PropagateExclusion<C extends CrossValueType[], R extends any[] = []> = {

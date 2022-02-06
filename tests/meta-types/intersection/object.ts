@@ -213,33 +213,38 @@ nonIntersectingUnion2;
 
 // --- INTERSECTION ---
 
-const cannotIntersectIntersection: A.Equals<
+const intersectingIntersection: A.Equals<
   M.Intersect<
     M.Object<{ str: M.Primitive<string> }, "str", true>,
-    M.Intersection<M.Primitive<string>, M.Primitive<number>>
+    M.Intersect<
+      M.Object<{}, never, true>,
+      M.Object<{ num: M.Primitive<number> }, "num", true, M.Const<"foo">>
+    >
   >,
-  M.Error<"Cannot intersect intersection">
+  M.Object<
+    { str: M.Const<"foo">; num: M.Primitive<number> },
+    "str" | "num",
+    true,
+    M.Const<"foo">
+  >
 > = 1;
-cannotIntersectIntersection;
+intersectingIntersection;
 
 // --- EXCLUSION ---
 
 const intersectingExclusion: A.Equals<
   M.Intersect<
     M.Object<{ baz: M.Primitive<string> }, "baz", true>,
-    M.Exclusion<
+    M.Exclude<
       M.Object<{ foo: M.Primitive<string> }, "foo", true, M.Primitive<string>>,
       M.Const<{ foo: "bar" }>
     >
   >,
-  M.Exclusion<
-    M.Object<
-      { foo: M.Primitive<string>; baz: M.Primitive<string> },
-      "foo" | "baz",
-      true,
-      M.Primitive<string>
-    >,
-    M.Const<{ foo: "bar" }>
+  M.Object<
+    { foo: M.Primitive<string>; baz: M.Primitive<string> },
+    "foo" | "baz",
+    true,
+    M.Primitive<string>
   >
 > = 1;
 intersectingExclusion;

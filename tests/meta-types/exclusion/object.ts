@@ -344,10 +344,7 @@ nonExcludingUnion;
 const excludingIntersection: A.Equals<
   M.Exclude<
     M.Object<{ a: M.Enum<"A" | "B" | "C"> }, "a">,
-    M.Intersection<
-      M.Const<{ a: "C" }>,
-      M.Object<{ a: M.Primitive<string> }, "a">
-    >
+    M.Intersect<M.Const<{ a: "C" }>, M.Object<{ a: M.Primitive<string> }, "a">>
   >,
   M.Object<{ a: M.Enum<"A" | "B"> }, "a">
 > = 1;
@@ -356,10 +353,7 @@ excludingIntersection;
 const nonExcludingIntersection: A.Equals<
   M.Exclude<
     M.Object<{ a: M.Enum<"A" | "B"> }, "a">,
-    M.Intersection<
-      M.Const<{ a: "D" }>,
-      M.Object<{ a: M.Primitive<string> }, "a">
-    >
+    M.Intersect<M.Const<{ a: "D" }>, M.Object<{ a: M.Primitive<string> }, "a">>
   >,
   M.Object<{ a: M.Enum<"A" | "B"> }, "a">
 > = 1;
@@ -370,7 +364,7 @@ nonExcludingIntersection;
 const excludingExclusion: A.Equals<
   M.Exclude<
     M.Object<{ a: M.Enum<"A" | "B" | "C"> }, "a">,
-    M.Exclusion<
+    M.Exclude<
       M.Object<{ a: M.Enum<"A" | "B" | "C"> }, "a">,
       M.Const<{ a: "C" }>
     >
@@ -382,7 +376,7 @@ excludingExclusion;
 const nonExcludingExclusion: A.Equals<
   M.Exclude<
     M.Object<{ a: M.Enum<"A" | "B" | "C"> }, "a">,
-    M.Exclusion<
+    M.Exclude<
       M.Object<{ a: M.Enum<"A" | "B" | "C"> }, never>,
       M.Object<{ a: M.Primitive<string> }, "a">
     >

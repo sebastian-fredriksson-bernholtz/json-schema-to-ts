@@ -9,14 +9,12 @@ import { ArrayType } from "../array";
 import { TupleType } from "../tuple";
 import { ObjectType, ObjectRequiredKeys, ObjectValue } from "../object";
 import { UnionType } from "../union";
-import { ExclusionType } from "../exclusion";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
 import { Resolve } from "../resolve";
 
-import { IntersectUnion } from "./union";
-import { IntersectExclusion } from "./exclusion";
-import { IntersectionType, Intersect } from "./index";
+import { Intersect } from "./index";
+import { DistributeIntersection } from "./union";
 
 export type IntersectConst<A extends ConstType, B> = B extends Type
   ? B extends AnyType
@@ -26,21 +24,17 @@ export type IntersectConst<A extends ConstType, B> = B extends Type
     : B extends ConstType
     ? CheckExtendsResolved<A, B>
     : B extends EnumType
-    ? CheckExtendsResolved<A, B>
+    ? IntersectConstToEnum<A, B>
     : B extends PrimitiveType
-    ? CheckExtendsResolved<A, B>
+    ? IntersectConstToPrimitive<A, B>
     : B extends ArrayType
-    ? CheckExtendsResolved<A, B>
+    ? IntersectConstToArray<A, B>
     : B extends TupleType
-    ? CheckExtendsResolved<A, B>
+    ? IntersectConstToTuple<A, B>
     : B extends ObjectType
-    ? ToObject<A, B>
+    ? IntersectConstToObject<A, B>
     : B extends UnionType
-    ? IntersectUnion<B, A>
-    : B extends IntersectionType
-    ? Error<"Cannot intersect intersection">
-    : B extends ExclusionType
-    ? IntersectExclusion<B, A>
+    ? DistributeIntersection<B, A>
     : B extends ErrorType
     ? B
     : Error<"TODO">
@@ -51,19 +45,40 @@ type CheckExtendsResolved<
   B extends Type
 > = ConstValue<A> extends Resolve<B> ? A : Never;
 
-type ToObject<A extends ConstType, B extends ObjectType> = IsObject<
-  ConstValue<A>
-> extends true
-  ? IntersectConstToObject<A, B>
-  : Never;
+export type IntersectConstToEnum<
+  A extends ConstType,
+  B extends EnumType
+> = CheckExtendsResolved<A, B>;
 
-type IntersectConstToObject<
+export type IntersectConstToPrimitive<
+  A extends ConstType,
+  B extends PrimitiveType
+> = CheckExtendsResolved<A, B>;
+
+export type IntersectConstToArray<
+  A extends ConstType,
+  B extends ArrayType
+> = CheckExtendsResolved<A, B>;
+
+export type IntersectConstToTuple<
+  A extends ConstType,
+  B extends TupleType
+> = CheckExtendsResolved<A, B>;
+
+export type IntersectConstToObject<
+  A extends ConstType,
+  B extends ObjectType
+> = IsObject<ConstValue<A>> extends false
+  ? Never
+  : IntersectObjectConstToObject<A, B>;
+
+type IntersectObjectConstToObject<
   A extends ConstType,
   B extends ObjectType,
-  V = IntersectConstValues<ConstValue<A>, B>
+  V = IntersectConstValuesToObjectValues<ConstValue<A>, B>
 > = NeverKeys<V> extends never ? A : Never;
 
-type IntersectConstValues<V, B extends ObjectType> = {
+type IntersectConstValuesToObjectValues<V, B extends ObjectType> = {
   [key in Extract<keyof V | ObjectRequiredKeys<B>, string>]: key extends keyof V
     ? Intersect<Const<V[key]>, ObjectValue<B, key>>
     : Never;

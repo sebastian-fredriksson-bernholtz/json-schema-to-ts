@@ -197,19 +197,13 @@ nonExcludingUnion;
 // --- INTERSECTION ---
 
 const excludingIntersection: A.Equals<
-  M.Exclude<
-    M.Const<"A">,
-    M.Intersection<M.Primitive<string>, M.Enum<"A" | "B">>
-  >,
+  M.Exclude<M.Const<"A">, M.Intersect<M.Primitive<string>, M.Enum<"A" | "B">>>,
   M.Never
 > = 1;
 excludingIntersection;
 
 const nonExcludingIntersection: A.Equals<
-  M.Exclude<
-    M.Const<"A">,
-    M.Intersection<M.Primitive<string>, M.Enum<"B" | "C">>
-  >,
+  M.Exclude<M.Const<"A">, M.Intersect<M.Primitive<string>, M.Enum<"B" | "C">>>,
   M.Const<"A">
 > = 1;
 nonExcludingIntersection;
@@ -217,13 +211,13 @@ nonExcludingIntersection;
 // --- EXCLUSION ---
 
 const excludingExclusion: A.Equals<
-  M.Exclude<M.Const<"A">, M.Exclusion<M.Primitive<string>, M.Const<"B">>>,
+  M.Exclude<M.Const<"A">, M.Exclude<M.Primitive<string>, M.Const<"B">>>,
   M.Never
 > = 1;
 excludingExclusion;
 
 const nonExcludingExclusion: A.Equals<
-  M.Exclude<M.Const<"A">, M.Exclusion<M.Enum<"A" | "B">, M.Const<"A">>>,
+  M.Exclude<M.Const<"A">, M.Exclude<M.Enum<"A" | "B">, M.Const<"A">>>,
   M.Const<"A">
 > = 1;
 nonExcludingExclusion;

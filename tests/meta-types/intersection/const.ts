@@ -164,22 +164,19 @@ nonIntersectingUnion;
 
 // --- INTERSECTION ---
 
-const cannonIntersectIntersection: A.Equals<
-  M.Intersect<
-    M.Const<"foo">,
-    M.Intersection<M.Const<"foo">, M.Primitive<string>>
-  >,
-  M.Error<"Cannot intersect intersection">
+const intersectingIntersection: A.Equals<
+  M.Intersect<M.Const<"foo">, M.Intersect<M.Const<"foo">, M.Primitive<string>>>,
+  M.Const<"foo">
 > = 1;
-cannonIntersectIntersection;
+intersectingIntersection;
 
 // --- EXCLUSION ---
 
-const intersectsExclusionValue: A.Equals<
-  M.Intersect<M.Const<"foo">, M.Exclusion<M.Primitive<string>, M.Const<"bar">>>,
-  M.Exclusion<M.Const<"foo">, M.Const<"bar">>
+const intersectingExclusion: A.Equals<
+  M.Intersect<M.Const<"foo">, M.Exclude<M.Primitive<string>, M.Const<"bar">>>,
+  M.Const<"foo">
 > = 1;
-intersectsExclusionValue;
+intersectingExclusion;
 
 // --- ERROR ---
 

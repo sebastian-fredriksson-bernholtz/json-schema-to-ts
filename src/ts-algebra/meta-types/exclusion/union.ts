@@ -4,7 +4,7 @@ import { Type } from "..";
 import { $Union, UnionType, UnionValues } from "../union";
 import { $Intersect } from "../intersection";
 
-import { _$Exclude } from ".";
+import { _$Exclude } from "./index";
 
 export type DistributeUnion<A extends UnionType, B> = $Union<
   RecurseOnUnionValues<UnionValues<A>, B>

@@ -2,6 +2,14 @@ import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
 
+// --- INSTANCIATION ---
+
+const noItems: A.Equals<M.Union<never>, M.Never> = 1;
+noItems;
+
+const neverItems: A.Equals<M.Union<M.Never>, M.Never> = 1;
+neverItems;
+
 // --- ANY ---
 
 const testAny: A.Equals<
@@ -99,8 +107,8 @@ testUnions;
 const testIntersections: A.Equals<
   M.Resolve<
     M.Union<
-      | M.Intersection<M.Primitive<string>, M.Const<"foo">>
-      | M.Intersection<M.Primitive<number>, M.Const<42>>
+      | M.Intersect<M.Primitive<string>, M.Const<"foo">>
+      | M.Intersect<M.Primitive<number>, M.Const<42>>
     >
   >,
   "foo" | 42
@@ -114,14 +122,3 @@ const testError: A.Equals<
   "foo"
 > = 1;
 testError;
-
-// --- ISREPRESENTABLE ---
-
-const notRepresentable: A.Equals<M.IsRepresentable<M.Union<never>>, false> = 1;
-notRepresentable;
-
-const representable: A.Equals<
-  M.IsRepresentable<M.Union<M.Never | M.Const<"A">>>,
-  true
-> = 1;
-representable;

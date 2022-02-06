@@ -2,6 +2,11 @@ import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
 
+// --- INSTANCIATION ---
+
+const noValue: A.Equals<M.Enum<never>, M.Never> = 1;
+noValue;
+
 // --- EMPTY ---
 
 const test1: A.Equals<M.Resolve<M.Enum<never>>, never> = 1;
@@ -21,11 +26,3 @@ test3;
 
 const test4: A.Equals<M.Resolve<M.Enum<{ foo: "bar" }>>, { foo: "bar" }> = 1;
 test4;
-
-// --- ISREPRESENTABLE ---
-
-const notRepresentable: A.Equals<M.IsRepresentable<M.Enum<never>>, false> = 1;
-notRepresentable;
-
-const representable: A.Equals<M.IsRepresentable<M.Enum<"A">>, true> = 1;
-representable;

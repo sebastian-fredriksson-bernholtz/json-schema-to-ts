@@ -70,7 +70,7 @@ intersectingArray;
 
 const nonIntersectingArray: A.Equals<
   M.Intersect<M.Array<M.Primitive<string>>, M.Array<M.Primitive<number>>>,
-  M.Const<[]>
+  M.Array<M.Never>
 > = 1;
 nonIntersectingArray;
 
@@ -152,7 +152,7 @@ const numberIsExcluded1: A.Equals<
     M.Array<M.Primitive<string>>,
     M.Union<M.Array<M.Primitive<string>> | M.Array<M.Primitive<number>>>
   >,
-  M.Union<M.Array<M.Primitive<string>> | M.Const<[]>>
+  M.Union<M.Array<M.Primitive<string>> | M.Array<M.Never>>
 > = 1;
 numberIsExcluded1;
 
@@ -161,7 +161,7 @@ const numberIsExcluded2: A.Equals<
     M.Array<M.Primitive<string>>,
     M.Union<M.Const<["foo"]> | M.Array<M.Primitive<number>>>
   >,
-  M.Union<M.Const<["foo"]> | M.Const<[]>>
+  M.Union<M.Const<["foo"]> | M.Array<M.Never>>
 > = 1;
 numberIsExcluded2;
 
@@ -171,32 +171,21 @@ const tupleIsKept: A.Equals<
     M.Union<M.Array<M.Primitive<number>> | M.Tuple<[M.Primitive<string>], true>>
   >,
   M.Union<
-    M.Const<[]> | M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
+    M.Array<M.Never> | M.Tuple<[M.Primitive<string>], true, M.Primitive<string>>
   >
 > = 1;
 tupleIsKept;
 
-// --- INTERSECTION ---
-
-const cannonIntersectIntersection: A.Equals<
-  M.Intersect<
-    M.Array<M.Primitive<string>>,
-    M.Intersection<M.Primitive<string>, M.Primitive<string>>
-  >,
-  M.Error<"Cannot intersect intersection">
-> = 1;
-cannonIntersectIntersection;
-
 // --- EXCLUSION ---
 
-const intersectingExclusion: A.Equals<
-  M.Intersect<
-    M.Array<M.Const<"foo">>,
-    M.Exclusion<M.Array<M.Primitive<string>>, M.Const<[]>>
-  >,
-  M.Exclusion<M.Array<M.Const<"foo">>, M.Const<[]>>
-> = 1;
-intersectingExclusion;
+// const intersectingExclusion: A.Equals<
+//   M.Intersect<
+//     M.Array<M.Const<"foo">>,
+//     M.Exclusion<M.Array<M.Primitive<string>>, M.Const<[]>>
+//   >,
+//   M.Exclusion<M.Array<M.Const<"foo">>, M.Const<[]>>
+// > = 1;
+// intersectingExclusion;
 
 // --- ERROR ---
 

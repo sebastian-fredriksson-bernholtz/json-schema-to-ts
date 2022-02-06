@@ -11,15 +11,11 @@ import { _Array, ArrayType, ArrayValues } from "../array";
 import { TupleValues, TupleType, IsTupleOpen, TupleOpenProps } from "../tuple";
 import { ObjectType } from "../object";
 import { UnionType } from "../union";
-import { IntersectionType } from "../intersection";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
 
-import { _Exclude, ExclusionType } from ".";
+import { _Exclude } from "./index";
 import { ExcludeUnion } from "./union";
-import { ExcludeIntersection } from "./intersection";
-import { ExcludeExclusion } from "./exclusion";
-import { $IsRepresentable } from "../isRepresentable";
 
 export type ExcludeFromArray<A extends ArrayType, B> = B extends Type
   ? B extends AnyType
@@ -45,17 +41,14 @@ export type ExcludeFromArray<A extends ArrayType, B> = B extends Type
     ? A
     : B extends UnionType
     ? ExcludeUnion<A, B>
-    : B extends IntersectionType
-    ? ExcludeIntersection<A, B>
-    : B extends ExclusionType
-    ? ExcludeExclusion<A, B>
     : B extends ErrorType
     ? B
     : Error<"TODO">
   : Error<"TODO">;
 
-type ExcludeArrays<
-  A extends ArrayType,
-  B extends ArrayType,
-  X = _Exclude<ArrayValues<A>, ArrayValues<B>>
-> = $IsRepresentable<X> extends true ? A : Const<[]>;
+type ExcludeArrays<A extends ArrayType, B extends ArrayType> = _Exclude<
+  ArrayValues<A>,
+  ArrayValues<B>
+> extends NeverType
+  ? Const<[]>
+  : A;

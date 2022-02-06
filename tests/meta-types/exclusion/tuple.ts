@@ -295,7 +295,7 @@ nonExcludingUnion;
 const excludingIntersection: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | "B" | "C">]>,
-    M.Intersection<M.Const<["C"]>, M.Tuple<[M.Primitive<string>]>>
+    M.Intersect<M.Const<["C"]>, M.Tuple<[M.Primitive<string>]>>
   >,
   M.Tuple<[M.Enum<"A" | "B">]>
 > = 1;
@@ -304,7 +304,7 @@ excludingIntersection;
 const nonExcludingIntersection: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | "B">]>,
-    M.Intersection<M.Const<["D"]>, M.Tuple<[M.Primitive<string>]>>
+    M.Intersect<M.Const<["D"]>, M.Tuple<[M.Primitive<string>]>>
   >,
   M.Tuple<[M.Enum<"A" | "B">]>
 > = 1;
@@ -315,7 +315,7 @@ nonExcludingIntersection;
 const excludingExclusion: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | "B" | "C">]>,
-    M.Exclusion<M.Tuple<[M.Enum<"A" | "B" | "C">]>, M.Const<["C"]>>
+    M.Exclude<M.Tuple<[M.Enum<"A" | "B" | "C">]>, M.Const<["C"]>>
   >,
   M.Tuple<[M.Enum<"C">]>
 > = 1;
@@ -324,7 +324,7 @@ excludingExclusion;
 const nonExcludingExclusion: A.Equals<
   M.Exclude<
     M.Tuple<[M.Enum<"A" | "B" | "C">]>,
-    M.Exclusion<
+    M.Exclude<
       M.Tuple<[M.Enum<"A" | "B" | "C">]>,
       M.Tuple<[M.Primitive<string>]>
     >

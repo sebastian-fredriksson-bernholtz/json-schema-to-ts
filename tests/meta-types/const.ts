@@ -2,6 +2,11 @@ import { A } from "ts-toolbelt";
 
 import { M } from "ts-algebra";
 
+// --- INSTANCIATION ---
+
+const noValue: A.Equals<M.Const<never>, M.Never> = 1;
+noValue;
+
 // --- PRIMITIVE ---
 
 const test1: A.Equals<M.Resolve<M.Const<null>>, null> = 1;
@@ -25,8 +30,3 @@ test5;
 
 const test6: A.Equals<M.Resolve<M.Const<{ foo: "bar" }>>, { foo: "bar" }> = 1;
 test6;
-
-// --- ISREPRESENTABLE ---
-
-const representable: A.Equals<M.IsRepresentable<M.Const<"A">>, true> = 1;
-representable;

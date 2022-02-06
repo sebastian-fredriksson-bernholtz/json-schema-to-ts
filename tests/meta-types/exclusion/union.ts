@@ -166,7 +166,7 @@ nonExcludingUnion;
 const excludingIntersection: A.Equals<
   M.Exclude<
     M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
-    M.Intersection<M.Enum<"C" | "D">, M.Const<"D">>
+    M.Intersect<M.Enum<"C" | "D">, M.Const<"D">>
   >,
   M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Never>
 > = 1;
@@ -175,7 +175,7 @@ excludingIntersection;
 const nonExcludingIntersection: A.Equals<
   M.Exclude<
     M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
-    M.Intersection<M.Enum<"D" | "E">, M.Const<"E">>
+    M.Intersect<M.Enum<"D" | "E">, M.Const<"E">>
   >,
   M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>
 > = 1;
@@ -186,7 +186,7 @@ nonExcludingIntersection;
 const excludingExclusion: A.Equals<
   M.Exclude<
     M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
-    M.Exclusion<M.Enum<"C" | "D">, M.Const<"C">>
+    M.Exclude<M.Enum<"C" | "D">, M.Const<"C">>
   >,
   M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Never>
 > = 1;
@@ -195,7 +195,7 @@ excludingExclusion;
 const nonExcludingExclusion: A.Equals<
   M.Exclude<
     M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>,
-    M.Exclusion<M.Enum<"D" | "E">, M.Const<"D">>
+    M.Exclude<M.Enum<"D" | "E">, M.Const<"D">>
   >,
   M.Union<M.Const<"A"> | M.Const<"B"> | M.Const<"C"> | M.Const<"D">>
 > = 1;

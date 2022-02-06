@@ -7,14 +7,10 @@ import { ArrayType } from "../array";
 import { TupleType } from "../tuple";
 import { ObjectType } from "../object";
 import { UnionType } from "../union";
-import { IntersectionType } from "../intersection";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
 
-import { ExclusionType } from ".";
 import { ExcludeUnion } from "./union";
-import { ExcludeIntersection } from "./intersection";
-import { ExcludeExclusion } from "./exclusion";
 
 export type ExcludeFromAny<A extends AnyType, B> = B extends Type
   ? B extends AnyType
@@ -35,10 +31,6 @@ export type ExcludeFromAny<A extends AnyType, B> = B extends Type
     ? A
     : B extends UnionType
     ? ExcludeUnion<A, B>
-    : B extends IntersectionType
-    ? ExcludeIntersection<A, B>
-    : B extends ExclusionType
-    ? ExcludeExclusion<A, B>
     : B extends ErrorType
     ? B
     : Error<"TODO">

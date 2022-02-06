@@ -15,16 +15,12 @@ import {
   ObjectOpenProps,
 } from "../object";
 import { UnionType } from "../union";
-import { IntersectionType } from "../intersection";
 import { Error, ErrorType } from "../error";
 import { Type } from "../type";
-import { $IsRepresentable } from "../isRepresentable";
 import { Resolve } from "../resolve";
 
-import { _Exclude, ExclusionType } from ".";
+import { _Exclude } from "./index";
 import { ExcludeUnion } from "./union";
-import { ExcludeIntersection } from "./intersection";
-import { ExcludeExclusion } from "./exclusion";
 
 export type ExcludeFromConst<A extends ConstType, B> = B extends Type
   ? B extends AnyType
@@ -45,10 +41,6 @@ export type ExcludeFromConst<A extends ConstType, B> = B extends Type
     ? ExcludeObject<A, B>
     : B extends UnionType
     ? ExcludeUnion<A, B>
-    : B extends IntersectionType
-    ? ExcludeIntersection<A, B>
-    : B extends ExclusionType
-    ? ExcludeExclusion<A, B>
     : B extends ErrorType
     ? B
     : Error<"TODO">
@@ -71,7 +63,11 @@ type ExcludeObjectFromConst<
   A extends ConstType,
   B extends ObjectType,
   X = ExcludeConstValues<ConstValue<A>, B>
-> = RepresentableKeys<X> extends never ? Never : A;
+> = NonNeverKeys<X> extends never ? Never : A;
+
+type NonNeverKeys<O> = {
+  [key in keyof O]: O[key] extends Never ? never : key;
+}[keyof O];
 
 type ExcludeConstValues<V, B extends ObjectType> = {
   [key in keyof V]: key extends keyof ObjectValues<B>
@@ -80,7 +76,3 @@ type ExcludeConstValues<V, B extends ObjectType> = {
     ? _Exclude<Const<V[key]>, ObjectOpenProps<B>>
     : Const<V[key]>;
 };
-
-type RepresentableKeys<O> = {
-  [key in keyof O]: $IsRepresentable<O[key]> extends true ? key : never;
-}[keyof O];

@@ -1,10 +1,9 @@
-import { A, B } from "ts-toolbelt";
+import { DoesExtend, DeepMergeUnsafe } from "../../utils";
 
-import { DoesExtend, Or, Not, DeepMergeUnsafe } from "../../utils";
-
-import { $Resolve, Any, Never } from ".";
+import { Any } from "./any";
+import { Never, NeverType } from "./never";
 import { Type } from "./type";
-import { IsRepresentable } from "./isRepresentable";
+import { $Resolve } from "./resolve";
 
 export type ObjectTypeId = "object";
 
@@ -14,21 +13,26 @@ export type _Object<
   R extends string = never,
   O extends boolean = false,
   P extends Type = Any
-> = {
-  type: ObjectTypeId;
-  values: V;
-  required: R;
-  isOpen: O;
-  openProps: P;
-};
+> = _$Object<V, R, O, P>;
 
-export type _$Object<V = {}, R = never, O = false, P = Any> = {
-  type: ObjectTypeId;
-  values: V;
-  required: R;
-  isOpen: O;
-  openProps: P;
-};
+export type _$Object<V = {}, R = never, O = false, P = Any> = DoesExtend<
+  true,
+  {
+    [key in Extract<R, string>]: key extends keyof V
+      ? DoesExtend<V[key], NeverType>
+      : O extends true
+      ? DoesExtend<P, NeverType>
+      : true;
+  }[Extract<R, string>]
+> extends true
+  ? Never
+  : {
+      type: ObjectTypeId;
+      values: V;
+      required: R;
+      isOpen: O;
+      openProps: P;
+    };
 
 export type ObjectType = {
   type: ObjectTypeId;
@@ -60,17 +64,7 @@ type IsObjectEmpty<O extends ObjectType> = DoesExtend<
   never
 >;
 
-export type ResolveObject<O extends ObjectType> = IsObjectValid<O> extends true
-  ? ResolveValidObject<O>
-  : never;
-
-type IsObjectValid<O extends ObjectType> = IsObjectOpen<O> extends false
-  ? ObjectRequiredKeys<O> extends keyof ObjectValues<O>
-    ? true
-    : false
-  : true;
-
-type ResolveValidObject<O extends ObjectType> = DeepMergeUnsafe<
+export type ResolveObject<O extends ObjectType> = DeepMergeUnsafe<
   IsObjectOpen<O> extends true
     ? IsObjectEmpty<O> extends true
       ? { [key: string]: $Resolve<ObjectOpenProps<O>> }
@@ -87,26 +81,5 @@ type ResolveValidObject<O extends ObjectType> = DeepMergeUnsafe<
         ? $Resolve<ObjectValues<O>[key]>
         : $Resolve<Any>;
     }
-  >
->;
-
-type IsObjectValueRepresentable<
-  O extends ObjectType,
-  K extends string
-> = K extends keyof ObjectValues<O>
-  ? IsRepresentable<ObjectValues<O>[K]>
-  : IsObjectOpen<O> extends true
-  ? IsRepresentable<ObjectOpenProps<O>>
-  : false;
-
-export type IsObjectRepresentable<O extends ObjectType> = Or<
-  DoesExtend<A.Equals<ObjectRequiredKeys<O>, never>, B.True>,
-  Not<
-    DoesExtend<
-      false,
-      {
-        [key in ObjectRequiredKeys<O>]: IsObjectValueRepresentable<O, key>;
-      }[ObjectRequiredKeys<O>]
-    >
   >
 >;

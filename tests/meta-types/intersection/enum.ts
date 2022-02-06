@@ -143,8 +143,6 @@ const intersectingUnion2: A.Equals<
 > = 1;
 intersectingUnion2;
 
-// Strange error in TS > 4: intersection is computed as M.Union<M.Enum<never> | M.Enum<never>> (M.Enum<never> is not deduplicated)
-// @ts-expect-error
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Enum<"foo" | "bar" | 42>,
@@ -156,23 +154,24 @@ nonIntersectingUnion;
 
 // --- INTERSECTION ---
 
-const cannotIntersectIntersection: A.Equals<
+const intersectingIntersection: A.Equals<
   M.Intersect<
     M.Enum<"foo" | "bar" | 42>,
-    M.Intersection<M.Primitive<string>, M.Primitive<number>>
+    M.Intersect<M.Primitive<string>, M.Const<"foo">>
   >,
-  M.Error<"Cannot intersect intersection">
+  M.Const<"foo">
 > = 1;
-cannotIntersectIntersection;
+intersectingIntersection;
 
 // --- EXCLUSION ---
 
 const intersectingExclusion: A.Equals<
   M.Intersect<
     M.Enum<"foo" | "bar" | "baz" | 42>,
-    M.Exclusion<M.Primitive<string>, M.Enum<"foo" | "bar">>
+    M.Exclude<M.Primitive<string>, M.Enum<"foo" | "bar">>
   >,
-  M.Exclusion<M.Enum<"foo" | "bar" | "baz">, M.Enum<"foo" | "bar">>
+  // Cannot do better, now that we resolve exclusions right away
+  M.Enum<"foo" | "bar" | "baz">
 > = 1;
 intersectingExclusion;
 

@@ -149,8 +149,6 @@ const intersectingUnion3: A.Equals<
 > = 1;
 intersectingUnion3;
 
-// Strange error in TS > 4: intersection is computed as M.Union<M.Union<<M.Enum<never> | M.Enum<never>>> (M.Enum<never> is not deduplicated)
-// @ts-expect-error
 const nonIntersectingUnion: A.Equals<
   M.Intersect<
     M.Union<M.Const<"foo"> | M.Primitive<number>>,
@@ -162,26 +160,23 @@ nonIntersectingUnion;
 
 // --- INTERSECTION ---
 
-const cannotIntersectIntersection: A.Equals<
+const intersectingIntersection: A.Equals<
   M.Intersect<
     M.Union<M.Const<"foo"> | M.Primitive<number>>,
-    M.Intersection<M.Primitive<string>, M.Primitive<number>>
+    M.Intersect<M.Primitive<string>, M.Enum<"foo" | 42>>
   >,
-  M.Error<"Cannot intersect intersection">
+  M.Union<M.Const<"foo"> | M.Never>
 > = 1;
-cannotIntersectIntersection;
+intersectingIntersection;
 
 // --- EXCLUSION ---
 
 const intersectingExclusion: A.Equals<
   M.Intersect<
     M.Union<M.Const<"foo"> | M.Primitive<boolean>>,
-    M.Exclusion<M.Enum<42 | true | "foo" | "bar">, M.Primitive<number>>
+    M.Exclude<M.Enum<42 | true | "foo" | "bar">, M.Primitive<number>>
   >,
-  M.Union<
-    | M.Exclusion<M.Const<"foo">, M.Primitive<number>>
-    | M.Exclusion<M.Enum<true>, M.Primitive<number>>
-  >
+  M.Union<M.Const<"foo"> | M.Enum<true>>
 > = 1;
 intersectingExclusion;
 
