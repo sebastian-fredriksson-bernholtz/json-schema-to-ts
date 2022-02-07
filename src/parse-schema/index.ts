@@ -12,8 +12,8 @@ import { ParseObjectSchema } from "./object";
 import { AnyOfSchema, ParseAnyOfSchema } from "./anyOf";
 import { OneOfSchema, ParseOneOfSchema } from "./oneOf";
 import { AllOfSchema, ParseAllOfSchema } from "./allOf";
-import { ParseNotSchema } from "./not";
-import { ParseIfThenElseSchema } from "./ifThenElse";
+import { ParseNotSchema, NotSchema } from "./not";
+import { ParseIfThenElseSchema, IfThenElseSchema } from "./ifThenElse";
 
 export type ParseSchemaOptions = {
   parseNotKeyword: boolean;
@@ -34,14 +34,18 @@ export type $ParseSchema<S, O extends ParseSchemaOptions> = S extends
   ? M.Never
   : And<
       DoesExtend<O["parseIfThenElseKeywords"], true>,
-      DoesExtend<"if", keyof S>
+      DoesExtend<S, IfThenElseSchema>
     > extends true
-  ? ParseIfThenElseSchema<S, O>
+  ? S extends IfThenElseSchema
+    ? ParseIfThenElseSchema<S, O>
+    : never
   : And<
       DoesExtend<O["parseNotKeyword"], true>,
-      DoesExtend<"not", keyof S>
+      DoesExtend<S, NotSchema>
     > extends true
-  ? ParseNotSchema<S, O>
+  ? S extends NotSchema
+    ? ParseNotSchema<S, O>
+    : never
   : S extends AllOfSchema
   ? ParseAllOfSchema<S, O>
   : S extends OneOfSchema

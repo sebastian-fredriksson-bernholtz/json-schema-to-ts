@@ -1,9 +1,14 @@
 import { M } from "ts-algebra";
 
-import { Get, HasKeyIn } from "../utils";
+import { JSONSchema7 } from "../definitions";
+import { HasKeyIn } from "../utils";
 
 import { $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
+
+export type NotSchema = {
+  not: JSONSchema7;
+};
 
 type AllTypes = M.Union<
   | M.Primitive<null>
@@ -15,17 +20,19 @@ type AllTypes = M.Union<
 >;
 
 export type ParseNotSchema<
-  S,
+  S extends NotSchema,
   O extends ParseSchemaOptions,
-  P = $ParseSchema<Omit<S, "not">, O>,
+  P extends any = $ParseSchema<Omit<S, "not">, O>,
+  // TOIMPROVE: Stating that E extends any causes infinite loop error
   E = M.$Exclude<
+    // TOIMPROVE: Directly use ParseAllOfSchema, ParseOneOfSchema etc...
     HasKeyIn<
       S,
       "enum" | "const" | "type" | "anyOf" | "oneOf" | "allOf"
     > extends true
       ? P
       : AllTypes,
-    $ParseSchema<MergeSubSchema<Omit<S, "not">, Get<S, "not">>, O>
+    // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
+    $ParseSchema<MergeSubSchema<Omit<S, "not">, S["not"]>, O>
   >
 > = E extends M.Never ? P : E;
-

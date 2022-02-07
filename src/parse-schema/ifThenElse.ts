@@ -1,27 +1,39 @@
 import { M } from "ts-algebra";
 
+import { JSONSchema7 } from "../definitions";
 import { HasKeyIn } from "../utils";
 
-import { $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
 
+export type IfThenElseSchema = {
+  if: JSONSchema7;
+  then?: JSONSchema7;
+  else?: JSONSchema7;
+};
+
 export type ParseIfThenElseSchema<
-  S,
+  S extends IfThenElseSchema,
   O extends ParseSchemaOptions,
   R = Omit<S, "if" | "then" | "else">,
-  I = "if" extends keyof S ? MergeSubSchema<R, S["if"]> : never,
-  T = "then" extends keyof S
+  // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
+  I extends any = MergeSubSchema<R, S["if"]>,
+  T extends any = S extends { then: JSONSchema7 }
     ? M.$Intersect<
         $ParseSchema<I, O>,
+        // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
         $ParseSchema<MergeSubSchema<R, S["then"]>, O>
       >
     : $ParseSchema<I, O>,
+  // TOIMPROVE: Stating that E extends any causes infinite loop error
   E = M.$Exclude<
-    "else" extends keyof S
-      ? $ParseSchema<MergeSubSchema<R, S["else"]>, O>
-      : $ParseSchema<R, O>,
+    S extends { else: JSONSchema7 }
+      ? // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
+        $ParseSchema<MergeSubSchema<R, S["else"]>, O>
+      : ParseSchema<R, O>,
     $ParseSchema<I, O>
   >
+  // TOIMPROVE: Directly use ParseAllOfSchema, ParseOneOfSchema etc...
 > = HasKeyIn<
   S,
   "enum" | "const" | "type" | "anyOf" | "oneOf" | "allOf" | "not"
