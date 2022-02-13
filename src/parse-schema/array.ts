@@ -4,7 +4,7 @@ import { M } from "ts-algebra";
 import { DoesExtend } from "../utils";
 import { JSONSchema7 } from "../definitions";
 
-import { $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, ParseSchemaOptions } from "./index";
 
 export type ArraySchema = JSONSchema7 & { type: "array" };
 
@@ -19,7 +19,7 @@ export type ParseArraySchema<
   S extends ArraySchema,
   O extends ParseSchemaOptions
 > = S extends SimpleArraySchema
-  ? M.$Array<$ParseSchema<S["items"], O>>
+  ? M.$Array<ParseSchema<S["items"], O>>
   : S extends TupleSchema
   ? M.$Union<FromTreeTuple<ParseTuple<S["items"], O>, S, O>>
   : M.$Array;
@@ -30,7 +30,7 @@ export type ParseTuple<
   R extends any[] = []
 > = {
   stop: R;
-  continue: ParseTuple<L.Tail<S>, O, L.Prepend<R, $ParseSchema<L.Head<S>, O>>>;
+  continue: ParseTuple<L.Tail<S>, O, L.Prepend<R, ParseSchema<L.Head<S>, O>>>;
 }[S extends [any, ...any[]] ? "continue" : "stop"];
 
 type FromTreeTuple<
@@ -128,5 +128,5 @@ type ApplyAdditionalItems<
   : R["hasEncounteredMin"] extends true
   ?
       | R["result"]
-      | M.$Tuple<L.Reverse<R["completeTuple"]>, true, $ParseSchema<A, O>>
-  : M.$Tuple<L.Reverse<R["completeTuple"]>, true, $ParseSchema<A, O>>;
+      | M.$Tuple<L.Reverse<R["completeTuple"]>, true, ParseSchema<A, O>>
+  : M.$Tuple<L.Reverse<R["completeTuple"]>, true, ParseSchema<A, O>>;

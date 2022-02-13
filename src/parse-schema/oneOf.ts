@@ -4,7 +4,7 @@ import { L } from "ts-toolbelt";
 import { JSONSchema7 } from "../definitions";
 import { HasKeyIn, Merge } from "../utils";
 
-import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema, RemoveInvalidAdditionalItems } from "./utils";
 
 export type OneOfSchema = JSONSchema7 & { oneOf: JSONSchema7[] };
@@ -30,8 +30,7 @@ type RecurseOnOneOfSchema<
     | (HasKeyIn<P, "enum" | "const" | "type" | "anyOf"> extends true
         ? M.$Intersect<
             ParseSchema<Omit<P, "oneOf">, O>,
-            // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
-            $ParseSchema<MergeSubSchema<Omit<P, "oneOf">, L.Head<S>>, O>
+            ParseSchema<MergeSubSchema<Omit<P, "oneOf">, L.Head<S>>, O>
           >
         : ParseSchema<
             Merge<Omit<P, "oneOf">, RemoveInvalidAdditionalItems<L.Head<S>>>,

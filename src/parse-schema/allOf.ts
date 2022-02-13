@@ -4,7 +4,7 @@ import { M } from "ts-algebra";
 import { JSONSchema7 } from "../definitions";
 import { HasKeyIn } from "../utils";
 
-import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
 
 export type AllOfSchema = JSONSchema7 & { allOf: JSONSchema7[] };
@@ -33,10 +33,6 @@ type RecurseOnAllOfSchema<
     L.Tail<S>,
     P,
     O,
-    M.$Intersect<
-      // TOIMPROVE: Improve MergeSubSchema and use ParseSchema
-      $ParseSchema<MergeSubSchema<Omit<P, "allOf">, L.Head<S>>, O>,
-      R
-    >
+    M.$Intersect<ParseSchema<MergeSubSchema<Omit<P, "allOf">, L.Head<S>>, O>, R>
   >;
 }[S extends [any, ...any[]] ? "continue" : "stop"];
