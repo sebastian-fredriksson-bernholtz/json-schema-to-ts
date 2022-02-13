@@ -1,23 +1,31 @@
-import { A, L } from "ts-toolbelt";
+import { L } from "ts-toolbelt";
 import { M } from "ts-algebra";
 
-import { DoesExtend, Get, IsObject } from "../utils";
+import { DoesExtend } from "../utils";
+import { JSONSchema7 } from "../definitions";
 
 import { $ParseSchema, ParseSchemaOptions } from "./index";
 
+export type ArraySchema = JSONSchema7 & { type: "array" };
+
+export type SimpleArraySchema = JSONSchema7 & {
+  type: "array";
+  items: JSONSchema7;
+};
+
+export type TupleSchema = JSONSchema7 & { type: "array"; items: JSONSchema7[] };
+
 export type ParseArraySchema<
-  S,
+  S extends ArraySchema,
   O extends ParseSchemaOptions
-> = "items" extends keyof S
-  ? IsObject<S["items"]> extends true
-    ? M.$Array<$ParseSchema<S["items"], O>>
-    : S extends { items: any[] }
-    ? M.$Union<FromTreeTuple<ParseTuple<S["items"], O>, S, O>>
-    : M.Error<'Invalid value in "items" property'>
+> = S extends SimpleArraySchema
+  ? M.$Array<$ParseSchema<S["items"], O>>
+  : S extends TupleSchema
+  ? M.$Union<FromTreeTuple<ParseTuple<S["items"], O>, S, O>>
   : M.$Array;
 
 export type ParseTuple<
-  S extends any[],
+  S extends JSONSchema7[],
   O extends ParseSchemaOptions,
   R extends any[] = []
 > = {
@@ -27,26 +35,26 @@ export type ParseTuple<
 
 type FromTreeTuple<
   T extends any[],
-  S,
+  S extends ArraySchema,
   O extends ParseSchemaOptions
 > = ApplyAdditionalItems<
   ApplyBoundaries<
     T,
-    "minItems" extends keyof S ? S["minItems"] : 0,
-    "maxItems" extends keyof S ? S["maxItems"] : undefined
+    S extends { minItems: number } ? S["minItems"] : 0,
+    S extends { maxItems: number } ? S["maxItems"] : undefined
   >,
-  "additionalItems" extends keyof S ? S["additionalItems"] : true,
+  S extends { additionalItems: JSONSchema7 } ? S["additionalItems"] : true,
   O
 >;
 
 type ApplyBoundaries<
   T extends any[],
-  Min,
-  Max,
-  R = never,
+  Min extends number,
+  Max extends number | undefined,
+  R extends any = never,
   HasMin extends boolean = false,
   HasMax extends boolean = false,
-  C = T
+  C extends any[] = T
 > = {
   stop: {
     result: Max extends undefined
@@ -83,43 +91,42 @@ type ApplyBoundaries<
   ? "continue"
   : "stop"];
 
-type IsLongerThan<T extends any[], N, R = false> = {
-  continue: T["length"] extends N ? true : IsLongerThan<L.Tail<T>, N>;
+type IsLongerThan<
+  T extends any[],
+  N extends number | undefined,
+  R extends boolean = false
+> = {
+  continue: N extends undefined
+    ? false
+    : T["length"] extends N
+    ? true
+    : IsLongerThan<L.Tail<T>, N>;
   stop: T["length"] extends N ? true : R;
 }[T extends [any, ...any[]] ? "continue" : "stop"];
 
-type ApplyAdditionalItems<R, A, O extends ParseSchemaOptions> = Get<
-  R,
-  "hasEncounteredMax"
-> extends true
-  ? Get<R, "hasEncounteredMin"> extends true
-    ? Get<R, "result">
+type ApplyAdditionalItems<
+  R extends {
+    result: any;
+    hasEncounteredMin: boolean;
+    hasEncounteredMax: boolean;
+    completeTuple: any[];
+  },
+  A extends JSONSchema7,
+  O extends ParseSchemaOptions
+> = R extends { hasEncounteredMax: true }
+  ? R extends { hasEncounteredMin: true }
+    ? R["result"]
     : M.Error<'"minItems" property is lower than "maxItems"'>
   : A extends false
-  ? Get<R, "hasEncounteredMin"> extends true
-    ? Get<R, "result">
+  ? R extends { hasEncounteredMin: true }
+    ? R["result"]
     : M.Error<'"minItems" property is higher than allowed number of items'>
   : A extends true
-  ? Get<R, "hasEncounteredMin"> extends true
-    ?
-        | Get<R, "result">
-        | M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>, true>
-    : // 🔧 TOIMPROVE: Not cast here
-      M.$Tuple<L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>, true>
-  : IsObject<A> extends true
-  ? Get<R, "hasEncounteredMin"> extends true
-    ?
-        | Get<R, "result">
-        | M.$Tuple<
-            // 🔧 TOIMPROVE: Not cast here
-            L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>,
-            true,
-            $ParseSchema<A, O>
-          >
-    : M.$Tuple<
-        // 🔧 TOIMPROVE: Not cast here
-        L.Reverse<A.Cast<Get<R, "completeTuple">, any[]>>,
-        true,
-        $ParseSchema<A, O>
-      >
-  : M.Error<'Invalid value in "additionalItems" property'>;
+  ? R extends { hasEncounteredMin: true }
+    ? R["result"] | M.$Tuple<L.Reverse<R["completeTuple"]>, true>
+    : M.$Tuple<L.Reverse<R["completeTuple"]>, true>
+  : R["hasEncounteredMin"] extends true
+  ?
+      | R["result"]
+      | M.$Tuple<L.Reverse<R["completeTuple"]>, true, $ParseSchema<A, O>>
+  : M.$Tuple<L.Reverse<R["completeTuple"]>, true, $ParseSchema<A, O>>;

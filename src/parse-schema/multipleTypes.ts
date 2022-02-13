@@ -3,10 +3,11 @@ import { M } from "ts-algebra";
 import { L } from "ts-toolbelt";
 
 import { DeepMergeUnsafe } from "../utils";
+import { JSONSchema7 } from "../definitions";
 
 import { $ParseSchema, ParseSchemaOptions } from "./index";
 
-export type MultipleTypesSchema = { type: JSONSchema7TypeName[] };
+export type MultipleTypesSchema = JSONSchema7 & { type: JSONSchema7TypeName[] };
 
 export type ParseMultipleTypesSchema<
   P extends MultipleTypesSchema,

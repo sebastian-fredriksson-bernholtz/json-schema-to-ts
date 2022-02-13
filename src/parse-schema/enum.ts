@@ -1,10 +1,11 @@
 import { M } from "ts-algebra";
 
 import { HasKeyIn } from "../utils";
+import { JSONSchema7 } from "../definitions";
 
 import { ParseSchema, ParseSchemaOptions } from "./index";
 
-export type EnumSchema = { enum: unknown[] };
+export type EnumSchema = JSONSchema7 & { enum: unknown[] };
 
 export type ParseEnumSchema<
   S extends EnumSchema,

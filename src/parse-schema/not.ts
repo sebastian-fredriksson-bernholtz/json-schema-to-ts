@@ -6,7 +6,7 @@ import { HasKeyIn } from "../utils";
 import { $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
 
-export type NotSchema = {
+export type NotSchema = JSONSchema7 & {
   not: JSONSchema7;
 };
 

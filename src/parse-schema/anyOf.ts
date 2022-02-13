@@ -7,7 +7,7 @@ import { HasKeyIn, Merge } from "../utils";
 import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema, RemoveInvalidAdditionalItems } from "./utils";
 
-export type AnyOfSchema = { anyOf: JSONSchema7[] };
+export type AnyOfSchema = JSONSchema7 & { anyOf: JSONSchema7[] };
 
 export type ParseAnyOfSchema<
   S extends AnyOfSchema,

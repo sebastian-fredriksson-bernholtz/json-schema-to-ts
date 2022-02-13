@@ -4,11 +4,10 @@ import { And, DoesExtend } from "../utils";
 
 import { JSONSchema7 } from "../definitions";
 
-import { MultipleTypesSchema, ParseMultipleTypesSchema } from "./multipleTypes";
 import { ConstSchema, ParseConstSchema } from "./const";
 import { EnumSchema, ParseEnumSchema } from "./enum";
-import { ParseArraySchema } from "./array";
-import { ParseObjectSchema } from "./object";
+import { ParseSingleTypeSchema, SingleTypeSchema } from "./singleType";
+import { MultipleTypesSchema, ParseMultipleTypesSchema } from "./multipleTypes";
 import { AnyOfSchema, ParseAnyOfSchema } from "./anyOf";
 import { OneOfSchema, ParseOneOfSchema } from "./oneOf";
 import { AllOfSchema, ParseAllOfSchema } from "./allOf";
@@ -36,14 +35,16 @@ export type $ParseSchema<S, O extends ParseSchemaOptions> = S extends
       DoesExtend<O["parseIfThenElseKeywords"], true>,
       DoesExtend<S, IfThenElseSchema>
     > extends true
-  ? S extends IfThenElseSchema
+  ? // TOIMPROVE: Not cast here (rather use a ParseNonIfThenElseSchema twice)
+    S extends IfThenElseSchema
     ? ParseIfThenElseSchema<S, O>
     : never
   : And<
       DoesExtend<O["parseNotKeyword"], true>,
       DoesExtend<S, NotSchema>
     > extends true
-  ? S extends NotSchema
+  ? // TOIMPROVE: Not cast here (rather use a ParseNonNotSchema twice)
+    S extends NotSchema
     ? ParseNotSchema<S, O>
     : never
   : S extends AllOfSchema
@@ -56,22 +57,8 @@ export type $ParseSchema<S, O extends ParseSchemaOptions> = S extends
   ? ParseEnumSchema<S, O>
   : S extends ConstSchema
   ? ParseConstSchema<S, O>
-  : "type" extends keyof S
-  ? S extends MultipleTypesSchema
-    ? ParseMultipleTypesSchema<S, O>
-    : S["type"] extends "null"
-    ? M.Primitive<null>
-    : S["type"] extends "boolean"
-    ? M.Primitive<boolean>
-    : S["type"] extends "integer"
-    ? M.Primitive<number>
-    : S["type"] extends "number"
-    ? M.Primitive<number>
-    : S["type"] extends "string"
-    ? M.Primitive<string>
-    : S["type"] extends "object"
-    ? ParseObjectSchema<S, O>
-    : S["type"] extends "array"
-    ? ParseArraySchema<S, O>
-    : M.Never
+  : S extends MultipleTypesSchema
+  ? ParseMultipleTypesSchema<S, O>
+  : S extends SingleTypeSchema
+  ? ParseSingleTypeSchema<S, O>
   : M.Any;

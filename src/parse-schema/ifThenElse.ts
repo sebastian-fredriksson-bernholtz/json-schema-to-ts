@@ -6,7 +6,7 @@ import { HasKeyIn } from "../utils";
 import { ParseSchema, $ParseSchema, ParseSchemaOptions } from "./index";
 import { MergeSubSchema } from "./utils";
 
-export type IfThenElseSchema = {
+export type IfThenElseSchema = JSONSchema7 & {
   if: JSONSchema7;
   then?: JSONSchema7;
   else?: JSONSchema7;
