@@ -22,12 +22,7 @@ export type ParseSchemaOptions = {
 export type ParseSchema<
   S extends JSONSchema7,
   O extends ParseSchemaOptions
-> = $ParseSchema<S, O>;
-
-// TOIMPROVE: Use only ParseSchema
-export type $ParseSchema<S, O extends ParseSchemaOptions> = S extends
-  | true
-  | string
+> = S extends true | string
   ? M.Any
   : S extends false
   ? M.Never

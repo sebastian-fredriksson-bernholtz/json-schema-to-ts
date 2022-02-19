@@ -2,10 +2,9 @@ import { JSONSchema7TypeName } from "json-schema";
 import { M } from "ts-algebra";
 import { L } from "ts-toolbelt";
 
-import { DeepMergeUnsafe } from "../utils";
 import { JSONSchema7 } from "../definitions";
 
-import { $ParseSchema, ParseSchemaOptions } from "./index";
+import { ParseSchema, ParseSchemaOptions } from "./index";
 
 export type MultipleTypesSchema = JSONSchema7 & { type: JSONSchema7TypeName[] };
 
@@ -25,7 +24,6 @@ type RecurseOnMixedSchema<
     L.Tail<S>,
     P,
     O,
-    // TOIMPROVE: Improve DeepMergeUnsafe & use ParseSchema
-    R | $ParseSchema<DeepMergeUnsafe<P, { type: L.Head<S> }>, O>
+    R | ParseSchema<Omit<P, "type"> & { type: L.Head<S> }, O>
   >;
 }[S extends [any, ...any[]] ? "continue" : "stop"];
