@@ -22,7 +22,9 @@ export type ParseSchemaOptions = {
 export type ParseSchema<
   S extends JSONSchema7,
   O extends ParseSchemaOptions
-> = S extends true | string
+> = JSONSchema7 extends S
+  ? M.Any
+  : S extends true | string
   ? M.Any
   : S extends false
   ? M.Never
