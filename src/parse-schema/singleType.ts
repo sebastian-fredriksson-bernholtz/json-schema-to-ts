@@ -1,6 +1,5 @@
-import { M } from "ts-algebra";
-
 import { JSONSchema7TypeName } from "json-schema";
+import { M } from "ts-algebra";
 
 import { JSONSchema7 } from "../definitions";
 

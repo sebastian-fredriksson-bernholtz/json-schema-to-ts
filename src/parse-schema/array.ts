@@ -1,8 +1,8 @@
-import { L } from "ts-toolbelt";
 import { M } from "ts-algebra";
+import { L } from "ts-toolbelt";
 
-import { DoesExtend } from "../utils";
 import { JSONSchema7 } from "../definitions";
+import { DoesExtend } from "../utils";
 
 import { ParseSchema, ParseSchemaOptions } from "./index";
 

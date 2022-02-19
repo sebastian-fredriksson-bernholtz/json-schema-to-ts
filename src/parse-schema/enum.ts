@@ -1,7 +1,7 @@
 import { M } from "ts-algebra";
 
-import { HasKeyIn } from "../utils";
 import { JSONSchema7 } from "../definitions";
+import { HasKeyIn } from "../utils";
 
 import { ParseSchema, ParseSchemaOptions } from "./index";
 

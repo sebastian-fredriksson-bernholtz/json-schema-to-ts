@@ -1,6 +1,7 @@
 import { M } from "ts-algebra";
 
 import { JSONSchema7 } from "../definitions";
+
 import { ParseSchema, ParseSchemaOptions } from "./index";
 import { SingleTypeSchema } from "./singleType";
 import { MultipleTypesSchema } from "./multipleTypes";

@@ -1,5 +1,5 @@
-import { L } from "ts-toolbelt";
 import { M } from "ts-algebra";
+import { L } from "ts-toolbelt";
 
 import { JSONSchema7 } from "../definitions";
 import { HasKeyIn, Merge } from "../utils";

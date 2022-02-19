@@ -1,8 +1,7 @@
 import { M } from "ts-algebra";
 
-import { And, DoesExtend } from "../utils";
-
 import { JSONSchema7 } from "../definitions";
+import { And, DoesExtend } from "../utils";
 
 import { ConstSchema, ParseConstSchema } from "./const";
 import { EnumSchema, ParseEnumSchema } from "./enum";
